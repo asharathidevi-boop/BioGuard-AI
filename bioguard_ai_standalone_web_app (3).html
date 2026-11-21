@@ -20,6 +20,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <!-- Early Global Stub so HTMLInputElement.onchange never throws ReferenceError even before body script runs -->
+  <script>
+    window.__pendingImageUploadEvents = [];
+    window.handleImageUpload = function (event) {
+      window.__pendingImageUploadEvents.push(event);
+    };
+  </script>
+
   <style>
     /* Custom Typography & Animations */
     .font-serif-heading {
@@ -1902,6 +1910,16 @@
     window.closeLogDetailModal = closeLogDetailModal;
     window.handleComparePhotoUpload = handleComparePhotoUpload;
     window.closeComparisonModal = closeComparisonModal;
+
+    // Replay any file selection event queued before script evaluated
+    if (Array.isArray(window.__pendingImageUploadEvents) && window.__pendingImageUploadEvents.length > 0) {
+      var queuedEvents = window.__pendingImageUploadEvents.splice(0);
+      queuedEvents.forEach(function (ev) {
+        try {
+          handleImageUpload(ev);
+        } catch (qErr) {}
+      });
+    }
 
     // 10. INITIALIZATION ON DOM READY
     window.addEventListener('DOMContentLoaded', function () {
