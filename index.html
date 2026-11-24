@@ -3,196 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BioGuard AI – Plant Health Monitoring & CPX IoT System</title>
+  <title data-en="BioGuard AI – Plant Health Monitoring &amp; CPX IoT System" data-ta="BioGuard AI – தாவர நல அறிக்கை மற்றும் மண் ஈரப்பத கண்காணிப்பு அமைப்பு">BioGuard AI – Plant Health Monitoring &amp; CPX IoT System</title>
 
-  <!-- Tailwind CSS for responsive utility styling -->
+  <!-- Tailwind CSS CDN for responsive mobile, tablet, and desktop layout -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- TensorFlow.js & Teachable Machine Image Library -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Immediate Global Stubs so inline HTML event handlers never throw ReferenceError -->
+  <script>
+    window.__queuedUploadEvents = [];
+    window.__queuedCameraCalls = 0;
+
+    if (typeof window.handleImageUpload !== 'function') {
+      window.handleImageUpload = function (event) {
+        window.__queuedUploadEvents.push(event);
+      };
+    }
+
+    if (typeof window.startCamera !== 'function') {
+      window.startCamera = function () {
+        window.__queuedCameraCalls += 1;
+      };
+    }
+  </script>
 
   <style>
-    .font-serif-heading { font-family: 'Playfair Display', Georgia, serif; }
-    .font-sans-body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
-    .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #F2F7F0; }
-    ::-webkit-scrollbar-thumb { background: #CFE0CC; border-radius: 9999px; }
+    /* Custom Typography & Animations */
+    .font-serif-heading {
+      font-family: 'Playfair Display', 'Noto Sans Tamil', Georgia, serif;
+    }
+    .font-sans-body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F2F7F0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CFE0CC;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #95D5A6;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-[#F8FAF6] font-sans-body text-slate-800 pb-20 md:pb-16">
 
   <!-- HEADER NAVBAR -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#E3ECE1] shadow-xs">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E3ECE1] shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-[#1B3B2B] text-[#95D5A6] flex items-center justify-center shadow-xs">
           <i data-lucide="leaf" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] tracking-tight">
+          <h1 id="brand-title" class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] tracking-tight" data-en="BioGuard AI" data-ta="BioGuard AI">
             BioGuard AI
           </h1>
-          <p class="text-[10px] font-bold text-[#3E7B54] uppercase tracking-wider">
+          <p id="brand-subtitle" class="text-[10px] font-bold text-[#3E7B54] uppercase tracking-wider" data-en="Plant Health System &bull; K. Aparna &amp; G. Kayathri" data-ta="தாவர நல அறிக்கை அமைப்பு &bull; K. Aparna &amp; G. Kayathri">
             Plant Health System &bull; K. Aparna &amp; G. Kayathri
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
+        <!-- Desktop Navigation -->
         <nav class="hidden md:flex items-center gap-1 bg-[#F2F7F0] p-1 rounded-xl border border-[#E3ECE1]">
-          <button onclick="switchTab('scan')" id="nav-desktop-scan" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white shadow-2xs">Scan &amp; Diagnose</button>
-          <button onclick="switchTab('soil')" id="nav-desktop-soil" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]">CPX Soil Hardware</button>
-          <button onclick="switchTab('logs')" id="nav-desktop-logs" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]">Reminders &amp; Logs</button>
-          <button onclick="switchTab('about')" id="nav-desktop-about" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]">About &amp; Creators</button>
+          <button type="button" onclick="window.switchTab('scan')" id="nav-desktop-scan" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white shadow-2xs" data-en="Scan &amp; Dashboard" data-ta="ஸ்கேன் &amp; டாஷ்போர்டு">Scan &amp; Dashboard</button>
+          <button type="button" onclick="window.switchTab('soil')" id="nav-desktop-soil" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]" data-en="CPX Soil &amp; Buzzer" data-ta="மண்ணின் ஈரப்பதம் &amp; பஸர்">CPX Soil &amp; Buzzer</button>
+          <button type="button" onclick="window.switchTab('logs')" id="nav-desktop-logs" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]" data-en="Reminders &amp; Logs" data-ta="நினைவூட்டல் &amp; பதிவுகள்">Reminders &amp; Logs</button>
+          <button type="button" onclick="window.switchTab('about')" id="nav-desktop-about" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]" data-en="About &amp; Creators" data-ta="குறிப்பு &amp; உருவாக்கியோர்">About &amp; Creators</button>
         </nav>
-        <button onclick="toggleLanguage()" id="lang-toggle-btn" class="px-3 py-1.5 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] text-[#1B3B2B] text-xs font-bold hover:bg-[#F2F7F0]">தமிழ்</button>
+
+        <!-- Language Switcher Buttons (English & Tamil) -->
+        <div class="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-xl border border-[#E3ECE1]">
+          <button type="button" onclick="window.setLanguage('en')" id="lang-en-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white">
+            English
+          </button>
+          <button type="button" onclick="window.setLanguage('ta')" id="lang-ta-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#F2F7F0]">
+            தமிழ்
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Mobile Nav -->
+    <!-- Mobile & Tablet Navigation Bar -->
     <div class="md:hidden flex items-center justify-around bg-[#F2F7F0] border-t border-[#E3ECE1] px-2 py-2">
-      <button onclick="switchTab('scan')" id="nav-mobile-scan" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-[#1B3B2B] text-white">Scan</button>
-      <button onclick="switchTab('soil')" id="nav-mobile-soil" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]">CPX Soil</button>
-      <button onclick="switchTab('logs')" id="nav-mobile-logs" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]">Logs</button>
-      <button onclick="switchTab('about')" id="nav-mobile-about" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]">About</button>
+      <button type="button" onclick="window.switchTab('scan')" id="nav-mobile-scan" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-[#1B3B2B] text-white" data-en="Scan" data-ta="ஸ்கேன்">Scan</button>
+      <button type="button" onclick="window.switchTab('soil')" id="nav-mobile-soil" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]" data-en="CPX Soil" data-ta="மண் ஈரப்பதம்">CPX Soil</button>
+      <button type="button" onclick="window.switchTab('logs')" id="nav-mobile-logs" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]" data-en="Logs &amp; Alerts" data-ta="பதிவுகள்">Logs &amp; Alerts</button>
+      <button type="button" onclick="window.switchTab('about')" id="nav-mobile-about" class="px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]" data-en="About" data-ta="குறிப்பு">About</button>
     </div>
   </header>
 
   <!-- MAIN CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
 
-    <!-- TAB 1: SCAN & DIAGNOSE -->
+    <!-- =================================================================== -->
+    <!-- TAB 1: SCAN & DASHBOARD                                             -->
+    <!-- =================================================================== -->
     <section id="tab-scan" class="space-y-6">
+      <!-- Summary Dashboard KPI Row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs">
+          <span id="kpi-leaf-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="Plant Health Status" data-ta="தாவர ஆரோக்கிய நிலை">Plant Health Status</span>
+          <p id="dash-leaf-status" class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] mt-1 truncate">Awaiting Scan</p>
+          <span id="dash-leaf-conf" class="text-[11px] text-slate-500">Teachable Machine Ready</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs">
+          <span id="kpi-soil-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="Soil Moisture Status" data-ta="மண்ணின் ஈரப்பதம்">Soil Moisture Status</span>
+          <p id="dash-soil-moisture" class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] mt-1">--%</p>
+          <span id="dash-soil-state" class="text-[11px] text-slate-500">CPX Sensor Disconnected</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs">
+          <span id="kpi-rem-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="Active Reminders" data-ta="செயலில் உள்ள நினைவூட்டல்கள்">Active Reminders</span>
+          <p id="dash-reminder-count" class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] mt-1">0</p>
+          <span id="kpi-rem-sub" class="text-[11px] text-slate-500" data-en="Asia/Kolkata Schedule" data-ta="இந்திய நேர அட்டவணை">Asia/Kolkata Schedule</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs">
+          <span id="kpi-log-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="Scan History &amp; Logs" data-ta="ஸ்கேன் வரலாற்றுப் பதிவுகள்">Scan History &amp; Logs</span>
+          <p id="dash-log-count" class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#1B3B2B] mt-1">0</p>
+          <span id="kpi-log-sub" class="text-[11px] text-slate-500" data-en="Persistent Local History" data-ta="சேமிக்கப்பட்ட வரலாறு">Persistent Local History</span>
+        </div>
+      </div>
+
+      <!-- Hero Scan Card -->
       <div class="bg-white rounded-2xl p-6 sm:p-8 border border-[#E3ECE1] shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-2 text-center md:text-left">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E7F3E5] text-[#1B3B2B] text-xs font-bold">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#3E7B54]"></i>
-            <span>Teachable Machine B-SoEzTPH AI Powered</span>
+            <span id="hero-badge-text" data-en="Teachable Machine B-SoEzTPH AI Powered" data-ta="செயற்கை நுண்ணறிவு இலை பரிசோதனை">Teachable Machine B-SoEzTPH AI Powered</span>
           </div>
-          <h2 class="font-serif-heading text-2xl sm:text-3xl font-extrabold text-[#1B3B2B]">
-            Leaf Condition &amp; Health Analysis
+          <h2 id="hero-heading" class="font-serif-heading text-2xl sm:text-3xl font-extrabold text-[#1B3B2B]" data-en="AI Analysis Report &amp; Leaf Inspection" data-ta="தாவர நல அறிக்கை &amp; இலை பகுப்பாய்வு">
+            AI Analysis Report &amp; Leaf Inspection
           </h2>
-          <p class="text-xs sm:text-sm text-slate-600 max-w-xl">
-            Upload a leaf photo or capture it live using your camera to instantly classify Healthy Leaf, Dry Leaf, or Insect Damaged Leaf.
+          <p id="hero-desc" class="text-xs sm:text-sm text-slate-600 max-w-xl" data-en="Upload a leaf photo or capture it live using your camera, then click Analyze Leaf to classify Healthy Leaf, Dry Leaf, or Insect Damaged Leaf with care messages, disease treatment advice, watering instructions, and fertilizer recommendations." data-ta="இலையின் படத்தை பதிவேற்றவும் அல்லது கேமரா மூலம் எடுக்கவும்; ஆரோக்கியமான இலை, காய்ந்த இலை அல்லது பூச்சி தாக்கிய இலை எனக் கண்டறிந்து தாவரப் பராமரிப்புச் செய்தி, நோய் சிகிச்சை ஆலோசனை, நீர்ப்பாசன வழிகாட்டுதல் மற்றும் உரப் பரிந்துரையைப் பெற இலையை பகுப்பாய்வு செய் பொத்தானை அழுத்தவும்.">
+            Upload a leaf photo or capture it live using your camera, then click Analyze Leaf to classify Healthy Leaf, Dry Leaf, or Insect Damaged Leaf with care messages, disease treatment advice, watering instructions, and fertilizer recommendations.
           </p>
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto">
-          <label class="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold cursor-pointer transition-all shadow-xs flex items-center justify-center gap-2">
+          <label for="leaf-file-input" class="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold cursor-pointer transition-all shadow-xs flex items-center justify-center gap-2">
             <i data-lucide="upload" class="w-4 h-4"></i>
-            <span>Upload Leaf Image</span>
-            <input type="file" accept="image/*" onchange="handleImageUpload(event)" class="hidden" />
+            <span id="upload-btn-label" data-en="Upload Leaf Image" data-ta="இலை படத்தை பதிவேற்று">Upload Leaf Image</span>
+            <input type="file" id="leaf-file-input" accept="image/*" onchange="window.handleImageUpload(event)" class="hidden" />
           </label>
-          <button onclick="startCamera()" class="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-[#E7F3E5] hover:bg-[#D7EAD4] text-[#1B3B2B] text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 border border-[#CFE0CC]">
+
+          <button type="button" id="start-camera-btn" onclick="window.startCamera()" class="flex-1 md:flex-initial px-5 py-3 rounded-xl bg-[#E7F3E5] hover:bg-[#D7EAD4] text-[#1B3B2B] text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 border border-[#CFE0CC]">
             <i data-lucide="camera" class="w-4 h-4"></i>
-            <span>Capture Camera</span>
+            <span id="camera-btn-label" data-en="Capture Photo" data-ta="புகைப்படம் எடு">Capture Photo</span>
           </button>
+
+          <!-- Native Mobile Camera Fallback Input (Works even when embedded preview iframe blocks getUserMedia) -->
+          <input type="file" id="native-camera-capture-input" accept="image/*" capture="environment" onchange="window.handleImageUpload(event)" class="hidden" />
         </div>
       </div>
 
-      <!-- Camera Modal -->
+      <!-- LIVE CAMERA MODAL PANEL -->
       <div id="camera-panel" class="hidden bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-lg space-y-4">
         <div class="flex items-center justify-between border-b border-[#F0F5EE] pb-3">
-          <h3 class="font-serif-heading text-lg font-bold text-[#1B3B2B] flex items-center gap-2">
+          <h3 id="camera-panel-title" class="font-serif-heading text-lg font-bold text-[#1B3B2B] flex items-center gap-2">
             <i data-lucide="camera" class="w-5 h-5 text-[#3E7B54]"></i>
-            <span>Live Camera Leaf Capture</span>
+            <span data-en="Live Camera Leaf Capture" data-ta="நேரடி கேமரா இலை படமெடுப்பு">Live Camera Leaf Capture</span>
           </h3>
-          <button onclick="stopCamera()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="switch-camera-facing-btn" onclick="window.switchCameraFacingMode()" class="px-3 py-1.5 rounded-lg bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-xs font-bold border border-[#CFE0CC] flex items-center gap-1.5">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span id="switch-camera-label" data-en="Switch Camera" data-ta="கேமரா மாற்று">Switch Camera</span>
+            </button>
+            <button type="button" onclick="window.stopCamera()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
         </div>
+
         <div class="relative aspect-video max-w-2xl mx-auto rounded-xl overflow-hidden bg-slate-900 border border-[#E3ECE1]">
           <video id="camera-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
-          <div id="camera-loading-overlay" class="absolute inset-0 flex items-center justify-center bg-slate-900/75 text-white text-xs">
+          <div id="camera-loading-overlay" class="absolute inset-0 flex items-center justify-center bg-slate-900/75 text-white text-xs" data-en="Starting camera feed..." data-ta="கேமரா இயக்கப்படுகிறது...">
             Starting camera feed...
           </div>
         </div>
-        <div class="flex justify-center gap-3">
-          <button id="capture-photo-btn" onclick="capturePhoto()" disabled class="px-6 py-3 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] disabled:opacity-50 text-white font-bold text-xs shadow-md">
-            Take Photo &amp; Analyse
+
+        <div class="flex flex-wrap justify-center gap-3">
+          <button type="button" id="capture-photo-btn" onclick="window.capturePhoto()" disabled class="px-6 py-3 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] disabled:opacity-50 text-white font-bold text-xs shadow-md" data-en="Take Photo &amp; Analyze" data-ta="புகைப்படம் எடுத்து பகுப்பாய்வு செய்">
+            Take Photo &amp; Analyze
           </button>
-          <button onclick="stopCamera()" class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs">Cancel</button>
+          <button type="button" id="cancel-camera-btn" onclick="window.stopCamera()" class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs" data-en="Cancel" data-ta="ரத்து செய்">
+            Cancel
+          </button>
         </div>
       </div>
 
-      <!-- Scan Error -->
-      <div id="scan-error-box" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
+      <!-- ERROR BANNER -->
+      <div id="scan-error-box" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 shrink-0"></i>
-          <span id="scan-error-text"></span>
+          <span id="scan-error-text" class="leading-relaxed"></span>
         </div>
-        <button onclick="hideScanError()" class="px-3 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold shrink-0">Dismiss</button>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" id="fallback-device-cam-btn" onclick="window.openDeviceCameraFallback()" class="hidden px-3 py-1 rounded-lg bg-[#1B3B2B] hover:bg-[#142E21] text-white font-bold" data-en="Use Device Camera / Upload" data-ta="சாதன கேமரா / பதிவேற்று">
+            Use Device Camera / Upload
+          </button>
+          <button type="button" id="dismiss-error-btn" onclick="window.hideScanError()" class="px-3 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold" data-en="Dismiss" data-ta="மூடு">
+            Dismiss
+          </button>
+        </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- EMPTY PLACEHOLDER STATE -->
       <div id="scan-empty-state" class="bg-white rounded-2xl p-10 border-2 border-dashed border-[#CFE0CC] text-center space-y-4">
         <div class="w-14 h-14 rounded-2xl bg-[#F2F7F0] text-[#1B3B2B] flex items-center justify-center mx-auto border border-[#E3ECE1]">
           <i data-lucide="leaf" class="w-7 h-7 text-[#3E7B54]"></i>
         </div>
         <div class="max-w-lg mx-auto space-y-1.5">
-          <h3 class="font-serif-heading text-xl font-bold text-[#1B3B2B]">Ready to Scan Your Plant Leaf</h3>
-          <p class="text-xs text-slate-600 leading-relaxed">
-            Click <strong>Upload Leaf Image</strong> or <strong>Capture Camera</strong>. BioGuard AI classifies Healthy Leaf, Dry Leaf, or Insect Damaged Leaf instantly.
+          <h3 id="empty-state-title" class="font-serif-heading text-xl font-bold text-[#1B3B2B]" data-en="Ready to Scan Your Plant Leaf" data-ta="உங்கள் தாவர இலையை ஸ்கேன் செய்யத் தயார்">
+            Ready to Scan Your Plant Leaf
+          </h3>
+          <p id="empty-state-desc" class="text-xs text-slate-600 leading-relaxed" data-en="Click Upload Leaf Image or Capture Photo above. BioGuard AI will classify whether the leaf is a Healthy Leaf, Dry Leaf, or Insect Damaged Leaf, followed by care messages, watering instructions, disease treatment advice, and fertilizer recommendations." data-ta="மேலே உள்ள இலை படத்தை பதிவேற்று அல்லது புகைப்படம் எடு பொத்தானை அழுத்தவும். ஆரோக்கியமான இலை, காய்ந்த இலை மற்றும் பூச்சி தாக்கிய இலை ஆகியவற்றைக் கண்டறிந்து தாவரப் பராமரிப்புச் செய்தி, நீர்ப்பாசன வழிகாட்டுதல், நோய் சிகிச்சை ஆலோசனை மற்றும் உரப் பரிந்துரையை வழங்கும்.">
+            Click Upload Leaf Image or Capture Photo above. BioGuard AI will classify whether the leaf is a Healthy Leaf, Dry Leaf, or Insect Damaged Leaf, followed by care messages, watering instructions, disease treatment advice, and fertilizer recommendations.
           </p>
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- LOADING SPINNER STATE -->
       <div id="scan-loading-state" class="hidden bg-white rounded-2xl p-10 border border-[#E3ECE1] text-center space-y-3 shadow-xs">
         <div class="w-11 h-11 border-4 border-[#1B3B2B]/20 border-t-[#1B3B2B] rounded-full animate-spin mx-auto"></div>
-        <h3 class="font-serif-heading text-lg font-bold text-[#1B3B2B]">Analysing leaf condition and plant health...</h3>
+        <h3 id="loading-state-title" class="font-serif-heading text-lg font-bold text-[#1B3B2B]" data-en="Analysing leaf condition and plant health..." data-ta="இலை நிலை மற்றும் தாவர ஆரோக்கியம் பகுப்பாய்வு செய்யப்படுகிறது...">
+          Analysing leaf condition and plant health...
+        </h3>
+        <p id="loading-state-desc" class="text-xs text-slate-500" data-en="Running Teachable Machine (B-SoEzTPH) leaf classification &amp; plant care assessment." data-ta="இலையின் நிலை, பராமரிப்புச் செய்தி, நீர்ப்பாசன வழிகாட்டுதல் மற்றும் உரப் பரிந்துரை தயாரிக்கப்படுகிறது.">
+          Running Teachable Machine (B-SoEzTPH) leaf classification &amp; plant care assessment.
+        </p>
       </div>
 
-      <!-- Results Container -->
+      <!-- RESULTS DASHBOARD -->
       <div id="scan-results-container" class="hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Left: Image Preview & Actions -->
           <div class="lg:col-span-5 bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs space-y-3">
             <div class="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-900 border border-[#E3ECE1]">
               <img id="scanned-leaf-preview" src="" alt="Scanned Leaf" class="w-full h-full object-cover" />
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <label class="flex-1 py-2 px-3 rounded-xl bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-xs font-bold text-center cursor-pointer border border-[#E3ECE1] flex items-center justify-center gap-1.5">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> New Photo
-                <input type="file" accept="image/*" onchange="handleImageUpload(event)" class="hidden" />
+              <label for="leaf-file-input-secondary" class="flex-1 py-2 px-3 rounded-xl bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-xs font-bold text-center cursor-pointer border border-[#E3ECE1] flex items-center justify-center gap-1.5">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span id="new-photo-label" data-en="New Photo" data-ta="புதிய படம்">New Photo</span>
+                <input type="file" id="leaf-file-input-secondary" accept="image/*" onchange="window.handleImageUpload(event)" class="hidden" />
               </label>
-              <button onclick="reanalyseCurrentImage()" class="py-2 px-3 rounded-xl bg-[#E7F3E5] hover:bg-[#D7EAD4] text-[#1B3B2B] text-xs font-bold flex items-center gap-1.5 border border-[#CFE0CC]">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Re-Analyse
+              <button type="button" id="analyze-leaf-btn" onclick="window.analyzeLeaf()" class="py-2 px-3.5 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#95D5A6]"></i>
+                <span id="analyze-btn-label" data-en="Analyze Leaf" data-ta="இலையை பகுப்பாய்வு செய்">Analyze Leaf</span>
               </button>
-              <button id="voice-read-btn" onclick="speakAnalysisSummary()" class="py-2 px-3.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-[#1B3B2B] hover:bg-[#142E21] text-white">
+              <button type="button" id="voice-read-btn" onclick="window.playVoiceReading()" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-[#E7F3E5] hover:bg-[#D7EAD4] text-[#1B3B2B] border border-[#CFE0CC]">
                 <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                <span id="voice-read-label">Voice</span>
+                <span id="voice-read-label">Play Voice</span>
+              </button>
+              <button type="button" id="pause-voice-btn" onclick="window.togglePauseVoiceReading()" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200">
+                <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+                <span id="pause-voice-label">Pause</span>
+              </button>
+              <button type="button" id="stop-voice-btn" onclick="window.stopVoiceReading()" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200">
+                <i data-lucide="volume-x" class="w-3.5 h-3.5"></i>
+                <span id="stop-voice-label">Stop Voice</span>
               </button>
             </div>
+            <p id="voice-status-note" class="hidden text-[11px] text-amber-900 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 font-semibold leading-relaxed"></p>
           </div>
 
+          <!-- Right: Teachable Machine Classification, Care Message & Watering Instructions -->
           <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#F0F5EE] pb-3">
               <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block">Leaf Classification Result</span>
-                <h3 class="font-serif-heading text-xl font-extrabold text-[#1B3B2B]">Leaf Condition &amp; Care Instructions</h3>
+                <span id="tm-kicker-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="AI Analysis Report" data-ta="தாவர நல அறிக்கை">
+                  AI Analysis Report
+                </span>
+                <h3 id="tm-result-heading" class="font-serif-heading text-xl font-extrabold text-[#1B3B2B]" data-en="Plant Health Status &amp; Care Message" data-ta="தாவர ஆரோக்கிய நிலை &amp; தாவரப் பராமரிப்புச் செய்தி">
+                  Plant Health Status &amp; Care Message
+                </h3>
               </div>
-              <span id="tm-confidence-badge" class="text-xs font-bold text-[#1B3B2B] bg-[#F2F7F0] px-3 py-1 rounded-full border border-[#E3ECE1]">Confidence: --%</span>
+              <span id="tm-confidence-badge" class="text-xs font-bold text-[#1B3B2B] bg-[#F2F7F0] px-3 py-1 rounded-full border border-[#E3ECE1]">
+                Confidence: --%
+              </span>
             </div>
             <div id="tm-result-body" class="space-y-4"></div>
           </div>
         </div>
 
+        <!-- Disease Identification, Treatment Advice & Watering Instructions Card -->
         <div id="disease-result-card" class="hidden bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs space-y-4"></div>
+
+        <!-- Fertilizer Recommendation Card -->
         <div id="fertilizer-result-card" class="hidden bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs space-y-4"></div>
       </div>
 
-      <!-- Floating Chatbot -->
+      <!-- FLOATING BILINGUAL CHATBOT -->
       <div class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 flex flex-col items-end">
         <div id="chatbot-window" class="hidden mb-3 w-[92vw] sm:w-96 max-h-[72vh] bg-white rounded-2xl border border-[#CFE0CC] shadow-2xl flex flex-col overflow-hidden">
           <div class="bg-[#1B3B2B] text-white px-4 py-3 flex items-center justify-between gap-2 shrink-0">
@@ -201,53 +332,71 @@
                 <i data-lucide="message-square" class="w-4 h-4"></i>
               </div>
               <div class="min-w-0">
-                <h3 id="chatbot-header-title" class="font-serif-heading text-sm font-bold leading-tight truncate">BioGuard AI Plant Chatbot</h3>
-                <p id="chatbot-context-subtitle" class="text-[10px] text-[#95D5A6] truncate">Ask about leaf conditions &amp; care</p>
+                <h3 id="chatbot-header-title" class="font-serif-heading text-sm font-bold leading-tight truncate" data-en="BioGuard AI Chatbot" data-ta="தாவர உதவி அரட்டை">
+                  BioGuard AI Chatbot
+                </h3>
+                <p id="chatbot-context-subtitle" class="text-[10px] text-[#95D5A6] truncate">
+                  Ask about leaf conditions &amp; plant care
+                </p>
               </div>
             </div>
-            <button onclick="toggleChatbot()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <button type="button" onclick="window.toggleChatbot()" aria-label="Close chatbot" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white shrink-0">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
           </div>
+
           <div class="px-3 py-2 bg-[#F2F7F0] border-b border-[#E3ECE1] flex gap-1.5 overflow-x-auto shrink-0">
-            <button onclick="sendQuickChat('Care for this leaf?')" class="px-2.5 py-1 rounded-full bg-white text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap">Care for this leaf?</button>
-            <button onclick="sendQuickChat('Watering tips?')" class="px-2.5 py-1 rounded-full bg-white text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap">Watering tips?</button>
-            <button onclick="sendQuickChat('How to apply fertilizer?')" class="px-2.5 py-1 rounded-full bg-white text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap">Fertilizer?</button>
-            <button onclick="sendQuickChat('தமிழில் விளக்கம்')" class="px-2.5 py-1 rounded-full bg-white text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap">தமிழ்</button>
+            <button type="button" id="chip-care" onclick="window.sendQuickChat('care')" class="px-2.5 py-1 rounded-full bg-white hover:bg-[#E5EFE2] text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap" data-en="Care Message" data-ta="தாவரப் பராமரிப்புச் செய்தி">Care Message</button>
+            <button type="button" id="chip-water" onclick="window.sendQuickChat('water')" class="px-2.5 py-1 rounded-full bg-white hover:bg-[#E5EFE2] text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap" data-en="Watering Instructions" data-ta="நீர்ப்பாசன வழிகாட்டுதல்">Watering Instructions</button>
+            <button type="button" id="chip-fert" onclick="window.sendQuickChat('fertilizer')" class="px-2.5 py-1 rounded-full bg-white hover:bg-[#E5EFE2] text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1] whitespace-nowrap" data-en="Fertilizer Recommendation" data-ta="உரப் பரிந்துரை">Fertilizer Recommendation</button>
           </div>
+
           <div id="chat-messages-feed" class="flex-1 bg-[#FAF8F5] p-3.5 overflow-y-auto space-y-2.5 min-h-[220px] max-h-[320px]"></div>
-          <form onsubmit="handleChatSubmit(event)" class="p-2.5 bg-white border-t border-[#E3ECE1] flex items-center gap-1.5 shrink-0">
-            <input type="text" id="chat-input-field" placeholder="Ask about plant care..." class="flex-1 px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs focus:outline-none focus:border-[#1B3B2B]" />
-            <button type="submit" class="p-2.5 rounded-xl bg-[#1B3B2B] text-white shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
+
+          <form onsubmit="window.handleChatSubmit(event)" class="p-2.5 bg-white border-t border-[#E3ECE1] flex items-center gap-1.5 shrink-0">
+            <input type="text" id="chat-input-field" placeholder="Ask about plant care..." data-en-placeholder="Ask about plant care..." data-ta-placeholder="தாவரப் பராமரிப்புச் செய்தி பற்றி கேளுங்கள்..." class="flex-1 px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs focus:outline-none focus:border-[#1B3B2B]" />
+            <button type="submit" id="chat-send-btn" class="p-2.5 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white shrink-0">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
           </form>
         </div>
-        <button onclick="toggleChatbot()" class="relative w-13 h-13 rounded-full bg-[#1B3B2B] text-white shadow-lg border-2 border-[#95D5A6]/40 flex items-center justify-center transition-transform hover:scale-105">
+
+        <button type="button" id="chatbot-toggle-btn" onclick="window.toggleChatbot()" aria-label="Open BioGuard AI Chatbot" class="relative w-13 h-13 rounded-full bg-[#1B3B2B] hover:bg-[#142E21] text-white shadow-lg border-2 border-[#95D5A6]/40 flex items-center justify-center transition-transform hover:scale-105">
           <i data-lucide="message-square" class="w-6 h-6 text-[#95D5A6]"></i>
           <span id="chatbot-context-dot" class="hidden absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#FAF8F5]"></span>
         </button>
       </div>
     </section>
 
-    <!-- TAB 2: CPX SOIL HARDWARE (WEB SERIAL API) -->
+    <!-- =================================================================== -->
+    <!-- TAB 2: CPX SOIL HARDWARE & BUZZER ALERTS                            -->
+    <!-- =================================================================== -->
     <section id="tab-soil" class="hidden space-y-6">
       <div class="bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="space-y-1 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start gap-2">
             <i data-lucide="cpu" class="w-5 h-5 text-[#1B3B2B]"></i>
-            <h2 class="font-serif-heading text-xl sm:text-2xl font-bold text-[#1B3B2B]">Soil Moisture Monitoring (CPX USB Hardware)</h2>
+            <h2 id="soil-heading" class="font-serif-heading text-xl sm:text-2xl font-bold text-[#1B3B2B]" data-en="Soil Moisture Status &amp; Sensor Alerts (CPX)" data-ta="மண்ணின் ஈரப்பதம் &amp; சென்சார் எச்சரிக்கைகள்">
+              Soil Moisture Status &amp; Sensor Alerts (CPX)
+            </h2>
           </div>
-          <p class="text-xs text-slate-600">Connect your Adafruit Circuit Playground Express (CPX) via USB using the Web Serial API (Chrome / Edge on Windows).</p>
+          <p id="soil-desc" class="text-xs text-slate-600" data-en="Connect your Adafruit Circuit Playground Express (CPX) via USB using the Web Serial API (Chrome / Edge)." data-ta="யுஎஸ்பி வழியாக மண் ஈரப்பத சென்சார் பலகையை இணைத்து மண்ணின் ஈரப்பதத்தையும் எச்சரிக்கைகளையும் உடனுக்குடன் அறியவும்.">
+            Connect your Adafruit Circuit Playground Express (CPX) via USB using the Web Serial API (Chrome / Edge).
+          </p>
         </div>
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <button id="connect-cpx-btn" onclick="connectCPX()" class="w-full md:w-auto px-5 py-2.5 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
+          <button type="button" id="connect-cpx-btn" onclick="window.connectCPX()" class="w-full md:w-auto px-5 py-2.5 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
             <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i>
-            <span>Connect Sensor</span>
+            <span id="connect-cpx-label" data-en="Connect Sensor" data-ta="சென்சாரை இணை">Connect Sensor</span>
           </button>
-          <button id="disconnect-cpx-btn" onclick="disconnectCPX()" class="hidden w-full md:w-auto px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
+          <button type="button" id="disconnect-cpx-btn" onclick="window.disconnectCPX()" class="hidden w-full md:w-auto px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2">
             <i data-lucide="wifi-off" class="w-4 h-4"></i>
-            <span>Disconnect Sensor</span>
+            <span id="disconnect-cpx-label" data-en="Disconnect Sensor" data-ta="சென்சாரை துண்டி">Disconnect Sensor</span>
           </button>
         </div>
       </div>
 
+      <!-- Connection Status Bar -->
       <div id="cpx-status-bar" class="p-4 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs font-bold bg-amber-50 border-amber-200 text-amber-900">
         <div class="flex items-center gap-2">
           <span id="cpx-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
@@ -256,40 +405,65 @@
         <span id="cpx-raw-serial" class="hidden font-mono text-[11px] bg-white px-2.5 py-0.5 rounded border border-[#E3ECE1]">Serial Rx: --</span>
       </div>
 
+      <!-- 0% to 30% Critical Dry Soil Buzzer Banner -->
       <div id="soil-buzzer-banner" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600 animate-bounce shrink-0"></i>
-          <span id="soil-buzzer-text">Low Soil Moisture Alert! Soil is Dry (Below Threshold).</span>
+          <span id="soil-buzzer-text">Critical Low Soil Moisture (0%–30% Range)! Buzzer Activated.</span>
         </div>
-        <button onclick="toggleBuzzerMute()" class="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold shrink-0">Mute / Unmute Buzzer</button>
+        <button type="button" id="toggle-buzzer-mute-btn" onclick="window.toggleBuzzerMute()" class="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold shrink-0">
+          Mute Buzzer
+        </button>
       </div>
 
-      <!-- Configurable Threshold -->
-      <div class="bg-white rounded-2xl p-5 border border-[#E3ECE1] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <!-- 31% to 60% Moderate Moisture Warning Banner (Buzzer Silent) -->
+      <div id="soil-warning-banner" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 shrink-0"></i>
+          <span id="soil-warning-text">Moderate Soil Moisture Warning (31%–60% Range). Buzzer is OFF.</span>
+        </div>
+        <span id="buzzer-silent-tag" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-950 text-[11px] font-bold shrink-0" data-en="Buzzer Silent" data-ta="ஒலி இல்லை">
+          Buzzer Silent
+        </span>
+      </div>
+
+      <!-- Dry & Wet Soil Calibration Box -->
+      <div class="bg-white rounded-2xl p-5 border border-[#E3ECE1] shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div class="space-y-1">
           <label class="text-xs font-bold uppercase tracking-wider text-[#1B3B2B] flex items-center gap-1.5">
             <i data-lucide="sliders" class="w-4 h-4 text-[#3E7B54]"></i>
-            <span>Soil Moisture Threshold (0 – 65535)</span>
+            <span id="calib-title" data-en="Dry &amp; Wet Soil Sensor Calibration (0% – 100% Mapping)" data-ta="உலர் &amp; ஈர மண் சென்சார் அளவுத்திருத்தம் (0% – 100%)">Dry &amp; Wet Soil Sensor Calibration (0% – 100% Mapping)</span>
           </label>
-          <p class="text-[11px] text-slate-600">Default CircuitPython threshold is <strong>30000</strong>.</p>
+          <p id="calib-desc" class="text-[11px] text-slate-600" data-en="Calibrate using your actual sensor raw ADC reading in Dry Soil (0%) and Wet Soil (100%) instead of assuming 65535 = 100%." data-ta="உங்கள் சென்சாரின் உண்மையான உலர் மண் (0%) மற்றும் ஈர மண் (100%) அளவீடுகளைக் கொண்டு சதவீதத்தைத் துல்லியமாக அமைக்கவும்.">
+            Calibrate using your actual sensor raw ADC reading in Dry Soil (0%) and Wet Soil (100%) instead of assuming 65535 = 100%.
+          </p>
         </div>
-        <div class="flex items-center gap-2">
-          <input type="number" id="moisture-threshold-input" min="0" max="65535" value="30000" onchange="updateMoistureThreshold(this.value)" class="w-32 px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs font-bold text-[#1B3B2B]" />
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span id="dry-calib-label" class="text-[11px] font-bold text-slate-700" data-en="Dry ADC (0%):" data-ta="உலர் மண் மதிப்பு (0%):">Dry ADC (0%):</span>
+            <input type="number" id="dry-calib-input" min="0" max="65535" value="18000" onchange="window.updateCalibrationValues()" class="w-24 px-2.5 py-1.5 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs font-bold text-[#1B3B2B]" />
+            <button type="button" onclick="window.setCurrentAsDryCalib()" class="set-current-calib-btn px-2 py-1 rounded-lg bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1]" data-en="Set Current" data-ta="தற்போதைய மதிப்பு">Set Current</button>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span id="wet-calib-label" class="text-[11px] font-bold text-slate-700" data-en="Wet ADC (100%):" data-ta="ஈர மண் மதிப்பு (100%):">Wet ADC (100%):</span>
+            <input type="number" id="wet-calib-input" min="0" max="65535" value="52000" onchange="window.updateCalibrationValues()" class="w-24 px-2.5 py-1.5 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs font-bold text-[#1B3B2B]" />
+            <button type="button" onclick="window.setCurrentAsWetCalib()" class="set-current-calib-btn px-2 py-1 rounded-lg bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-[10px] font-bold border border-[#E3ECE1]" data-en="Set Current" data-ta="தற்போதைய மதிப்பு">Set Current</button>
+          </div>
         </div>
       </div>
 
-      <!-- Soil Dashboard Grid -->
+      <!-- Soil Moisture Meter & Advice -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-6 bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs flex flex-col items-center justify-center space-y-4">
-          <span class="text-xs font-bold uppercase tracking-wider text-[#3E7B54]">Real-Time CPX Soil Reading</span>
-          <div id="soil-meter-placeholder" class="w-44 h-44 rounded-full border-4 border-dashed border-[#CFE0CC] flex items-center justify-center text-center p-4 text-xs text-slate-500">
+          <span id="meter-kicker" class="text-xs font-bold uppercase tracking-wider text-[#3E7B54]" data-en="Real-Time Calibrated Soil Reading" data-ta="மண்ணின் ஈரப்பதம் — நேரடி அளவீடு">Real-Time Calibrated Soil Reading</span>
+          <div id="soil-meter-placeholder" class="w-44 h-44 rounded-full border-4 border-dashed border-[#CFE0CC] flex items-center justify-center text-center p-4 text-xs text-slate-500" data-en="Awaiting USB connection from CPX sensor" data-ta="மண் சென்சார் இணைப்புக்காக காத்திருக்கிறது">
             Awaiting USB connection from CPX sensor
           </div>
           <div id="soil-meter-active" class="hidden w-full flex flex-col items-center space-y-4">
             <div class="w-44 h-44 rounded-full border-8 border-[#E7F3E5] bg-[#FAF8F5] flex flex-col items-center justify-center text-center px-2">
-              <span id="soil-moisture-raw" class="font-serif-heading text-3xl font-extrabold text-[#1B3B2B]">0</span>
-              <span id="soil-moisture-pct" class="text-[11px] font-bold text-slate-500">0%</span>
+              <span id="soil-moisture-pct" class="font-serif-heading text-4xl font-extrabold text-[#1B3B2B]">0%</span>
               <span id="soil-moisture-category" class="text-xs font-extrabold uppercase mt-1 text-emerald-700">Moist</span>
+              <span id="soil-moisture-raw" class="text-[10px] font-mono text-slate-500 mt-0.5">ADC: 0</span>
             </div>
             <div class="w-full bg-[#F2F7F0] h-3 rounded-full overflow-hidden border border-[#E3ECE1]">
               <div id="soil-moisture-bar" class="h-full transition-all duration-300 bg-emerald-600" style="width: 0%"></div>
@@ -299,42 +473,64 @@
 
         <div class="md:col-span-6 bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h3 class="font-serif-heading text-lg font-bold text-[#1B3B2B] flex items-center gap-2">
-              <i data-lucide="droplet" class="w-4 h-4 text-[#3E7B54]"></i>
-              <span>Watering Recommendation</span>
-            </h3>
+            <div class="flex items-center justify-between gap-2">
+              <h3 id="watering-status-heading" class="font-serif-heading text-lg font-bold text-[#1B3B2B] flex items-center gap-2">
+                <i data-lucide="droplet" class="w-4 h-4 text-[#3E7B54]"></i>
+                <span data-en="Watering Instructions &amp; Sensor Alert Status" data-ta="நீர்ப்பாசன வழிகாட்டுதல் &amp; சென்சார் எச்சரிக்கை நிலை">Watering Instructions &amp; Sensor Alert Status</span>
+              </h3>
+              <button type="button" id="buzzer-audio-status-btn" onclick="window.toggleBuzzerMute()" class="px-2.5 py-1 rounded-lg bg-[#F2F7F0] border border-[#E3ECE1] text-[11px] font-bold text-[#1B3B2B] flex items-center gap-1">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                <span id="buzzer-audio-status-label">Buzzer Ready</span>
+              </button>
+            </div>
             <p id="watering-advice-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-[#FAF8F5] p-4 rounded-xl border border-[#E3ECE1]">
               Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.
             </p>
+          </div>
+          <div class="p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] space-y-1.5 text-xs">
+            <span id="rules-title" class="font-bold text-[#1B3B2B] flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 text-[#3E7B54]"></i>
+              <span data-en="Moisture &amp; Buzzer Alert Rules:" data-ta="மண்ணின் ஈரப்பதம் &amp; எச்சரிக்கை விதிகள்:">Moisture &amp; Buzzer Alert Rules:</span>
+            </span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1 text-[11px]">
+              <li id="rule-1" data-en="0% – 30% (Dry): Activates buzzer &amp; alerts for immediate watering." data-ta="0% – 30% (உலர்ந்தது): எச்சரிக்கை ஒலி எழுப்பி உடனடியாக நீர் ஊற்ற அறிவுறுத்தும்.">0% – 30% (Dry): Activates buzzer &amp; alerts for immediate watering.</li>
+              <li id="rule-2" data-en="31% – 60% (Moderate): Shows warning banner without continuous buzzer sound." data-ta="31% – 60% (மிதமானது): தொடர் ஒலியின்றி கவனிப்பு எச்சரிக்கை காட்டும்.">31% – 60% (Moderate): Shows warning banner without continuous buzzer sound.</li>
+              <li id="rule-3" data-en="61% – 100% (Optimal): Stops buzzer completely and immediately." data-ta="61% – 100% (சிறந்தது): எச்சரிக்கை ஒலியை உடனடியாக முழுமையாக நிறுத்தும்.">61% – 100% (Optimal): Stops buzzer completely and immediately.</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: REMINDERS & LOGS -->
+    <!-- =================================================================== -->
+    <!-- TAB 3: REMINDERS & LOGS                                             -->
+    <!-- =================================================================== -->
     <section id="tab-logs" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Reminders Panel -->
       <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs space-y-4">
         <div class="flex items-center justify-between border-b border-[#F0F5EE] pb-3">
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]">Plant Care Schedule (Asia/Kolkata)</span>
-            <h2 class="font-serif-heading text-xl font-bold text-[#1B3B2B]">Watering &amp; Care Reminders</h2>
+            <span id="rem-kicker" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]" data-en="Plant Care Schedule (Asia/Kolkata)" data-ta="தாவரப் பராமரிப்பு அட்டவணை">Plant Care Schedule (Asia/Kolkata)</span>
+            <h2 id="rem-heading" class="font-serif-heading text-xl font-bold text-[#1B3B2B]" data-en="Reminders &amp; Care Alerts" data-ta="நினைவூட்டல்கள் &amp; பராமரிப்பு எச்சரிக்கைகள்">Reminders &amp; Care Alerts</h2>
           </div>
-          <button type="button" onclick="testAlarmSound()" class="px-3 py-1.5 rounded-xl bg-[#E7F3E5] text-[#1B3B2B] text-xs font-bold flex items-center gap-1.5 border border-[#CFE0CC]">
-            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Test Alarm
+          <button type="button" id="test-alarm-btn" onclick="window.testAlarmSound()" class="px-3 py-1.5 rounded-xl bg-[#E7F3E5] hover:bg-[#D7EAD4] text-[#1B3B2B] text-xs font-bold flex items-center gap-1.5 border border-[#CFE0CC]">
+            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+            <span id="test-alarm-label" data-en="Test Alarm" data-ta="ஒலி சோதி">Test Alarm</span>
           </button>
         </div>
 
-        <form onsubmit="handleAddReminder(event)" class="space-y-3">
+        <form onsubmit="window.handleAddReminder(event)" class="space-y-3">
           <div>
-            <label class="block text-[11px] font-bold text-[#1B3B2B] mb-1">Reminder Title *</label>
-            <input type="text" id="new-reminder-title" required placeholder="e.g., Water Monstera" class="w-full px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs" />
+            <label id="rem-title-label" class="block text-[11px] font-bold text-[#1B3B2B] mb-1" data-en="Reminder Title *" data-ta="நினைவூட்டல் தலைப்பு *">Reminder Title *</label>
+            <input type="text" id="new-reminder-title" required placeholder="e.g., Water Monstera &amp; inspect leaves" data-en-placeholder="e.g., Water Monstera &amp; inspect leaves" data-ta-placeholder="எ.கா., செடிக்கு நீர் ஊற்றி இலைகளைப் பார்க்கவும்" class="w-full px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs focus:outline-none focus:border-[#1B3B2B]" />
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-[#1B3B2B] mb-1">Schedule Date &amp; Time *</label>
-            <input type="datetime-local" id="new-reminder-datetime" required class="w-full px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs" />
+            <label id="rem-dt-label" class="block text-[11px] font-bold text-[#1B3B2B] mb-1" data-en="Schedule Date &amp; Time (IST) *" data-ta="தேதி மற்றும் நேரம் *">Schedule Date &amp; Time (IST) *</label>
+            <input type="datetime-local" id="new-reminder-datetime" required class="w-full px-3 py-2 rounded-xl border border-[#E3ECE1] bg-[#FAF8F5] text-xs focus:outline-none focus:border-[#1B3B2B]" />
           </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#1B3B2B] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs">
-            <i data-lucide="plus" class="w-4 h-4"></i> Save Reminder
+          <button type="submit" id="save-rem-btn" class="w-full py-2.5 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span id="save-rem-label" data-en="Save Reminder" data-ta="நினைவூட்டலை சேமி">Save Reminder</span>
           </button>
         </form>
 
@@ -344,185 +540,2253 @@
         </div>
       </div>
 
+      <!-- Scan Logs & Before/After Comparison Panel -->
       <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-[#E3ECE1] shadow-xs space-y-4">
         <div class="flex items-center justify-between border-b border-[#F0F5EE] pb-3">
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]">Diagnostic Records &amp; Comparison</span>
+            <span id="logs-kicker" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]" data-en="Scan History, Logs &amp; Before/After Comparison" data-ta="ஸ்கேன் வரலாறு, பதிவுகள் &amp; ஒப்பீடு">Scan History, Logs &amp; Before/After Comparison</span>
             <h2 id="logs-count-heading" class="font-serif-heading text-xl font-bold text-[#1B3B2B]">Leaf Scan History Logs (0)</h2>
           </div>
-          <button id="clear-logs-btn" onclick="clearAllScanLogs()" class="hidden text-xs font-bold text-slate-500 hover:text-rose-600">Clear All Logs</button>
+          <button type="button" id="clear-logs-btn" onclick="window.clearAllScanLogs()" class="hidden text-xs font-bold text-slate-500 hover:text-rose-600" data-en="Clear All Logs" data-ta="அனைத்து பதிவுகளையும் அழி">
+            Clear All Logs
+          </button>
         </div>
         <div id="scan-logs-container" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- TAB 4: ABOUT & CREATORS -->
+    <!-- =================================================================== -->
+    <!-- TAB 4: ABOUT & CREATORS                                             -->
+    <!-- =================================================================== -->
     <section id="tab-about" class="hidden max-w-4xl mx-auto space-y-6">
       <div class="bg-white rounded-2xl p-6 sm:p-8 border border-[#E3ECE1] shadow-xs space-y-4">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-[#1B3B2B] flex items-center justify-center text-[#95D5A6] shrink-0"><i data-lucide="leaf" class="w-6 h-6"></i></div>
+          <div class="w-11 h-11 rounded-2xl bg-[#1B3B2B] flex items-center justify-center text-[#95D5A6] shrink-0">
+            <i data-lucide="leaf" class="w-6 h-6"></i>
+          </div>
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-widest text-[#3E7B54]">About BioGuard AI</span>
-            <h2 class="font-serif-heading text-2xl sm:text-3xl font-extrabold text-[#1B3B2B]">Intelligent Plant Health Monitoring System</h2>
+            <span id="about-kicker" class="text-[11px] font-bold uppercase tracking-widest text-[#3E7B54]" data-en="About BioGuard AI" data-ta="திட்டம் பற்றிய குறிப்பு">About BioGuard AI</span>
+            <h2 id="about-heading" class="font-serif-heading text-2xl sm:text-3xl font-extrabold text-[#1B3B2B]" data-en="Intelligent Plant Health Monitoring System" data-ta="தாவர நல அறிக்கை &amp; கண்காணிப்பு அமைப்பு">
+              Intelligent Plant Health Monitoring System
+            </h2>
           </div>
         </div>
-        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-          BioGuard AI is designed &amp; developed by <strong>K. Aparna</strong> and <strong>G. Kayathri</strong>. It integrates Teachable Machine leaf classification (B-SoEzTPH), Gemini disease diagnosis, and Circuit Playground Express USB soil moisture monitoring.
-        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2">
+            <span id="about-card1-badge" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#E7F3E5] text-[#1B3B2B]" data-en="System Overview" data-ta="முக்கிய நோக்கம்">
+              System Overview
+            </span>
+            <p id="about-card1-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed" data-en="BioGuard AI is an intelligent plant health monitoring and care system powered by Google Teachable Machine (B-SoEzTPH), tailored plant care messages, disease treatment advice, watering instructions, fertilizer recommendations, reminders with alarms, and real-time Adafruit Circuit Playground Express (CPX) soil moisture and buzzer hardware integration." data-ta="தாவர இலைகளின் நிலையை விரைவாகக் கண்டறிந்து, தமிழில் தாவரப் பராமரிப்புச் செய்தி, நோய் சிகிச்சை ஆலோசனை, நீர்ப்பாசன வழிகாட்டுதல், உரப் பரிந்துரை, நேர நினைவூட்டல்கள் மற்றும் மண்ணின் ஈரப்பத எச்சரிக்கைகளை வழங்குவதே இந்த அமைப்பின் முக்கிய நோக்கமாகும்.">
+              BioGuard AI is an intelligent plant health monitoring and care system powered by Google Teachable Machine (B-SoEzTPH), tailored plant care messages, disease treatment advice, watering instructions, fertilizer recommendations, reminders with alarms, and real-time Adafruit Circuit Playground Express (CPX) soil moisture and buzzer hardware integration.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2">
+            <span id="about-card2-badge" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#E7F3E5] text-[#1B3B2B]" data-en="Key Capabilities" data-ta="சிறப்பம்சங்கள்">
+              Key Capabilities
+            </span>
+            <p id="about-card2-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed" data-en="Detects Healthy Leaf, Dry Leaf, and Insect Damaged Leaf conditions with before-and-after progress tracking, bilingual English and Tamil voice synthesis, soil moisture calibration, and persistent local scan history." data-ta="ஆரோக்கியமான இலை, காய்ந்த இலை மற்றும் பூச்சி தாக்கிய இலை ஆகியவற்றை அடையாளம் கண்டு, முந்தைய மற்றும் தற்போதைய பட ஒப்பீடு, தெளிவான தமிழ்க் குரல் வாசிப்பு, மண் ஈரப்பத அளவுத்திருத்தம் மற்றும் ஸ்கேன் பதிவுகளைச் சேமிக்கும் வசதிகளுடன் செயல்படுகிறது.">
+              Detects Healthy Leaf, Dry Leaf, and Insect Damaged Leaf conditions with before-and-after progress tracking, bilingual English and Tamil voice synthesis, soil moisture calibration, and persistent local scan history.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <span id="creators-label" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block" data-en="Designed &amp; Developed By" data-ta="உருவாக்கியவர்கள்">Designed &amp; Developed By</span>
+            <p class="font-serif-heading text-lg font-extrabold text-[#1B3B2B]">K. Aparna &amp; G. Kayathri</p>
+          </div>
+          <span id="build-badge" class="text-xs font-bold text-[#1B3B2B] bg-white px-3 py-1.5 rounded-xl border border-[#E3ECE1]" data-en="Standalone HTML / CSS / JS Build" data-ta="தனித்த இணைய பதிப்பு">
+            Standalone HTML / CSS / JS Build
+          </span>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- MODALS -->
-  <div id="log-detail-modal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b pb-3">
-        <h3 id="modal-log-title" class="font-serif-heading text-xl font-bold text-[#1B3B2B]">--</h3>
-        <button onclick="closeLogDetailModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- =================================================================== -->
+  <!-- MODALS (LOG DETAIL, BEFORE/AFTER COMPARISON, ACTIVE ALARM)          -->
+  <!-- =================================================================== -->
+  <div id="log-detail-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto border border-[#E3ECE1]">
+      <div class="flex items-center justify-between border-b border-[#F0F5EE] pb-3">
+        <h3 id="modal-log-title" class="font-serif-heading text-xl font-bold text-[#1B3B2B]">Scan Details</h3>
+        <button type="button" onclick="window.closeLogDetailModal()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <img id="modal-log-img" src="" alt="Scan Detail" class="w-full aspect-video object-cover rounded-xl" />
+      <img id="modal-log-img" src="" alt="Scan Detail" class="w-full aspect-video object-cover rounded-xl border border-[#E3ECE1]" />
       <div id="modal-log-content" class="space-y-3 text-xs"></div>
-    </div>
-  </div>
-
-  <div id="active-alarm-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 border-2 border-amber-400 shadow-2xl space-y-4 text-center">
-      <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto animate-bounce"><i data-lucide="bell" class="w-8 h-8"></i></div>
-      <h3 id="alarm-modal-title" class="font-serif-heading text-2xl font-extrabold text-[#1B3B2B]">Reminder Due!</h3>
-      <div class="flex gap-2 pt-2">
-        <button onclick="snoozeActiveAlarm()" class="flex-1 py-3 bg-amber-100 text-amber-900 text-xs font-bold rounded-xl">Snooze (+10m)</button>
-        <button onclick="stopActiveAlarm()" class="flex-1 py-3 bg-[#1B3B2B] text-white text-xs font-bold rounded-xl">Stop Alarm</button>
+      <div class="flex justify-end">
+        <button type="button" id="close-log-modal-btn" onclick="window.closeLogDetailModal()" class="px-5 py-2 rounded-xl bg-[#1B3B2B] text-white text-xs font-bold" data-en="Close" data-ta="மூடு">Close</button>
       </div>
     </div>
   </div>
 
+  <div id="comparison-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto border border-[#E3ECE1]">
+      <div class="flex items-center justify-between border-b border-[#F0F5EE] pb-3">
+        <div>
+          <span id="comp-kicker" class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]" data-en="Before and After Comparison" data-ta="முந்தைய மற்றும் தற்போதைய பட ஒப்பீடு">Before and After Comparison</span>
+          <h3 id="comp-heading" class="font-serif-heading text-xl font-bold text-[#1B3B2B]" data-en="Before-and-After Image Comparison" data-ta="இலை முன்னேற்ற ஒப்பீட்டு அறிக்கை">Before-and-After Image Comparison</h3>
+        </div>
+        <button type="button" onclick="window.closeComparisonModal()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-3 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2 text-center">
+          <span id="comp-before-label" class="text-xs font-bold uppercase text-slate-600 block" data-en="Before – Previous Scan" data-ta="முன்பு – முந்தைய ஸ்கேன்">Before – Previous Scan</span>
+          <div class="aspect-4/3 rounded-lg overflow-hidden bg-slate-900">
+            <img id="comp-before-img" src="" alt="Before" class="w-full h-full object-cover" />
+          </div>
+          <p id="comp-before-meta" class="text-[11px] font-bold text-[#1B3B2B]">--</p>
+        </div>
+        <div class="p-3 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2 text-center">
+          <span id="comp-after-label" class="text-xs font-bold uppercase text-[#3E7B54] block" data-en="After – Latest Scan" data-ta="பிறகு – புதிய ஸ்கேன்">After – Latest Scan</span>
+          <div class="aspect-4/3 rounded-lg overflow-hidden bg-slate-900">
+            <img id="comp-after-img" src="" alt="After" class="w-full h-full object-cover" />
+          </div>
+          <p id="comp-after-meta" class="text-[11px] font-bold text-[#1B3B2B]">--</p>
+        </div>
+      </div>
+      <div id="comp-report-box" class="p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] text-xs space-y-2"></div>
+      <div class="flex justify-end">
+        <button type="button" id="close-comp-modal-btn" onclick="window.closeComparisonModal()" class="px-5 py-2 rounded-xl bg-[#1B3B2B] text-white text-xs font-bold" data-en="Close Comparison" data-ta="ஒப்பீட்டை மூடு">Close Comparison</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="active-alarm-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 border-2 border-amber-400 shadow-2xl space-y-4 text-center animate-fade-in">
+      <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto animate-bounce">
+        <i data-lucide="bell" class="w-8 h-8"></i>
+      </div>
+      <div class="space-y-1">
+        <span id="alarm-modal-kicker" class="text-[10px] font-bold uppercase tracking-widest text-amber-600" data-en="⏰ Plant Care Reminder Due!" data-ta="⏰ தாவரப் பராமரிப்பு நினைவூட்டல் நேரம் வந்தது!">⏰ Plant Care Reminder Due!</span>
+        <h3 id="alarm-modal-title" class="font-serif-heading text-2xl font-extrabold text-[#1B3B2B]">Reminder Due!</h3>
+        <p id="alarm-modal-desc" class="text-xs text-slate-600 pt-1" data-en="Scheduled time has arrived. Please check your plants and complete your care task!" data-ta="குறிப்பிட்ட நேரம் வந்துவிட்டது. தயவுசெய்து உங்கள் தாவரங்களைப் பார்த்து நீர்ப்பாசன வழிகாட்டுதல் மற்றும் பராமரிப்பு பணியை மேற்கொள்ளவும்!">Scheduled time has arrived. Please check your plants and complete your care task!</p>
+      </div>
+      <div class="flex gap-2.5 pt-2">
+        <button type="button" id="snooze-alarm-btn" onclick="window.snoozeActiveAlarm()" class="flex-1 py-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold" data-en="Snooze (+10m)" data-ta="10 நிமிடம் தள்ளிவை">Snooze (+10m)</button>
+        <button type="button" id="stop-alarm-btn" onclick="window.stopActiveAlarm()" class="flex-1 py-3 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold" data-en="Stop Alarm" data-ta="ஒலியை நிறுத்து">Stop Alarm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- VANILLA JAVASCRIPT APPLICATION LOGIC                                -->
+  <!-- =================================================================== -->
   <script>
-    const TM_MODEL_BASE_URL = 'https://teachablemachine.withgoogle.com/models/B-SoEzTPH/';
-    let tmModel = null;
-    let scanHistory = JSON.parse(localStorage.getItem('bioguard_scan_logs_v5') || '[]');
-    let reminders = JSON.parse(localStorage.getItem('bioguard_reminders_v6') || '[]');
-    let activeAlarmReminder = null;
-    let alarmInterval = null;
-    let audioCtx = null;
-    let buzzerMuted = false;
+    // 1. COMPLETE BILINGUAL TRANSLATION DICTIONARY (ENGLISH & TAMIL)
+    var TM_MODEL_BASE_URL = 'https://teachablemachine.withgoogle.com/models/B-SoEzTPH/';
 
-    // CPX Hardware State
-    let serialPort = null;
-    let serialReader = null;
-    let serialStreamClosed = null;
-    let serialBuffer = '';
-    let moistureThreshold = 30000;
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      if (window.lucide) lucide.createIcons();
-      renderReminders();
-      renderScanLogs();
-      setInterval(checkScheduledReminders, 1000);
-      try {
-        tmModel = await window.tmImage.load(TM_MODEL_BASE_URL + 'model.json', TM_MODEL_BASE_URL + 'metadata.json');
-      } catch (e) {
-        console.warn('TM Model load deferred:', e);
+    var TRANSLATIONS = {
+      en: {
+        htmlLang: 'en',
+        awaitingScan: 'Awaiting Scan',
+        tmReady: 'Teachable Machine Ready',
+        cpxDisconnectedSub: 'CPX Sensor Disconnected',
+        voiceBtn: 'Play Voice',
+        speakingLabel: 'Speaking...',
+        pauseVoiceBtn: 'Pause',
+        resumeVoiceBtn: 'Resume',
+        stopVoiceBtn: 'Stop Voice',
+        tamilVoiceUnavailable: 'No Indian Tamil (ta-IN) voice is installed on this browser/device. Playback stopped instead of using a non-Tamil voice. Please install an Indian Tamil female voice in your OS settings or use an external neural Tamil TTS provider.',
+        tamilVoiceRoboticNote: 'Using browser Tamil voice. Note: Built-in OS voices may sound robotic; for a natural Indian Tamil female voice, install Microsoft Valluvar/Pallavi or Google ta-IN neural voices, or connect an external Tamil neural TTS service.',
+        confidencePrefix: 'Confidence: ',
+        analyzingBadge: 'Analyzing...',
+        imageUploadedMsg: 'Image uploaded! Running leaf condition classification...',
+        chatbotSubtitleDefault: 'Ask about leaf conditions & plant care',
+        chatbotSubtitleCtx: function (label, pct) { return 'Context: ' + label + ' (' + pct + '%)'; },
+        chatGreeting: 'Vanakkam! Upload or capture a leaf photo, then click Analyze Leaf. Ask me anything about your plant care, watering instructions, disease treatment advice, or fertilizer recommendation.',
+        statusPrefix: 'Connection Status: ',
+        disconnected: 'Disconnected',
+        requestingPort: 'Requesting CPX USB Port...',
+        connectedActive: 'Connected to CPX (USB Serial Active)',
+        unexpectedDisconnect: 'CPX Disconnected unexpectedly',
+        webSerialUnsupported: 'Web Serial API not supported. Please use Chrome or Edge.',
+        buzzerBannerText: function (pct) { return 'Critical Low Soil Moisture (' + pct + '% — 0% to 30% Range)! Buzzer Activated.'; },
+        warningBannerText: function (pct) { return 'Moderate Soil Moisture Warning (' + pct + '% — 31% to 60% Range). Buzzer is OFF.'; },
+        muteBuzzer: 'Mute Buzzer',
+        unmuteBuzzer: 'Unmute Buzzer',
+        buzzerReady: 'Buzzer Ready',
+        buzzerMuted: 'Buzzer Muted',
+        catDry: 'Dry',
+        catModerate: 'Moderate',
+        catMoist: 'Moist',
+        catInvalid: 'Invalid Reading',
+        allSavedRems: function (n) { return 'All Saved Reminders (' + n + ')'; },
+        noActiveRems: 'No active reminders scheduled.',
+        doneBtn: 'Done',
+        reopenBtn: 'Reopen',
+        deleteBtn: 'Delete',
+        scanLogsHeading: function (n) { return 'Leaf Scan History Logs (' + n + ')'; },
+        noLogsTitle: 'No Scans Logged Yet',
+        noLogsDesc: 'Scan a leaf in the Scan & Dashboard tab. Successful scans are saved here automatically.',
+        viewDetailsBtn: 'View Details',
+        compareBtn: 'Compare',
+        lowConfTitle: 'Unable to identify clearly. Please scan another image.',
+        lowConfDesc: 'Ensure bright lighting and center a single leaf in the camera frame for accurate classification.',
+        careForPrefix: 'Care Message — ',
+        wateringSectionTitle: 'Watering Instructions',
+        breakdownLabel: 'Plant Health Breakdown',
+        pathogenKicker: 'Disease Identification & Treatment Advice',
+        pathogenHeading: 'Plant Health Report & Treatment Advice',
+        symptomsLabel: 'Observed Symptoms',
+        treatmentAdviceLabel: 'Disease Treatment & Preventive Advice',
+        nutritionKicker: 'Plant Nutrition Guidance',
+        nutritionHeading: 'Fertilizer Recommendation',
+        fertNeededBadge: 'Targeted Nutrition Recommended',
+        fertNotNeededBadge: 'No Immediate Fertilizer Needed',
+        nutritionStatusLabel: 'Fertilizer Recommendation Status',
+        rationaleLabel: 'Guidance Rationale',
+        stepsLabel: 'Application Steps',
+        invalidImageType: 'Please select a valid image file (JPG, PNG, or WebP).',
+        fileReadError: 'Failed to read uploaded image file.',
+        cameraUnsupported: 'Camera access is not supported in this browser or context. Please use Upload Leaf Image instead.',
+        cameraNotReady: 'Camera video stream is not ready yet. Please wait a second and try again.',
+        cameraDeniedPrefix: 'Camera permission denied or unavailable: ',
+        cameraSandboxBlocked: 'Camera access is blocked by this embedded preview iframe or browser permission settings. Open this page directly in Chrome or Edge over HTTPS or localhost and allow Camera access, or use Upload Leaf Image.',
+        cameraNotFound: 'No camera hardware was found on this device. Please use "Upload Leaf Image" to select a leaf photo.',
+        cameraInUse: 'Your camera is currently being used by another application. Close the other app and try again.',
+        noImageToAnalyze: 'Please upload a leaf image or capture a photo first.',
+        analysisFailedPrefix: 'Analysis failed: ',
+        calibInvalidMsg: 'Calibration range invalid: Dry ADC and Wet ADC must be different values.',
+        drySoilAdvice: function (pct, rawAdc) { return 'Critical Dry Soil (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is 0%–30% — buzzer activated! Please water your plant immediately.'; },
+        moderateSoilAdvice: function (pct, rawAdc) { return 'Moderate Moisture Warning (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is between 31% and 60% — monitor closely and prepare to water soon (buzzer silent).'; },
+        moistSoilAdvice: function (pct, rawAdc) { return 'Optimal Soil Moisture (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is 61%–100% — buzzer stopped completely. No watering required.'; },
+        testAlarmTitle: 'Test Plant Care Alarm 🌿',
+        compAnalyzingAfter: 'Analysing new scan...',
+        compComparingMsg: 'Comparing before and after leaf condition...',
+        compFailedMsg: 'Could not complete automated comparison.',
+        validatingImageTitle: 'Checking whether the image is a leaf photo...',
+        validatingImageDesc: 'Verifying botanical leaf features before running plant health analysis.',
+        notALeafPhotoMessage: 'This is not a leaf photo. Please upload a leaf photo.'
+      },
+      ta: {
+        htmlLang: 'ta',
+        awaitingScan: 'ஸ்கேனுக்காக காத்திருக்கிறது',
+        tmReady: 'கணிப்பு அமைப்பு தயார்',
+        cpxDisconnectedSub: 'மண் சென்சார் இணைக்கப்படவில்லை',
+        voiceBtn: 'குரல் இயக்கு',
+        speakingLabel: 'வாசிக்கிறது...',
+        pauseVoiceBtn: 'இடைநிறுத்து',
+        resumeVoiceBtn: 'தொடர்',
+        stopVoiceBtn: 'குரலை நிறுத்து',
+        tamilVoiceUnavailable: 'இந்த உலாவி அல்லது சாதனத்தில் இந்தியத் தமிழ் (ta-IN) குரல் நிறுவப்படவில்லை. பொருத்தமற்ற வேறு மொழி குரல் இயக்கப்படவில்லை. சாதன அமைப்புகளில் தமிழ் பெண் குரலை நிறுவவும் அல்லது உயர்தர தமிழ் குரல் சேவையைப் பயன்படுத்தவும்.',
+        tamilVoiceRoboticNote: 'உலாவியின் தமிழ் குரல் பயன்படுத்தப்படுகிறது. இயல்பான இந்தியத் தமிழ் பெண் குரல் தேவைப்பட்டால், சாதனத்தில் உயர்தர தமிழ் குரலை நிறுவவும் அல்லது வெளிப்புற தமிழ் குரல் சேவையை இணைக்கவும்.',
+        confidencePrefix: 'துல்லிய அளவு: ',
+        analyzingBadge: 'பகுப்பாய்வு செய்கிறது...',
+        imageUploadedMsg: 'படம் பதிவேற்றப்பட்டது! இலை நிலை பகுப்பாய்வு தொடங்குகிறது...',
+        chatbotSubtitleDefault: 'இலை நிலை மற்றும் தாவரப் பராமரிப்புச் செய்தி பற்றி கேளுங்கள்',
+        chatbotSubtitleCtx: function (label, pct) { return 'நிலை: ' + label + ' (' + pct + '%)'; },
+        chatGreeting: 'வணக்கம்! இலையின் படத்தை பதிவேற்றவும் அல்லது எடுக்கவும், பிறகு இலையை பகுப்பாய்வு செய் பொத்தானை அழுத்தவும். தாவரப் பராமரிப்புச் செய்தி, நீர்ப்பாசன வழிகாட்டுதல், நோய் சிகிச்சை ஆலோசனை மற்றும் உரப் பரிந்துரை குறித்து தமிழில் கேளுங்கள்.',
+        statusPrefix: 'இணைப்பு நிலை: ',
+        disconnected: 'இணைக்கப்படவில்லை',
+        requestingPort: 'சென்சார் இணைப்பு கோரப்படுகிறது...',
+        connectedActive: 'சென்சார் இணைக்கப்பட்டது (நேரடி வாசிப்பு இயங்குகிறது)',
+        unexpectedDisconnect: 'சென்சார் எதிர்பாராத விதமாக துண்டிக்கப்பட்டது',
+        webSerialUnsupported: 'இந்த உலாவியில் சென்சார் இணைப்பு வசதி இல்லை. குரோம் அல்லது எட்ஜ் உலாவி பயன்படுத்தவும்.',
+        buzzerBannerText: function (pct) { return 'மிகக் குறைந்த மண்ணின் ஈரப்பதம் (' + pct + '% — 0% முதல் 30% வரை)! எச்சரிக்கை ஒலி இயக்கப்பட்டது.'; },
+        warningBannerText: function (pct) { return 'மிதமான மண்ணின் ஈரப்பத எச்சரிக்கை (' + pct + '% — 31% முதல் 60% வரை). எச்சரிக்கை ஒலி அணைக்கப்பட்டுள்ளது.'; },
+        muteBuzzer: 'ஒலியை அணை',
+        unmuteBuzzer: 'ஒலியை இயக்கு',
+        buzzerReady: 'எச்சரிக்கை ஒலி தயார்',
+        buzzerMuted: 'எச்சரிக்கை ஒலி அணைக்கப்பட்டது',
+        catDry: 'உலர்ந்தது',
+        catModerate: 'மிதமானது',
+        catMoist: 'சிறந்த ஈரப்பதம்',
+        catInvalid: 'தவறான அளவீடு',
+        allSavedRems: function (n) { return 'சேமிக்கப்பட்ட நினைவூட்டல்கள் (' + n + ')'; },
+        noActiveRems: 'செயலில் உள்ள நினைவூட்டல்கள் எதுவும் இல்லை.',
+        doneBtn: 'முடிந்தது',
+        reopenBtn: 'மீண்டும் இயக்கு',
+        deleteBtn: 'நீக்கு',
+        scanLogsHeading: function (n) { return 'இலை ஸ்கேன் வரலாற்றுப் பதிவுகள் (' + n + ')'; },
+        noLogsTitle: 'இன்னும் ஸ்கேன் பதிவுகள் இல்லை',
+        noLogsDesc: 'ஸ்கேன் & டாஷ்போர்டு பகுதியில் இலையை ஸ்கேன் செய்யவும். வெற்றிகரமான ஸ்கேன்கள் தானாக இங்கே சேமிக்கப்படும்.',
+        viewDetailsBtn: 'விவரங்களைப் பார்',
+        compareBtn: 'ஒப்பிடு',
+        lowConfTitle: 'தெளிவாகக் கண்டறிய முடியவில்லை. தயவுசெய்து மற்றொரு படத்தை ஸ்கேன் செய்யவும்.',
+        lowConfDesc: 'துல்லியமாகக் கண்டறிய நல்ல வெளிச்சத்தில் ஒரே இலையை மையமாக வைத்து தெளிவான படம் எடுக்கவும்.',
+        careForPrefix: 'தாவரப் பராமரிப்புச் செய்தி — ',
+        wateringSectionTitle: 'நீர்ப்பாசன வழிகாட்டுதல்',
+        breakdownLabel: 'தாவர ஆரோக்கிய நிலை விவரம்',
+        pathogenKicker: 'நோய் கண்டறிதல் & சிகிச்சை ஆலோசனை',
+        pathogenHeading: 'தாவர நல அறிக்கை & சிகிச்சை ஆலோசனை',
+        symptomsLabel: 'காணப்படும் அறிகுறிகள்',
+        treatmentAdviceLabel: 'நோய் சிகிச்சை மற்றும் பாதுகாப்பு ஆலோசனை',
+        nutritionKicker: 'தாவர ஊட்டச்சத்து வழிகாட்டுதல்',
+        nutritionHeading: 'உரப் பரிந்துரை',
+        fertNeededBadge: 'உரப் பரிந்துரை தேவைப்படுகிறது',
+        fertNotNeededBadge: 'உடனடி உரம் தேவையில்லை',
+        nutritionStatusLabel: 'உரப் பரிந்துரை நிலை',
+        rationaleLabel: 'ஆலோசனை காரணம்',
+        stepsLabel: 'பயன்படுத்தும் வழிமுறைகள்',
+        invalidImageType: 'சரியான படக் கோப்பைத் தேர்ந்தெடுக்கவும்.',
+        fileReadError: 'பதிவேற்றிய படக் கோப்பைப் படிக்க முடியவில்லை.',
+        cameraUnsupported: 'இந்த உலாவியில் நேரடி கேமரா ஆதரவு இல்லை. இலை படத்தை பதிவேற்று என்பதைப் பயன்படுத்தவும்.',
+        cameraNotReady: 'கேமரா இன்னும் தயாராகவில்லை. ஒரு வினாடி காத்திருந்து மீண்டும் முயற்சிக்கவும்.',
+        cameraDeniedPrefix: 'கேமரா அனுமதி மறுக்கப்பட்டது அல்லது கிடைக்கவில்லை: ',
+        cameraSandboxBlocked: 'இந்த உட்பொதிக்கப்பட்ட முன்னோட்டச் சாளரம் (Embedded Preview Iframe) அல்லது உலாவி அனுமதி அமைப்பு நேரடி கேமராவைத் தடுக்கிறது. நேரடியாக Chrome அல்லது Edge உலாவியில் HTTPS அல்லது localhost வழியாகத் திறந்து கேமரா அனுமதி வழங்கவும், அல்லது இலை படத்தை பதிவேற்று என்பதைப் பயன்படுத்தவும்.',
+        cameraNotFound: 'இந்த சாதனத்தில் கேமரா கண்டறியப்படவில்லை. "இலை படத்தை பதிவேற்று" மூலம் படத்தைத் தேர்ந்தெடுக்கவும்.',
+        cameraInUse: 'உங்கள் கேமரா வேறு செயலியில் பயன்பாட்டில் உள்ளது. அதை மூடிவிட்டு மீண்டும் முயற்சிக்கவும்.',
+        noImageToAnalyze: 'முதலில் இலை படத்தை பதிவேற்றவும் அல்லது புகைப்படம் எடுக்கவும்.',
+        analysisFailedPrefix: 'பகுப்பாய்வு தோல்வி: ',
+        calibInvalidMsg: 'அளவுத்திருத்த மதிப்புகள் தவறானவை: உலர் மண் மற்றும் ஈர மண் மதிப்புகள் வெவ்வேறாக இருக்க வேண்டும்.',
+        drySoilAdvice: function (pct, rawAdc) { return 'மிகக் குறைந்த மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 0%–30% நிலையில் எச்சரிக்கை ஒலி இயக்கப்பட்டுள்ளது; உடனடியாக நீர்ப்பாசனம் செய்யவும்.'; },
+        moderateSoilAdvice: function (pct, rawAdc) { return 'மிதமான மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 31%–60% நிலையில் எச்சரிக்கை ஒலி இல்லை; விரைவில் நீர்ப்பாசனம் செய்ய தயாராக இருக்கவும்.'; },
+        moistSoilAdvice: function (pct, rawAdc) { return 'சிறந்த மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 61%–100% நிலையில் எச்சரிக்கை ஒலி முழுமையாக நிறுத்தப்பட்டது; இப்போது நீர் தேவையில்லை.'; },
+        testAlarmTitle: 'சோதனை தாவர ஒலி 🌿',
+        compAnalyzingAfter: 'புதிய ஸ்கேன் பகுப்பாய்வு செய்யப்படுகிறது...',
+        compComparingMsg: 'முந்தைய மற்றும் தற்போதைய இலை நிலை ஒப்பிடப்படுகிறது...',
+        compFailedMsg: 'தானியங்கி ஒப்பீட்டை முடிக்க முடியவில்லை.',
+        validatingImageTitle: 'இது இலைப் படமா எனச் சரிபார்க்கப்படுகிறது...',
+        validatingImageDesc: 'தாவர நல பகுப்பாய்வுக்கு முன் தாவர இலையின் அடையாளங்கள் சரிபார்க்கப்படுகின்றன.',
+        notALeafPhotoMessage: 'இது இலைப் படம் அல்ல. தயவுசெய்து இலைப் படத்தை பதிவேற்றவும்.'
       }
-    });
+    };
 
-    function switchTab(t) {
-      ['scan', 'soil', 'logs', 'about'].forEach(tab => {
-        document.getElementById('tab-' + tab).classList.add('hidden');
-      });
-      document.getElementById('tab-' + t).classList.remove('hidden');
+    var LEAF_PROFILES = {
+      healthy: {
+        en: {
+          title: 'Healthy Leaf',
+          badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+          barClass: 'bg-emerald-600',
+          summary: 'Healthy Leaf Message: Your plant foliage shows vibrant chlorophyll tone and intact leaf structure with no signs of dehydration or insect feeding.',
+          care: [
+            'Maintain consistent, species-appropriate bright indirect sunlight (4–6 hours daily) to sustain healthy photosynthesis.',
+            'Wipe dust gently off leaves with a damp cloth every two weeks and inspect leaf undersides during routine checks.',
+            'Ensure gentle air circulation around foliage so leaves stay clean and resilient.'
+          ],
+          watering: [
+            'Water only when the top 1–2 inches of soil feel dry to the touch.',
+            'Ensure pots have clear drainage holes and empty excess water from the saucer after 15 minutes.'
+          ],
+          diseaseName: 'No Infectious Plant Disease Detected',
+          symptoms: 'Leaf tissue exhibits uniform green pigmentation with healthy turgor and clean margins.',
+          treatmentAdvice: [
+            'No disease treatment is required right now as the leaf appears healthy and disease-free.',
+            'Maintain good air circulation around foliage to discourage fungal spores and avoid late-evening leaf wetting.',
+            'Inspect new growth weekly so any future spots or pests are caught early.'
+          ],
+          fertilizerNeeded: false,
+          fertilizerType: 'No Immediate Fertilizer Required',
+          nutrientPurpose: 'The leaf displays balanced chlorophyll and healthy tissue growth; extra fertilizer is unnecessary right now.',
+          fertilizerSteps: [
+            'Continue regular watering schedule without additional chemical feeding.',
+            'Apply a light top-dressing of organic vermicompost once every 4–6 weeks during active growing months.',
+            'Flush potting mix with plain water monthly to prevent mineral salt buildup.'
+          ]
+        },
+        ta: {
+          title: 'ஆரோக்கியமான இலை',
+          badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+          barClass: 'bg-emerald-600',
+          summary: 'ஆரோக்கியமான இலை செய்தி: உங்கள் செடியின் இலை நல்ல பசுமை நிறத்துடனும் உறுதியான அமைப்புடனும் உள்ளது. நீர் பற்றாக்குறை அல்லது பூச்சி தாக்குதல் எதுவும் இல்லை.',
+          care: [
+            'செடி நன்கு வளர தினமும் நான்கு முதல் ஆறு மணி நேரம் பிரகாசமான சூரிய வெளிச்சம் கிடைக்குமாறு வைக்கவும்.',
+            'இரண்டு வாரங்களுக்கு ஒருமுறை ஈரத் துணியால் இலையின் தூசியைத் துடைத்து, இலைகளின் அடிப்பகுதியையும் பார்க்கவும்.',
+            'இலைகள் சுத்தமாகவும் பலமாகவும் இருக்கச் சுற்றிலும் நல்ல காற்றோட்டம் இருக்கும்படி பராமரிக்கவும்.'
+          ],
+          watering: [
+            'மேல் மண் காய்ந்தவுடன் மட்டும் நீர் ஊற்றவும்.',
+            'தொட்டியின் அடியில் நீர் வெளியேற வடிகால் துளைகள் இருப்பதைப் பார்த்து, பதினைந்து நிமிடங்களுக்குப் பிறகு தட்டில் தேங்கிய நீரை அகற்றவும்.'
+          ],
+          diseaseName: 'தாவர நோய் எதுவும் காணப்படவில்லை',
+          symptoms: 'இலையில் சீரான பச்சை நிறம், நல்ல உறுதி மற்றும் சுத்தமான ஓரங்கள் உள்ளன.',
+          treatmentAdvice: [
+            'இலை ஆரோக்கியமாகவும் நோய் இன்றியும் உள்ளதால் இப்போது நோய் சிகிச்சை எதுவும் தேவையில்லை.',
+            'பூஞ்சை வளராமல் இருக்க இலைகளைச் சுற்றி நல்ல காற்றோட்டம் வைத்து மாலை நேரத்தில் இலைகளில் நீர் படாமல் தவிர்க்கவும்.',
+            'புதிய தளிர் இலைகளை வாரந்தோறும் கவனித்து எந்த மாற்றமும் இல்லாமல் பாதுகாக்கவும்.'
+          ],
+          fertilizerNeeded: false,
+          fertilizerType: 'உடனடி உரம் தேவையில்லை',
+          nutrientPurpose: 'இலையில் நல்ல பச்சை நிறமும் சீரான வளர்ச்சியும் இருப்பதால் இப்போது கூடுதல் உரம் தேவையில்லை.',
+          fertilizerSteps: [
+            'கூடுதல் உரம் இல்லாமல் வழக்கமான நீர் ஊற்றும் முறையைத் தொடரவும்.',
+            'வளரும் பருவத்தில் நான்கு முதல் ஆறு வாரங்களுக்கு ஒருமுறை மண்புழு உரத்தை லேசாக மேலே தூவவும்.',
+            'மண்ணில் உப்பு சேராமல் இருக்க மாதத்திற்கு ஒருமுறை சுத்தமான நீரால் மண்ணை நன்கு நனைக்கவும்.'
+          ]
+        }
+      },
+      dry: {
+        en: {
+          title: 'Dry Leaf',
+          badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+          barClass: 'bg-amber-500',
+          summary: 'Dry Leaf Message: The leaf shows signs of moisture stress, curling, or dry/crispy edges caused by insufficient hydration or low ambient humidity.',
+          care: [
+            'Move the plant temporarily out of harsh midday direct sun or hot drafts while foliage rehydrates.',
+            'Increase local humidity by placing a pebble water tray nearby and apply organic mulch to retain soil moisture.',
+            'Trim completely brown, brittle leaf tips with clean scissors so the plant directs energy to healthy tissue.'
+          ],
+          watering: [
+            'Perform a thorough deep root watering until water drains freely from the bottom of the pot, then empty the saucer after 15 minutes.',
+            'Monitor soil moisture regularly so levels stay above 30% and avoid letting the root ball dry out completely.'
+          ],
+          diseaseName: 'No Specific Pathogen Detected (Abiotic Dehydration Stress)',
+          symptoms: 'Dry, brittle margins and loss of leaf turgor typical of moisture deficit rather than fungal infection.',
+          treatmentAdvice: [
+            'This condition is caused by dryness rather than an infectious pathogen, so focus on rehydration and shade protection first.',
+            'Keep the plant away from hot dry wind and harsh afternoon sun while leaves recover firmness.',
+            'Use well-draining potting mix enriched with coco peat so moisture holds evenly around the roots.'
+          ],
+          fertilizerNeeded: false,
+          fertilizerType: 'Hold Strong Fertilizer Until Rehydrated',
+          nutrientPurpose: 'Applying concentrated fertilizer to a dry, dehydrated root zone can cause root burn and worsen leaf scorch.',
+          fertilizerSteps: [
+            'Rehydrate the root ball thoroughly with clean water first.',
+            'Wait 5–7 days until leaf turgor recovers before applying any nutrients.',
+            'Once hydrated, optionally apply a 50%-diluted organic seaweed extract tonic to support stress recovery.'
+          ]
+        },
+        ta: {
+          title: 'காய்ந்த இலை',
+          badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+          barClass: 'bg-amber-500',
+          summary: 'காய்ந்த இலை செய்தி: போதுமான நீர் இல்லாததால் இலை காய்ந்து, சுருண்டு அல்லது மொறுமொறுப்பான ஓரங்களுடன் காணப்படுகிறது.',
+          care: [
+            'இலைகள் மீண்டும் ஈரப்பதம் பெறும் வரை கடும் நண்பகல் வெயிலில் இருந்து செடியை சற்று நிழலில் வைக்கவும்.',
+            'மண்ணின் ஈரப்பதம் குறையாமல் இருக்க தொட்டியின் மேல் காய்ந்த இலை அல்லது இயற்கை மூடாக்கு இடவும்.',
+            'முழுமையாகக் காய்ந்து பழுப்பு நிறமான இலை நுனிகளை சுத்தமான கத்திரியால் வெட்டி விடவும்.'
+          ],
+          watering: [
+            'தொட்டியின் அடியிலிருந்து நீர் வடியும் அளவுக்கு வேர்ப்பகுதி வரை நன்கு நீர் ஊற்றவும். பதினைந்து நிமிடங்களுக்குப் பிறகு தட்டில் தேங்கிய நீரை ஊற்றிவிடவும்.',
+            'மண்ணின் ஈரப்பதம் முப்பது சதவீதத்திற்குக் கீழ் செல்லாமல் தொடர்ந்து கவனித்து நீர் ஊற்றவும்.'
+          ],
+          diseaseName: 'நோய் கிருமி இல்லை — நீர் பற்றாக்குறை',
+          symptoms: 'நீர் பற்றாக்குறையால் இலையின் ஓரங்கள் காய்ந்து மொறுமொறுப்பாகவும் தளர்வாகவும் உள்ளன.',
+          treatmentAdvice: [
+            'இது நோய்க்கிருமியால் ஏற்பட்டதல்ல; நீர் பற்றாக்குறையால் வந்த நிலை என்பதால் முதலில் சரியான நீர்ப்பாசனம் மற்றும் நிழல் அளிக்கவும்.',
+            'கடுமையான வெப்பக் காற்று மற்றும் பிற்பகல் வெயிலில் இருந்து செடியைப் பாதுகாக்கவும்.',
+            'ஈரப்பதத்தைச் சீராகத் தக்கவைக்கும் நல்ல மண் கலவையைப் பயன்படுத்தவும்.'
+          ],
+          fertilizerNeeded: false,
+          fertilizerType: 'நீர் ஊற்றி செடி சீரான பிறகு மட்டுமே உரம் இடவும்',
+          nutrientPurpose: 'காய்ந்த மண்ணில் உரம் இட்டால் வேர்கள் பாதிக்கப்பட்டு இலைகள் மேலும் கருகிவிடும்.',
+          fertilizerSteps: [
+            'முதலில் சுத்தமான நீரால் மண்ணையும் வேர்ப்பகுதியையும் நன்கு நனைக்கவும்.',
+            'இலைகள் பழைய நிலைக்குத் திரும்ப ஐந்து முதல் ஏழு நாட்கள் காத்திருந்து பிறகு உரம் இடவும்.',
+            'ஈரப்பதம் சீரான பிறகு, கடற்பாசி சாறு கரைசலை நீர்க்கச் செய்து லேசாக ஊற்றலாம்.'
+          ]
+        }
+      },
+      insect_damaged: {
+        en: {
+          title: 'Insect Damaged Leaf',
+          badgeClass: 'bg-orange-100 text-orange-900 border-orange-300',
+          barClass: 'bg-orange-500',
+          summary: 'Insect-Damaged Leaf Message: Physical notches, holes, stippling, or chewed edges indicate feeding activity from garden pests such as caterpillars, beetles, or aphids.',
+          care: [
+            'Inspect both the upper surface and undersides of leaves, plus stem joints, to locate and hand-remove visible caterpillars, beetles, or egg clusters.',
+            'Isolate the affected plant from nearby healthy plants for 7–10 days to stop pests from spreading.',
+            'Prune away heavily chewed or tattered leaves and remove fallen leaf debris from the pot.'
+          ],
+          watering: [
+            'Water at the soil base in the morning rather than wetting foliage heavily, helping leaves dry quickly and stay healthy.',
+            'Maintain steady soil moisture without waterlogging so the plant has strength to produce new leaves.'
+          ],
+          diseaseName: 'Pest Feeding Damage (Monitor for Secondary Fungal Entry)',
+          symptoms: 'Chewed leaf margins, irregular holes, or surface stippling caused by herbivorous insects.',
+          treatmentAdvice: [
+            'Spray leaves thoroughly (including undersides) in the early morning or late evening with diluted cold-pressed Neem Oil (5 ml per liter of water + mild soap) every 7 days for up to 3 weeks.',
+            'Remove visible pests and damaged leaves promptly to prevent secondary infection through open leaf wounds.',
+            'Keep nearby plants inspected so pests do not migrate to healthy foliage.'
+          ],
+          fertilizerNeeded: true,
+          fertilizerType: 'Organic Neem Cake Soil Amendment + Potassium Tissue Support',
+          nutrientPurpose: 'Neem cake deters soil-dwelling larvae while potassium strengthens leaf cell walls to recover from pest chewing.',
+          fertilizerSteps: [
+            'Mix 1–2 tablespoons of organic Neem Cake powder into the top inch of moist soil.',
+            'Water gently to activate natural root protection.',
+            'Avoid excess high-nitrogen synthetic fertilizers, which produce soft tender shoots that attract insects.'
+          ]
+        },
+        ta: {
+          title: 'பூச்சி தாக்கிய இலை',
+          badgeClass: 'bg-orange-100 text-orange-900 border-orange-300',
+          barClass: 'bg-orange-500',
+          summary: 'பூச்சி தாக்கிய இலை செய்தி: இலையில் காணப்படும் ஓட்டைகள் மற்றும் அரிக்கப்பட்ட ஓரங்கள் புழுக்கள் அல்லது பூச்சிகளின் தாக்குதலைக் காட்டுகின்றன.',
+          care: [
+            'இலையின் மேற்புறம், அடிப்பகுதி மற்றும் தண்டுகளில் உள்ள புழுக்கள் அல்லது முட்டைகளைக் கவனமாகப் பார்த்து அகற்றவும்.',
+            'மற்ற செடிகளுக்குப் பூச்சிகள் பரவாமல் இருக்க பாதிக்கப்பட்ட செடியை ஏழு முதல் பத்து நாட்கள் தனியாக வைக்கவும்.',
+            'மிகவும் சேதமடைந்த இலைகளையும் தொட்டியில் விழுந்த காய்ந்த இலைகளையும் உடனுக்குடன் அகற்றவும்.'
+          ],
+          watering: [
+            'இலைகளில் அதிகம் படாமல் காலை நேரத்தில் செடியின் வேர் மண்ணில் மட்டும் சீராக நீர் ஊற்றவும்.',
+            'புதிய இலைகள் வளரத் தேவையான ஈரப்பதம் இருக்கும்படியும் நீர் தேங்காமலும் பார்த்துக் கொள்ளவும்.'
+          ],
+          diseaseName: 'பூச்சி தாக்குதல் சேதம்',
+          symptoms: 'பூச்சிகள் கடித்ததால் இலையின் ஓரங்கள் அரிக்கப்பட்டும் சிறு ஓட்டைகளுடனும் உள்ளன.',
+          treatmentAdvice: [
+            'மூன்று வாரங்களுக்கு ஏழு நாட்களுக்கு ஒருமுறை அதிகாலை அல்லது மாலை நேரத்தில் நீர்த்த வேப்பெண்ணெய் கரைசலை இலையின் இருபுறமும் தெளிக்கவும்.',
+            'காயமடைந்த இலை வழியாக வேறு நோய் பரவாமல் இருக்க பூச்சிகளையும் சேதமடைந்த பகுதிகளையும் உடனே நீக்கவும்.',
+            'அருகிலுள்ள மற்ற செடிகளிலும் பூச்சிகள் உள்ளதா எனத் தொடர்ந்து பரிசோதிக்கவும்.'
+          ],
+          fertilizerNeeded: true,
+          fertilizerType: 'இயற்கை வேப்பம் புண்ணாக்கு மற்றும் பொட்டாசியம் சத்து',
+          nutrientPurpose: 'வேப்பம் புண்ணாக்கு மண்ணில் உள்ள புழுக்களைத் தடுக்கும். பொட்டாசியம் இலைகளை வலுப்படுத்தும்.',
+          fertilizerSteps: [
+            'ஈரமான மண்ணின் மேல் பகுதியில் ஒன்று முதல் இரண்டு தேக்கரண்டி வேப்பம் புண்ணாக்கு பொடியைக் கலக்கவும்.',
+            'வேர்ப்பகுதிக்குச் சத்து சேர மெதுவாகத் தண்ணீர் ஊற்றவும்.',
+            'பூச்சிகளை அதிகம் ஈர்க்கும் அதிக நைட்ரஜன் ரசாயன உரங்களைத் தவிர்க்கவும்.'
+          ]
+        }
+      }
+    };
+
+    // 2. APPLICATION STATE
+    var tmModel = null;
+    var mobileNetModel = null;
+    var currentLeafImage = null;
+    var lastClassification = null;
+    var lastValidationFailure = null;
+    var currentLang = 'en';
+    var isSpeaking = false;
+    var isPaused = false;
+    var availableSystemVoices = [];
+    var speechQueue = [];
+    var activeSpeechSessionId = 0;
+    var voicesReadyPromise = null;
+    var voicesReadyResolve = null;
+
+    // Camera, Chat, CPX Hardware, Logs & Reminders State
+    var cameraStream = null;
+    var preferredFacingMode = 'environment';
+    var chatMessages = [{ sender: 'bot', key: 'greeting' }];
+    var cpxConnected = false;
+    var serialPort = null;
+    var serialWriter = null;
+    var serialReader = null;
+    var serialStreamClosed = null;
+    var serialBuffer = '';
+    var buzzerMuted = false;
+    var audioCtx = null;
+    var activeOscillator = null;
+    var dryCalibrationAdc = 18000;
+    var wetCalibrationAdc = 52000;
+    var lastValidRawAdc = null;
+    var currentMoisturePct = null;
+    var currentMoistureCategory = 'Disconnected';
+    var reminders = [];
+    var scanHistory = [];
+    var activeAlarmReminder = null;
+    var alarmIntervalId = null;
+    var triggeredAlarmKeys = new Set();
+
+    function t(key) {
+      var dict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      return dict[key] !== undefined ? dict[key] : TRANSLATIONS.en[key];
     }
 
-    // CPX Web Serial functions
-    async function connectCPX() {
-      if (!('serial' in navigator)) {
-        alert('Web Serial is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
+    // 3. TEXT-TO-SPEECH WITH NATURAL INDIAN TAMIL FEMALE (ta-IN) & ENGLISH (en-US) VOICE SELECTION
+    function ensureVoicesReady() {
+      if (!('speechSynthesis' in window) || typeof window.speechSynthesis.getVoices !== 'function') {
+        return Promise.resolve([]);
+      }
+      var current = refreshSystemVoices();
+      if (current.length > 0) {
+        return Promise.resolve(current);
+      }
+      if (!voicesReadyPromise) {
+        voicesReadyPromise = new Promise(function (resolve) {
+          voicesReadyResolve = resolve;
+          setTimeout(function () {
+            refreshSystemVoices();
+            if (voicesReadyResolve) {
+              var fn = voicesReadyResolve;
+              voicesReadyResolve = null;
+              fn(availableSystemVoices);
+            }
+          }, 900);
+        });
+      }
+      return voicesReadyPromise;
+    }
+
+    function refreshSystemVoices() {
+      if (!('speechSynthesis' in window) || typeof window.speechSynthesis.getVoices !== 'function') {
+        availableSystemVoices = [];
+        return availableSystemVoices;
+      }
+      try {
+        var list = window.speechSynthesis.getVoices() || [];
+        if (list.length > 0) {
+          availableSystemVoices = list;
+          if (voicesReadyResolve) {
+            var fn = voicesReadyResolve;
+            voicesReadyResolve = null;
+            fn(availableSystemVoices);
+          }
+        }
+      } catch (e) {}
+      return availableSystemVoices;
+    }
+
+    function pickPreferredIndianTamilFemaleVoice(voices) {
+      var list = Array.isArray(voices) ? voices : [];
+      var tamilVoices = list.filter(function (v) {
+        var langNorm = (v.lang || '').toLowerCase().replace('_', '-');
+        var nameNorm = (v.name || '').toLowerCase();
+        return langNorm === 'ta-in' || langNorm.startsWith('ta-') || langNorm === 'ta' || nameNorm.indexOf('tamil') !== -1 || (v.name || '').indexOf('தமிழ்') !== -1;
+      });
+
+      if (!tamilVoices.length) {
+        return { voice: null, isTamil: false, isNaturalFemale: false };
+      }
+
+      var preferredFemaleKeywords = [
+        'pallavi', 'shruti', 'meera', 'kavya', 'priya', 'ananya', 'divya', 'neural', 'natural', 'online', 'google', 'female', 'woman'
+      ];
+
+      var bestVoice = null;
+      var bestScore = -1;
+
+      tamilVoices.forEach(function (v) {
+        var score = 0;
+        var langNorm = (v.lang || '').toLowerCase().replace('_', '-');
+        var nameNorm = (v.name || '').toLowerCase();
+
+        if (langNorm === 'ta-in') score += 20;
+        else if (langNorm.startsWith('ta')) score += 10;
+
+        preferredFemaleKeywords.forEach(function (kw, idx) {
+          if (nameNorm.indexOf(kw) !== -1) {
+            score += (30 - idx);
+          }
+        });
+
+        if (nameNorm.indexOf('male') !== -1 || nameNorm.indexOf('valluvar') !== -1) {
+          score -= 10;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestVoice = v;
+        }
+      });
+
+      var chosen = bestVoice || tamilVoices[0];
+      var chosenName = (chosen.name || '').toLowerCase();
+      var looksNaturalFemale = /pallavi|shruti|meera|kavya|priya|neural|natural|online|google|female/.test(chosenName);
+
+      return {
+        voice: chosen,
+        isTamil: true,
+        isNaturalFemale: looksNaturalFemale
+      };
+    }
+
+    function pickEnglishVoice(voices) {
+      var list = Array.isArray(voices) ? voices : [];
+      return list.find(function (v) {
+        return (v.lang || '').toLowerCase().indexOf('en-us') !== -1 || (v.lang || '').toLowerCase().indexOf('en-in') !== -1;
+      }) || list.find(function (v) {
+        return (v.lang || '').toLowerCase().startsWith('en');
+      }) || null;
+    }
+
+    function setVoiceNotice(msg) {
+      var noteEl = document.getElementById('voice-status-note');
+      if (!noteEl) return;
+      if (msg) {
+        noteEl.textContent = msg;
+        noteEl.classList.remove('hidden');
+      } else {
+        noteEl.textContent = '';
+        noteEl.classList.add('hidden');
+      }
+    }
+
+    function showScanError(msg, showCameraFallback) {
+      var errText = document.getElementById('scan-error-text');
+      var errBox = document.getElementById('scan-error-box');
+      var fallbackBtn = document.getElementById('fallback-device-cam-btn');
+      if (errText) errText.textContent = msg;
+      if (fallbackBtn) {
+        fallbackBtn.classList.toggle('hidden', !showCameraFallback);
+      }
+      if (errBox) errBox.classList.remove('hidden');
+    }
+
+    function hideScanError() {
+      var errBox = document.getElementById('scan-error-box');
+      var fallbackBtn = document.getElementById('fallback-device-cam-btn');
+      if (fallbackBtn) fallbackBtn.classList.add('hidden');
+      if (errBox) errBox.classList.add('hidden');
+    }
+
+    function openDeviceCameraFallback() {
+      hideScanError();
+      var nativeCamInput = document.getElementById('native-camera-capture-input') || document.getElementById('leaf-file-input');
+      if (nativeCamInput) {
+        nativeCamInput.click();
+      }
+    }
+
+    function updateVoiceButtonLabels() {
+      var playLabel = document.getElementById('voice-read-label');
+      var pauseLabel = document.getElementById('pause-voice-label');
+      var stopLabel = document.getElementById('stop-voice-label');
+
+      if (playLabel) {
+        playLabel.textContent = (isSpeaking && !isPaused) ? t('speakingLabel') : t('voiceBtn');
+      }
+      if (pauseLabel) {
+        pauseLabel.textContent = isPaused ? t('resumeVoiceBtn') : t('pauseVoiceBtn');
+      }
+      if (stopLabel) {
+        stopLabel.textContent = t('stopVoiceBtn');
+      }
+    }
+
+    function stopVoiceReading() {
+      activeSpeechSessionId += 1;
+      speechQueue = [];
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      isSpeaking = false;
+      isPaused = false;
+      updateVoiceButtonLabels();
+      setVoiceNotice('');
+    }
+
+    function togglePauseVoiceReading() {
+      if (!('speechSynthesis' in window) || !isSpeaking) return;
+      try {
+        if (window.speechSynthesis.paused || isPaused) {
+          window.speechSynthesis.resume();
+          isPaused = false;
+        } else {
+          window.speechSynthesis.pause();
+          isPaused = true;
+        }
+      } catch (e) {}
+      updateVoiceButtonLabels();
+    }
+
+    function sanitizePureTamilSpeech(text) {
+      return (text || '')
+        .replace(/[A-Za-z]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function splitSpeechIntoChunks(fullText) {
+      var clean = (fullText || '').replace(/\s+/g, ' ').trim();
+      if (!clean) return [];
+      var parts = clean.match(/[^.!?।]+[.!?।]?/g) || [clean];
+      var chunks = [];
+      var current = '';
+
+      parts.forEach(function (part) {
+        var piece = part.trim();
+        if (!piece) return;
+        if ((current + ' ' + piece).trim().length <= 190) {
+          current = (current + ' ' + piece).trim();
+        } else {
+          if (current) chunks.push(current);
+          current = piece;
+        }
+      });
+      if (current) chunks.push(current);
+      return chunks.length ? chunks : [clean];
+    }
+
+    function buildSpokenText(isTamil) {
+      if (lastValidationFailure) {
+        return isTamil ? sanitizePureTamilSpeech(t('notALeafPhotoMessage')) : t('notALeafPhotoMessage');
+      }
+
+      if (lastClassification && !lastClassification.isLowConfidence) {
+        var prof = LEAF_PROFILES[lastClassification.key][isTamil ? 'ta' : 'en'];
+        if (isTamil) {
+          var rawTamil = [
+            'தாவர நல அறிக்கை.',
+            'தாவர ஆரோக்கிய நிலை ' + prof.title + '.',
+            'துல்லிய அளவு ' + lastClassification.confidence + ' சதவீதம்.',
+            'தாவரப் பராமரிப்புச் செய்தி.',
+            prof.summary,
+            (prof.care || []).join(' '),
+            'நீர்ப்பாசன வழிகாட்டுதல்.',
+            (prof.watering || []).join(' '),
+            'நோய் கண்டறிதல் மற்றும் சிகிச்சை ஆலோசனை.',
+            prof.diseaseName + '.',
+            prof.symptoms,
+            (prof.treatmentAdvice || []).join(' '),
+            'உரப் பரிந்துரை.',
+            prof.fertilizerType + '.',
+            prof.nutrientPurpose,
+            (prof.fertilizerSteps || []).join(' ')
+          ].join(' ');
+          return sanitizePureTamilSpeech(rawTamil);
+        }
+        return [
+          'AI Analysis Report.',
+          'Plant Health Status is ' + prof.title + ' with ' + lastClassification.confidence + ' percent confidence.',
+          'Care Message.',
+          prof.summary,
+          (prof.care || []).join(' '),
+          'Watering Instructions.',
+          (prof.watering || []).join(' '),
+          'Disease Identification and Treatment Advice.',
+          prof.diseaseName + '.',
+          prof.symptoms,
+          (prof.treatmentAdvice || []).join(' '),
+          'Fertilizer Recommendation.',
+          prof.fertilizerType + '.',
+          prof.nutrientPurpose,
+          (prof.fertilizerSteps || []).join(' ')
+        ].join(' ');
+      }
+      return isTamil
+        ? 'தாவர நல அறிக்கை. தெளிவான இலை படத்தைத் தேர்ந்தெடுத்து இலையை பகுப்பாய்வு செய் பொத்தானை அழுத்தவும்.'
+        : 'AI Analysis Report. Please select a clear leaf image and click Analyze Leaf.';
+    }
+
+    function speakNextQueuedChunk(sessionId, voiceConfig) {
+      if (sessionId !== activeSpeechSessionId) return;
+      if (!speechQueue.length) {
+        isSpeaking = false;
+        isPaused = false;
+        updateVoiceButtonLabels();
+        return;
+      }
+
+      var chunkText = speechQueue.shift();
+      var utter = new SpeechSynthesisUtterance(chunkText);
+      if (voiceConfig.voice) {
+        utter.voice = voiceConfig.voice;
+      }
+      utter.lang = voiceConfig.lang;
+      utter.rate = voiceConfig.rate;
+      utter.pitch = voiceConfig.pitch;
+
+      utter.onstart = function () {
+        if (sessionId !== activeSpeechSessionId) return;
+        isSpeaking = true;
+        isPaused = false;
+        updateVoiceButtonLabels();
+      };
+
+      utter.onend = function () {
+        if (sessionId !== activeSpeechSessionId) return;
+        speakNextQueuedChunk(sessionId, voiceConfig);
+      };
+
+      utter.onerror = function () {
+        if (sessionId !== activeSpeechSessionId) return;
+        if (speechQueue.length > 0) {
+          speakNextQueuedChunk(sessionId, voiceConfig);
+        } else {
+          isSpeaking = false;
+          isPaused = false;
+          updateVoiceButtonLabels();
+        }
+      };
+
+      try {
+        window.speechSynthesis.speak(utter);
+      } catch (e) {
+        isSpeaking = false;
+        isPaused = false;
+        updateVoiceButtonLabels();
+      }
+    }
+
+    async function playVoiceReading() {
+      if (!('speechSynthesis' in window)) return;
+
+      if (isSpeaking && isPaused) {
+        try {
+          window.speechSynthesis.resume();
+        } catch (e) {}
+        isPaused = false;
+        updateVoiceButtonLabels();
+        return;
+      }
+
+      var sessionId = activeSpeechSessionId + 1;
+      activeSpeechSessionId = sessionId;
+      speechQueue = [];
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+      isSpeaking = false;
+      isPaused = false;
+
+      var voices = await ensureVoicesReady();
+      if (sessionId !== activeSpeechSessionId) return;
+
+      var isTamil = currentLang === 'ta';
+      var speechText = buildSpokenText(isTamil);
+      var voiceConfig = {
+        voice: null,
+        lang: isTamil ? 'ta-IN' : 'en-US',
+        rate: isTamil ? 0.85 : 0.98,
+        pitch: isTamil ? 1.05 : 1.02
+      };
+
+      if (isTamil) {
+        var tamilPick = pickPreferredIndianTamilFemaleVoice(voices);
+        if (!tamilPick.isTamil || !tamilPick.voice) {
+          updateVoiceButtonLabels();
+          setVoiceNotice(t('tamilVoiceUnavailable'));
+          return;
+        }
+        voiceConfig.voice = tamilPick.voice;
+        voiceConfig.lang = tamilPick.voice.lang || 'ta-IN';
+        voiceConfig.rate = 0.85;
+        voiceConfig.pitch = 1.05;
+
+        if (!tamilPick.isNaturalFemale) {
+          setVoiceNotice(t('tamilVoiceRoboticNote'));
+        } else {
+          setVoiceNotice('');
+        }
+      } else {
+        var enVoice = pickEnglishVoice(voices);
+        if (enVoice) voiceConfig.voice = enVoice;
+        voiceConfig.lang = 'en-US';
+        voiceConfig.rate = 0.98;
+        voiceConfig.pitch = 1.02;
+        setVoiceNotice('');
+      }
+
+      speechQueue = splitSpeechIntoChunks(speechText);
+      isSpeaking = true;
+      isPaused = false;
+      updateVoiceButtonLabels();
+      speakNextQueuedChunk(sessionId, voiceConfig);
+    }
+
+    function speakAnalysisSummary() {
+      playVoiceReading();
+    }
+
+    function getLocalizedLeafProfile(key) {
+      var entry = LEAF_PROFILES[key];
+      if (!entry) return null;
+      return entry[currentLang] || entry.en;
+    }
+
+    // 4. CENTRAL LANGUAGE-SWITCHING FUNCTION (UPDATES ALL STATIC [data-en]/[data-ta] & DYNAMIC CONTENT)
+    function applyLanguageUI() {
+      var attrName = currentLang === 'ta' ? 'data-ta' : 'data-en';
+      document.documentElement.lang = t('htmlLang');
+
+      document.querySelectorAll('[data-en][data-ta]').forEach(function (el) {
+        var translated = el.getAttribute(attrName);
+        if (translated !== null) {
+          el.textContent = translated;
+        }
+      });
+
+      document.querySelectorAll('[data-en-placeholder][data-ta-placeholder]').forEach(function (el) {
+        var ph = el.getAttribute(currentLang === 'ta' ? 'data-ta-placeholder' : 'data-en-placeholder');
+        if (ph !== null) {
+          el.placeholder = ph;
+        }
+      });
+
+      var enBtn = document.getElementById('lang-en-btn');
+      var taBtn = document.getElementById('lang-ta-btn');
+      if (enBtn && taBtn) {
+        enBtn.className = currentLang === 'en'
+          ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white'
+          : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#F2F7F0]';
+        taBtn.className = currentLang === 'ta'
+          ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white'
+          : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#F2F7F0]';
+      }
+
+      updateVoiceButtonLabels();
+
+      if (lastClassification && !lastClassification.isLowConfidence) {
+        var ctxProf = getLocalizedLeafProfile(lastClassification.key);
+        document.getElementById('chatbot-context-subtitle').textContent = t('chatbotSubtitleCtx')(ctxProf ? ctxProf.title : lastClassification.label, lastClassification.confidence);
+      } else {
+        document.getElementById('chatbot-context-subtitle').textContent = t('chatbotSubtitleDefault');
+      }
+
+      document.getElementById('buzzer-audio-status-label').textContent = buzzerMuted ? t('buzzerMuted') : t('buzzerReady');
+      document.getElementById('toggle-buzzer-mute-btn').textContent = buzzerMuted ? t('unmuteBuzzer') : t('muteBuzzer');
+
+      if (!cpxConnected) {
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('disconnected');
+        document.getElementById('watering-advice-text').textContent = currentLang === 'ta'
+          ? 'மண்ணின் ஈரப்பதத்தை நேரடியாக அறிய சென்சாரை யுஎஸ்பி வழியாக இணைக்கவும்.'
+          : 'Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.';
+      } else if (lastValidRawAdc !== null) {
+        evaluateCalibratedMoisture(lastValidRawAdc);
+      }
+
+      if (lastClassification) {
+        renderLeafAnalysisResult(lastClassification);
+      } else if (lastValidationFailure) {
+        renderValidationRejectedState();
+      }
+      renderReminders();
+      renderScanLogs();
+      renderChatMessages();
+      updateDashboardSummary();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function setLanguage(langCode) {
+      if (langCode !== 'en' && langCode !== 'ta') return;
+      stopVoiceReading();
+      currentLang = langCode;
+      try {
+        localStorage.setItem('bioguard_lang_v1', currentLang);
+      } catch (e) {}
+      applyLanguageUI();
+    }
+
+    // 5. DASHBOARD & HELPER FUNCTIONS
+    function getDisplayLeafLabel(key, fallbackLabel) {
+      var prof = getLocalizedLeafProfile(key);
+      return prof ? prof.title : fallbackLabel;
+    }
+
+    function updateDashboardSummary() {
+      var leafEl = document.getElementById('dash-leaf-status');
+      var confEl = document.getElementById('dash-leaf-conf');
+      var soilPctEl = document.getElementById('dash-soil-moisture');
+      var soilStateEl = document.getElementById('dash-soil-state');
+      var remCountEl = document.getElementById('dash-reminder-count');
+      var logCountEl = document.getElementById('dash-log-count');
+
+      if (leafEl && confEl) {
+        if (lastValidationFailure) {
+          leafEl.textContent = t('awaitingScan');
+          confEl.textContent = t('tmReady');
+        } else if (lastClassification && !lastClassification.isLowConfidence) {
+          leafEl.textContent = getDisplayLeafLabel(lastClassification.key, lastClassification.label);
+          confEl.textContent = t('confidencePrefix') + lastClassification.confidence + '%';
+        } else if (scanHistory.length > 0) {
+          var topLog = scanHistory[0];
+          leafEl.textContent = topLog.leafKey ? getDisplayLeafLabel(topLog.leafKey, topLog.tmClass) : topLog.tmClass;
+          confEl.textContent = t('confidencePrefix') + topLog.tmConfidence + '%';
+        } else {
+          leafEl.textContent = t('awaitingScan');
+          confEl.textContent = t('tmReady');
+        }
+      }
+
+      if (soilPctEl && soilStateEl) {
+        if (cpxConnected && currentMoisturePct !== null) {
+          soilPctEl.textContent = currentMoisturePct + '%';
+          var statusWord = currentMoistureCategory;
+          if (currentLang === 'ta') {
+            if (currentMoisturePct <= 30) statusWord = t('catDry');
+            else if (currentMoisturePct <= 60) statusWord = t('catModerate');
+            else statusWord = t('catMoist');
+          }
+          soilStateEl.textContent = statusWord;
+        } else {
+          soilPctEl.textContent = '--%';
+          soilStateEl.textContent = t('cpxDisconnectedSub');
+        }
+      }
+
+      if (remCountEl) {
+        var activeCount = reminders.filter(function (r) { return !r.completed && r.active; }).length;
+        remCountEl.textContent = String(activeCount);
+      }
+
+      if (logCountEl) {
+        logCountEl.textContent = String(scanHistory.length);
+      }
+    }
+
+    function loadExternalScript(src) {
+      return new Promise(function (resolve, reject) {
+        var existing = document.querySelector('script[src="' + src + '"]');
+        if (existing && window.tmImage) {
+          resolve();
+          return;
+        }
+        var script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = function () { resolve(); };
+        script.onerror = function () { reject(new Error('Failed to load ' + src)); };
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensureTMModelLoaded() {
+      if (tmModel) return tmModel;
+      if (!window.tf) {
+        await loadExternalScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+      }
+      if (!window.tmImage) {
+        await loadExternalScript('https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js');
+      }
+      if (!window.tmImage) {
+        throw new Error('Teachable Machine library could not be loaded. Please check your internet connection.');
+      }
+      var modelURL = TM_MODEL_BASE_URL + 'model.json';
+      var metadataURL = TM_MODEL_BASE_URL + 'metadata.json';
+      tmModel = await window.tmImage.load(modelURL, metadataURL);
+      return tmModel;
+    }
+
+    async function ensureMobileNetLoaded() {
+      if (mobileNetModel) return mobileNetModel;
+      try {
+        if (!window.tf) {
+          await loadExternalScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+        }
+        if (!window.mobilenet) {
+          await loadExternalScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js');
+        }
+        if (window.mobilenet && typeof window.mobilenet.load === 'function') {
+          mobileNetModel = await window.mobilenet.load({ version: 2, alpha: 0.5 });
+        }
+      } catch (e) {
+        mobileNetModel = null;
+      }
+      return mobileNetModel;
+    }
+
+    var BOTANICAL_LEAF_KEYWORDS = [
+      'leaf', 'leaves', 'foliage', 'plant', 'fern', 'herb', 'shrub', 'bush', 'tree', 'branch', 'twig', 'sprout', 'seedling', 'vine', 'ivy', 'clover', 'moss', 'cabbage', 'lettuce', 'spinach', 'kale', 'broccoli', 'artichoke', 'cardoon', 'cucumber', 'zucchini', 'pepper', 'bell pepper', 'fig', 'pomegranate', 'lemon', 'orange', 'banana', 'pineapple', 'strawberry', 'acorn', 'buckeye', 'rapeseed', 'daisy', 'sunflower', 'rose', 'hibiscus', 'orchid', 'lotus', 'pot', 'flowerpot', 'greenhouse'
+    ];
+
+    function analyzeLeafColorMetrics(canvas) {
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width;
+      var h = canvas.height;
+      var imgData = ctx.getImageData(0, 0, w, h).data;
+      var totalPixels = w * h;
+
+      var greenFoliagePixels = 0;
+      var dryAutumnLeafPixels = 0;
+      var brightnessSum = 0;
+      var brightnessSqSum = 0;
+      var gray = new Float32Array(totalPixels);
+
+      for (var y = 0; y < h; y++) {
+        for (var x = 0; x < w; x++) {
+          var idx = y * w + x;
+          var p = idx * 4;
+          var r = imgData[p];
+          var g = imgData[p + 1];
+          var b = imgData[p + 2];
+
+          var lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          gray[idx] = lum;
+          brightnessSum += lum;
+          brightnessSqSum += lum * lum;
+
+          var maxC = Math.max(r, g, b);
+          var minC = Math.min(r, g, b);
+          var delta = maxC - minC;
+          var sat = maxC === 0 ? 0 : delta / maxC;
+          var hue = 0;
+          if (delta > 0) {
+            if (maxC === r) hue = 60 * (((g - b) / delta) % 6);
+            else if (maxC === g) hue = 60 * ((b - r) / delta + 2);
+            else hue = 60 * ((r - g) / delta + 4);
+            if (hue < 0) hue += 360;
+          }
+
+          if (hue >= 52 && hue <= 168 && sat >= 0.16 && maxC >= 30 && maxC <= 245) {
+            greenFoliagePixels++;
+          } else if (hue >= 22 && hue < 52 && sat >= 0.24 && maxC >= 45 && maxC <= 230) {
+            dryAutumnLeafPixels++;
+          }
+        }
+      }
+
+      var meanBrightness = brightnessSum / Math.max(1, totalPixels);
+      var varianceBrightness = Math.max(0, (brightnessSqSum / Math.max(1, totalPixels)) - (meanBrightness * meanBrightness));
+      var brightnessStd = Math.sqrt(varianceBrightness);
+
+      var laplacianSqSum = 0;
+      var laplacianCount = 0;
+      for (var ly = 1; ly < h - 1; ly++) {
+        for (var lx = 1; lx < w - 1; lx++) {
+          var cIdx = ly * w + lx;
+          var lap = -4 * gray[cIdx] + gray[cIdx - 1] + gray[cIdx + 1] + gray[cIdx - w] + gray[cIdx + w];
+          laplacianSqSum += lap * lap;
+          laplacianCount++;
+        }
+      }
+      var sharpnessVariance = laplacianSqSum / Math.max(1, laplacianCount);
+
+      return {
+        greenRatio: greenFoliagePixels / Math.max(1, totalPixels),
+        botanicalRatio: (greenFoliagePixels + dryAutumnLeafPixels) / Math.max(1, totalPixels),
+        meanBrightness: meanBrightness,
+        brightnessStd: brightnessStd,
+        sharpnessVariance: sharpnessVariance
+      };
+    }
+
+    async function isLeafPhoto(canvas) {
+      var metrics = analyzeLeafColorMetrics(canvas);
+      if (metrics.meanBrightness < 18 || metrics.meanBrightness > 248 || (metrics.brightnessStd < 10 && metrics.sharpnessVariance < 14)) {
+        return false;
+      }
+
+      var net = await ensureMobileNetLoaded();
+      var predictions = [];
+      if (net) {
+        try {
+          predictions = await net.classify(canvas, 5);
+        } catch (e) {
+          predictions = [];
+        }
+      }
+
+      var botanicalScore = 0;
+      var nonBotanicalTopScore = 0;
+
+      for (var i = 0; i < predictions.length; i++) {
+        var pred = predictions[i];
+        var classLower = (pred.className || '').toLowerCase();
+        var prob = pred.probability || 0;
+        var isBotanicalClass = BOTANICAL_LEAF_KEYWORDS.some(function (kw) {
+          return new RegExp('\\b' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(classLower);
+        });
+
+        if (isBotanicalClass) {
+          botanicalScore += prob;
+        } else if (i === 0) {
+          nonBotanicalTopScore = prob;
+        }
+      }
+
+      if (botanicalScore >= 0.14) {
+        return true;
+      }
+
+      if (nonBotanicalTopScore >= 0.35 && botanicalScore < 0.08 && metrics.greenRatio < 0.18) {
+        return false;
+      }
+
+      if (metrics.greenRatio >= 0.16 || (metrics.botanicalRatio >= 0.25 && metrics.sharpnessVariance >= 35)) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function renderValidationRejectedState() {
+      var badge = document.getElementById('tm-confidence-badge');
+      var body = document.getElementById('tm-result-body');
+      var diseaseCard = document.getElementById('disease-result-card');
+      var fertCard = document.getElementById('fertilizer-result-card');
+      if (!badge || !body || !diseaseCard || !fertCard) return;
+
+      badge.textContent = '--';
+      body.innerHTML =
+        '<div class="p-5 rounded-2xl border space-y-2 bg-rose-50 border-rose-200 text-rose-900">' +
+          '<p class="font-serif-heading text-lg font-extrabold">' + t('notALeafPhotoMessage') + '</p>' +
+        '</div>';
+
+      diseaseCard.innerHTML = '';
+      diseaseCard.classList.add('hidden');
+      fertCard.innerHTML = '';
+      fertCard.classList.add('hidden');
+    }
+
+    function mapRawLabelToKey(rawLabel) {
+      var norm = (rawLabel || '').trim().toLowerCase().replace(/[-_]+/g, ' ');
+      if (norm.includes('insect') || norm.includes('damage') || norm.includes('pest')) {
+        return { key: 'insect_damaged', label: 'Insect Damaged Leaf' };
+      }
+      if (norm.includes('dry') || norm.includes('wilt') || norm.includes('dehydrat')) {
+        return { key: 'dry', label: 'Dry Leaf' };
+      }
+      if (norm.includes('healthy') || norm.includes('normal') || norm.includes('fresh')) {
+        return { key: 'healthy', label: 'Healthy Leaf' };
+      }
+      return null;
+    }
+
+    function preprocessImageToCanvas(imageSrc) {
+      return new Promise(function (resolve, reject) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          if (!w || !h) {
+            reject(new Error('Invalid image dimensions.'));
+            return;
+          }
+          var size = 224;
+          var canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          var ctx = canvas.getContext('2d');
+          var minSide = Math.min(w, h);
+          var sx = Math.floor((w - minSide) / 2);
+          var sy = Math.floor((h - minSide) / 2);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+          resolve(canvas);
+        };
+        img.onerror = function () {
+          reject(new Error('Could not decode the selected image.'));
+        };
+        img.src = imageSrc;
+      });
+    }
+
+    function handleImageUpload(event) {
+      var input = event && event.target ? event.target : null;
+      var file = input && input.files && input.files[0];
+      if (!file) return;
+
+      if (!file.type || !file.type.startsWith('image/')) {
+        showScanError(t('invalidImageType'));
+        if (input) input.value = '';
+        return;
+      }
+
+      hideScanError();
+      stopCamera();
+
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        var dataUrl = ev && ev.target ? ev.target.result : null;
+        if (!dataUrl || typeof dataUrl !== 'string') {
+          showScanError(t('fileReadError'));
+          return;
+        }
+        currentLeafImage = dataUrl;
+        lastClassification = null;
+        lastValidationFailure = null;
+
+        var previewImg = document.getElementById('scanned-leaf-preview');
+        var emptyState = document.getElementById('scan-empty-state');
+        var resultsContainer = document.getElementById('scan-results-container');
+
+        if (previewImg) previewImg.src = dataUrl;
+        if (emptyState) emptyState.classList.add('hidden');
+        if (resultsContainer) resultsContainer.classList.remove('hidden');
+
+        analyzeLeaf();
+      };
+      reader.onerror = function () {
+        showScanError(t('fileReadError'));
+      };
+      reader.readAsDataURL(file);
+      if (input) input.value = '';
+    }
+
+    async function startCamera(requestedFacingMode) {
+      hideScanError();
+
+      if (requestedFacingMode === 'user' || requestedFacingMode === 'environment') {
+        preferredFacingMode = requestedFacingMode;
+      }
+
+      var isEmbeddedIframe = false;
+      try {
+        isEmbeddedIframe = window.self !== window.top;
+      } catch (frameErr) {
+        isEmbeddedIframe = true;
+      }
+
+      if (!window.isSecureContext || !navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+        stopCamera();
+        showScanError(t('cameraSandboxBlocked'), true);
+        return;
+      }
+
+      var panel = document.getElementById('camera-panel');
+      var overlay = document.getElementById('camera-loading-overlay');
+      var captureBtn = document.getElementById('capture-photo-btn');
+      var video = document.getElementById('camera-video');
+
+      if (!isEmbeddedIframe) {
+        if (panel) panel.classList.remove('hidden');
+        if (overlay) overlay.classList.remove('hidden');
+        if (captureBtn) captureBtn.disabled = true;
+      }
+
+      try {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(function (track) { track.stop(); });
+          cameraStream = null;
+        }
+
+        // Request preferred camera (rear 'environment' by default on mobile, or toggled 'user' front camera)
+        // with graceful fallbacks to the opposite camera and generic { video: true }.
+        var stream = null;
+        var oppositeFacing = preferredFacingMode === 'environment' ? 'user' : 'environment';
+        var constraintAttempts = [
+          { video: { facingMode: { ideal: preferredFacingMode } }, audio: false },
+          { video: { facingMode: { ideal: oppositeFacing } }, audio: false },
+          { video: true, audio: false }
+        ];
+
+        var lastMediaErr = null;
+        for (var i = 0; i < constraintAttempts.length; i++) {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia(constraintAttempts[i]);
+            if (stream) break;
+          } catch (attemptErr) {
+            lastMediaErr = attemptErr;
+            if (attemptErr && (attemptErr.name === 'NotAllowedError' || attemptErr.name === 'PermissionDeniedError' || attemptErr.name === 'SecurityError')) {
+              throw attemptErr;
+            }
+          }
+        }
+
+        if (!stream) {
+          throw lastMediaErr || new Error('Camera unavailable');
+        }
+
+        cameraStream = stream;
+
+        if (panel) panel.classList.remove('hidden');
+        if (overlay) overlay.classList.remove('hidden');
+        if (captureBtn) captureBtn.disabled = true;
+
+        if (video) {
+          video.setAttribute('playsinline', 'true');
+          video.muted = true;
+          video.srcObject = cameraStream;
+
+          await new Promise(function (resolve) {
+            var resolved = false;
+            var finish = function () {
+              if (resolved) return;
+              resolved = true;
+              resolve();
+            };
+            video.onloadedmetadata = function () {
+              video.play().then(finish).catch(finish);
+            };
+            setTimeout(finish, 1200);
+          });
+
+          if (overlay) overlay.classList.add('hidden');
+          if (captureBtn) captureBtn.disabled = false;
+        }
+      } catch (err) {
+        stopCamera();
+        var errName = err && err.name ? err.name : '';
+        var errMsg = (err && err.message ? err.message : '').toLowerCase();
+
+        if (
+          isEmbeddedIframe ||
+          errName === 'NotAllowedError' ||
+          errName === 'PermissionDeniedError' ||
+          errName === 'SecurityError' ||
+          errMsg.indexOf('permission') !== -1 ||
+          errMsg.indexOf('policy') !== -1
+        ) {
+          showScanError(t('cameraSandboxBlocked'), true);
+        } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
+          showScanError(t('cameraNotFound'), true);
+        } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
+          showScanError(t('cameraInUse'), true);
+        } else {
+          showScanError(t('cameraDeniedPrefix') + (err && err.message ? err.message : ''), true);
+        }
+      }
+    }
+
+    function switchCameraFacingMode() {
+      var nextFacing = preferredFacingMode === 'environment' ? 'user' : 'environment';
+      startCamera(nextFacing);
+    }
+
+    function stopCamera() {
+      var video = document.getElementById('camera-video');
+      var panel = document.getElementById('camera-panel');
+      var captureBtn = document.getElementById('capture-photo-btn');
+
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(function (track) {
+          try { track.stop(); } catch (e) {}
+        });
+        cameraStream = null;
+      }
+      if (video) {
+        try { video.pause(); } catch (e) {}
+        if (video.srcObject) {
+          video.srcObject.getTracks().forEach(function (track) {
+            try { track.stop(); } catch (e) {}
+          });
+          video.srcObject = null;
+        }
+      }
+      if (captureBtn) captureBtn.disabled = true;
+      if (panel) panel.classList.add('hidden');
+    }
+
+    function capturePhoto() {
+      var video = document.getElementById('camera-video');
+      if (!video || !video.videoWidth || !video.videoHeight) {
+        showScanError(t('cameraNotReady'));
+        return;
+      }
+
+      var canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.94);
+      stopCamera();
+
+      currentLeafImage = dataUrl;
+      var previewImg = document.getElementById('scanned-leaf-preview');
+      var emptyState = document.getElementById('scan-empty-state');
+      var resultsContainer = document.getElementById('scan-results-container');
+
+      if (previewImg) previewImg.src = dataUrl;
+      if (emptyState) emptyState.classList.add('hidden');
+      if (resultsContainer) resultsContainer.classList.remove('hidden');
+
+      analyzeLeaf();
+    }
+
+    async function analyzeLeaf() {
+      if (!currentLeafImage) {
+        showScanError(t('noImageToAnalyze'));
+        return;
+      }
+
+      hideScanError();
+      document.getElementById('scan-empty-state').classList.add('hidden');
+      document.getElementById('scan-results-container').classList.add('hidden');
+      document.getElementById('scan-loading-state').classList.remove('hidden');
+
+      stopVoiceReading();
+      lastValidationFailure = null;
+
+      var loadTitle = document.getElementById('loading-state-title');
+      var loadDesc = document.getElementById('loading-state-desc');
+      if (loadTitle) loadTitle.textContent = t('validatingImageTitle');
+      if (loadDesc) loadDesc.textContent = t('validatingImageDesc');
+
+      try {
+        var canvas = await preprocessImageToCanvas(currentLeafImage);
+        var validLeaf = await isLeafPhoto(canvas);
+
+        if (!validLeaf) {
+          lastClassification = null;
+          lastValidationFailure = true;
+          renderValidationRejectedState();
+          updateDashboardSummary();
+          document.getElementById('scan-loading-state').classList.add('hidden');
+          document.getElementById('scan-results-container').classList.remove('hidden');
+          if (window.lucide) window.lucide.createIcons();
+          return;
+        }
+
+        if (loadTitle) loadTitle.textContent = loadTitle.getAttribute(currentLang === 'ta' ? 'data-ta' : 'data-en');
+        if (loadDesc) loadDesc.textContent = loadDesc.getAttribute(currentLang === 'ta' ? 'data-ta' : 'data-en');
+
+        var model = await ensureTMModelLoaded();
+        var rawPreds = await model.predict(canvas);
+
+        var mapped = rawPreds
+          .map(function (p) {
+            var m = mapRawLabelToKey(p.className);
+            if (!m) return null;
+            return {
+              key: m.key,
+              label: m.label,
+              probability: p.probability,
+              pct: Math.round(p.probability * 100)
+            };
+          })
+          .filter(Boolean)
+          .sort(function (a, b) { return b.probability - a.probability; });
+
+        if (!mapped.length) {
+          throw new Error('Unable to classify image classes.');
+        }
+
+        var top = mapped[0];
+        var second = mapped[1] || { probability: 0 };
+        var isLowConfidence = top.probability < 0.55 || (top.probability - second.probability) < 0.1;
+
+        lastClassification = {
+          isLowConfidence: isLowConfidence,
+          key: top.key,
+          label: isLowConfidence ? (currentLang === 'ta' ? 'தெளிவற்ற இலை' : 'Unclear Leaf') : top.label,
+          confidence: top.pct,
+          all: mapped
+        };
+        lastValidationFailure = null;
+
+        renderLeafAnalysisResult(lastClassification);
+
+        if (!isLowConfidence) {
+          var logEntry = {
+            id: 'scan-' + Date.now(),
+            timestamp: new Date().toLocaleString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }),
+            leafKey: top.key,
+            tmClass: top.label,
+            tmConfidence: top.pct,
+            image: currentLeafImage
+          };
+          scanHistory.unshift(logEntry);
+          if (scanHistory.length > 40) scanHistory.pop();
+          try {
+            localStorage.setItem('bioguard_scan_logs_v5', JSON.stringify(scanHistory));
+          } catch (storageErr) {}
+          renderScanLogs();
+
+          var localizedTop = getDisplayLeafLabel(top.key, top.label);
+          var dot = document.getElementById('chatbot-context-dot');
+          var sub = document.getElementById('chatbot-context-subtitle');
+          if (dot) dot.classList.remove('hidden');
+          if (sub) sub.textContent = t('chatbotSubtitleCtx')(localizedTop, top.pct);
+        }
+
+        updateDashboardSummary();
+        document.getElementById('scan-loading-state').classList.add('hidden');
+        document.getElementById('scan-results-container').classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+      } catch (err) {
+        document.getElementById('scan-loading-state').classList.add('hidden');
+        document.getElementById('scan-results-container').classList.remove('hidden');
+        showScanError(t('analysisFailedPrefix') + (err.message || ''));
+      }
+    }
+
+    function renderLeafAnalysisResult(result) {
+      var badge = document.getElementById('tm-confidence-badge');
+      var body = document.getElementById('tm-result-body');
+      var diseaseCard = document.getElementById('disease-result-card');
+      var fertCard = document.getElementById('fertilizer-result-card');
+      if (!badge || !body || !diseaseCard || !fertCard) return;
+
+      if (result.isLowConfidence) {
+        badge.textContent = t('confidencePrefix') + result.confidence + '%';
+        body.innerHTML =
+          '<div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">' +
+            '<h4 class="font-serif-heading text-lg font-bold text-amber-900">' + t('lowConfTitle') + '</h4>' +
+            '<p class="text-xs text-amber-900/90 leading-relaxed">' + t('lowConfDesc') + '</p>' +
+          '</div>';
+        diseaseCard.classList.add('hidden');
+        fertCard.classList.add('hidden');
+        return;
+      }
+
+      var profile = getLocalizedLeafProfile(result.key);
+      if (!profile) return;
+      badge.textContent = t('confidencePrefix') + result.confidence + '%';
+
+      var barsHtml = result.all.map(function (pred) {
+        var isTop = pred.key === result.key;
+        var localizedPredLabel = getDisplayLeafLabel(pred.key, pred.label);
+        return (
+          '<div class="space-y-0.5">' +
+            '<div class="flex justify-between text-[11px] font-bold text-[#1B3B2B]">' +
+              '<span>' + localizedPredLabel + '</span>' +
+              '<span>' + pred.pct + '%</span>' +
+            '</div>' +
+            '<div class="w-full h-1.5 bg-[#E7F3E5] rounded-full overflow-hidden">' +
+              '<div class="h-full rounded-full transition-all duration-500 ' + (isTop ? profile.barClass : 'bg-slate-300') + '" style="width:' + pred.pct + '%"></div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      var careHtml = profile.care.map(function (step) {
+        return '<li class="flex items-start gap-2"><span class="text-[#3E7B54] font-bold">✔</span><span>' + step + '</span></li>';
+      }).join('');
+
+      var wateringHtml = (profile.watering || []).map(function (wStep) {
+        return '<li class="flex items-start gap-2"><span class="text-sky-700 font-bold">💧</span><span>' + wStep + '</span></li>';
+      }).join('');
+
+      body.innerHTML =
+        '<div class="space-y-3">' +
+          '<span class="px-3.5 py-1.5 rounded-full text-sm font-extrabold border inline-block ' + profile.badgeClass + '">' + profile.title + '</span>' +
+          '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold">' + profile.summary + '</p>' +
+          '<div class="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2">' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">' + t('breakdownLabel') + '</span>' +
+            '<div class="space-y-1.5">' + barsHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] space-y-2">' +
+          '<h4 class="text-xs font-bold uppercase tracking-wider text-[#1B3B2B]">' + t('careForPrefix') + profile.title + '</h4>' +
+          '<ul class="space-y-1.5 text-xs sm:text-sm text-slate-700">' + careHtml + '</ul>' +
+        '</div>' +
+        '<div class="p-4 rounded-xl bg-sky-50/70 border border-sky-200/80 space-y-2">' +
+          '<h4 class="text-xs font-bold uppercase tracking-wider text-sky-950">' + t('wateringSectionTitle') + '</h4>' +
+          '<ul class="space-y-1.5 text-xs sm:text-sm text-slate-700">' + wateringHtml + '</ul>' +
+        '</div>';
+
+      var adviceListHtml = (profile.treatmentAdvice || []).map(function (m) {
+        return '<li class="flex items-start gap-2"><span class="text-[#2D6A4F] font-bold">🛡</span><span>' + m + '</span></li>';
+      }).join('');
+
+      diseaseCard.classList.remove('hidden');
+      diseaseCard.innerHTML =
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F0F5EE] pb-3">' +
+          '<div>' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]">' + t('pathogenKicker') + '</span>' +
+            '<h3 class="font-serif-heading text-xl font-bold text-[#1B3B2B]">' + t('pathogenHeading') + '</h3>' +
+          '</div>' +
+          '<span class="px-3 py-1 rounded-full text-xs font-bold border bg-emerald-50 border-emerald-200 text-emerald-800 self-start sm:self-center">' + profile.diseaseName + '</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-12 gap-4">' +
+          '<div class="md:col-span-5 p-4 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2">' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block">' + t('symptomsLabel') + '</span>' +
+            '<p class="text-xs text-slate-700 leading-relaxed">' + profile.symptoms + '</p>' +
+          '</div>' +
+          '<div class="md:col-span-7 p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] space-y-2">' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-[#1B3B2B] block">' + t('treatmentAdviceLabel') + '</span>' +
+            '<ul class="space-y-1.5 text-xs sm:text-sm text-slate-700">' + adviceListHtml + '</ul>' +
+          '</div>' +
+        '</div>';
+
+      var fertStepsHtml = profile.fertilizerSteps.map(function (s, idx) {
+        return '<li class="flex items-start gap-2.5"><span class="w-5 h-5 rounded-full bg-[#1B3B2B] text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">' + (idx + 1) + '</span><span>' + s + '</span></li>';
+      }).join('');
+
+      fertCard.classList.remove('hidden');
+      fertCard.innerHTML =
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F0F5EE] pb-3">' +
+          '<div>' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54]">' + t('nutritionKicker') + '</span>' +
+            '<h3 class="font-serif-heading text-xl font-bold text-[#1B3B2B]">' + t('nutritionHeading') + '</h3>' +
+          '</div>' +
+          '<span class="px-3 py-1 rounded-full border text-xs font-bold self-start sm:self-center ' + (profile.fertilizerNeeded ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-[#F2F7F0] border-[#E3ECE1] text-[#1B3B2B]') + '">' +
+            (profile.fertilizerNeeded ? t('fertNeededBadge') : t('fertNotNeededBadge')) +
+          '</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-12 gap-4">' +
+          '<div class="md:col-span-5 p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] space-y-2.5">' +
+            '<div>' +
+              '<span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block">' + t('nutritionStatusLabel') + '</span>' +
+              '<p class="font-serif-heading text-lg font-bold text-[#1B3B2B] mt-0.5">' + profile.fertilizerType + '</p>' +
+            '</div>' +
+            '<div>' +
+              '<span class="text-[10px] font-bold uppercase tracking-wider text-[#3E7B54] block">' + t('rationaleLabel') + '</span>' +
+              '<p class="text-xs text-slate-700 leading-relaxed mt-0.5">' + profile.nutrientPurpose + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="md:col-span-7 p-4 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] space-y-2">' +
+            '<span class="text-[10px] font-bold uppercase tracking-wider text-[#1B3B2B] block">' + t('stepsLabel') + '</span>' +
+            '<ol class="space-y-2 text-xs sm:text-sm text-slate-700">' + fertStepsHtml + '</ol>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function switchTab(tabName) {
+      ['scan', 'soil', 'logs', 'about'].forEach(function (tKey) {
+        var sec = document.getElementById('tab-' + tKey);
+        var dBtn = document.getElementById('nav-desktop-' + tKey);
+        var mBtn = document.getElementById('nav-mobile-' + tKey);
+        if (sec) sec.classList.toggle('hidden', tKey !== tabName);
+        if (dBtn) {
+          dBtn.className = tKey === tabName
+            ? 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#1B3B2B] text-white shadow-2xs'
+            : 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-[#1B3B2B] hover:bg-[#E5EFE2]';
+        }
+        if (mBtn) {
+          mBtn.className = tKey === tabName
+            ? 'px-3 py-1 rounded-lg text-[11px] font-bold bg-[#1B3B2B] text-white'
+            : 'px-3 py-1 rounded-lg text-[11px] font-bold text-[#1B3B2B]';
+        }
+      });
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    // 7. CHATBOT FUNCTIONS
+    function toggleChatbot() {
+      var win = document.getElementById('chatbot-window');
+      if (win) win.classList.toggle('hidden');
+    }
+
+    function getMessageText(msg) {
+      if (msg.key === 'greeting') return t('chatGreeting');
+      if (msg.topic === 'care') return generateBotReply('care');
+      if (msg.topic === 'water') return generateBotReply('water');
+      if (msg.topic === 'fertilizer') return generateBotReply('fertilizer');
+      if (msg.sender === 'bot' && msg.customKey) return generateBotReply(msg.customKey);
+      return msg.text || '';
+    }
+
+    function renderChatMessages() {
+      var feed = document.getElementById('chat-messages-feed');
+      if (!feed) return;
+      feed.innerHTML = chatMessages.map(function (m) {
+        var isUser = m.sender === 'user';
+        var content = getMessageText(m);
+        return (
+          '<div class="flex flex-col ' + (isUser ? 'items-end' : 'items-start') + '">' +
+            '<div class="max-w-[85%] px-3 py-2 rounded-2xl text-xs leading-relaxed ' +
+              (isUser ? 'bg-[#1B3B2B] text-white rounded-br-none' : 'bg-white text-slate-800 border border-[#E3ECE1] rounded-bl-none shadow-2xs') + '">' +
+              content +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function generateBotReply(promptText) {
+      var q = (promptText || '').toLowerCase();
+      var activeCtx = lastClassification && !lastClassification.isLowConfidence ? lastClassification : null;
+
+      if (currentLang === 'ta') {
+        if (q.includes('water') || q.includes('நீர்') || q.includes('தண்ணீர்')) {
+          return 'நீர்ப்பாசன வழிகாட்டுதல்: மண்ணின் ஈரப்பதம் பூஜ்ஜியம் முதல் முப்பது சதவீதம் வரை இருந்தால் உடனடியாக நீர் ஊற்றவும். முப்பத்தொன்று முதல் அறுபது சதவீதம் வரை கவனமாகப் பார்க்கவும். அறுபத்தொன்று முதல் நூறு சதவீதம் வரை நீர் ஊற்றுவதை நிறுத்தவும்.';
+        }
+        if (q.includes('fertilizer') || q.includes('உரம்')) {
+          if (activeCtx) {
+            var pTa = getLocalizedLeafProfile(activeCtx.key);
+            return 'உரப் பரிந்துரை (' + pTa.title + '): ' + pTa.fertilizerType + '. ' + pTa.nutrientPurpose;
+          }
+          return 'உரப் பரிந்துரை: ஆரோக்கியமான இலைகளுக்கு மூன்று முதல் நான்கு வாரங்களுக்கு ஒருமுறை மண்புழு உரம் அல்லது நீர்த்த கடற்பாசி சாறு பயன்படுத்தலாம். காய்ந்த மண்ணில் உடனடி உரம் இட வேண்டாம்.';
+        }
+        if (q.includes('disease') || q.includes('நோய்') || q.includes('சிகிச்சை')) {
+          if (activeCtx) {
+            var dTa = getLocalizedLeafProfile(activeCtx.key);
+            return 'நோய் சிகிச்சை ஆலோசனை (' + dTa.diseaseName + '): ' + dTa.symptoms + ' ' + dTa.treatmentAdvice[0];
+          }
+          return 'நோய் சிகிச்சை ஆலோசனை: இலையின் படத்தை ஸ்கேன் செய்தால் நோய் அறிகுறிகள் மற்றும் தடுப்பு வழிமுறைகள் தமிழில் காட்டப்படும்.';
+        }
+        if (activeCtx) {
+          var profTa = getLocalizedLeafProfile(activeCtx.key);
+          return 'தாவரப் பராமரிப்புச் செய்தி (' + profTa.title + ' — ' + activeCtx.confidence + '%): ' + profTa.care[0] + ' ' + profTa.care[1];
+        }
+        return 'தாவரப் பராமரிப்புச் செய்தி: ஆரோக்கியமான இலை, காய்ந்த இலை அல்லது பூச்சி தாக்கிய இலை ஆகியவற்றைக் கண்டறிய இலையின் படத்தை ஸ்கேன் செய்யவும் அல்லது மண்ணின் ஈரப்பத சென்சாரை இணைக்கவும்.';
+      }
+
+      if (q.includes('water') || q.includes('moisture')) {
+        return 'Watering Instructions: Water deeply when soil moisture drops into the 0%–30% Dry zone. Between 31%–60%, monitor closely. Once moisture reaches 61%–100%, stop watering immediately.';
+      }
+      if (q.includes('fertilizer') || q.includes('nutrient')) {
+        if (activeCtx) {
+          var pEn = getLocalizedLeafProfile(activeCtx.key);
+          return 'Fertilizer Recommendation (' + pEn.title + '): ' + pEn.fertilizerType + '. ' + pEn.nutrientPurpose;
+        }
+        return 'Fertilizer Recommendation: Use organic vermicompost or diluted seaweed extract every 3–4 weeks for healthy foliage. Avoid fertilizing dehydrated dry soil.';
+      }
+      if (q.includes('disease') || q.includes('treatment')) {
+        if (activeCtx) {
+          var dEn = getLocalizedLeafProfile(activeCtx.key);
+          return 'Disease Treatment Advice (' + dEn.diseaseName + '): ' + dEn.symptoms + ' ' + dEn.treatmentAdvice[0];
+        }
+        return 'Disease Treatment Advice: Scan a leaf photo to inspect potential plant health issues and treatment steps.';
+      }
+      if (activeCtx) {
+        var profEn = getLocalizedLeafProfile(activeCtx.key);
+        return 'Care Message (' + profEn.title + ' — ' + activeCtx.confidence + '%): ' + profEn.care[0] + ' ' + profEn.care[1];
+      }
+      return 'Care Message: Upload or capture a leaf photo to diagnose Healthy Leaf, Dry Leaf, or Insect Damaged Leaf, or connect your CPX sensor in the CPX Soil & Buzzer tab!';
+    }
+
+    function sendQuickChat(topicKey) {
+      var label = topicKey === 'care'
+        ? (currentLang === 'ta' ? 'தாவரப் பராமரிப்புச் செய்தி' : 'Care Message')
+        : topicKey === 'water'
+        ? (currentLang === 'ta' ? 'நீர்ப்பாசன வழிகாட்டுதல்' : 'Watering Instructions')
+        : (currentLang === 'ta' ? 'உரப் பரிந்துரை' : 'Fertilizer Recommendation');
+      chatMessages.push({ sender: 'user', text: label });
+      chatMessages.push({ sender: 'bot', topic: topicKey });
+      renderChatMessages();
+    }
+
+    function handleChatSubmit(event) {
+      event.preventDefault();
+      var input = document.getElementById('chat-input-field');
+      var val = (input.value || '').trim();
+      if (!val) return;
+      input.value = '';
+      chatMessages.push({ sender: 'user', text: val });
+      chatMessages.push({ sender: 'bot', text: generateBotReply(val) });
+      renderChatMessages();
+    }
+
+    // 8. CPX SOIL MOISTURE HARDWARE & BUZZER ALERT FUNCTIONS
+    function stopBuzzerAudio() {
+      try {
+        if (activeOscillator) {
+          activeOscillator.stop();
+          activeOscillator.disconnect();
+          activeOscillator = null;
+        }
+      } catch (e) {}
+    }
+
+    function playBuzzerAudio() {
+      if (!cpxConnected || buzzerMuted) {
+        stopBuzzerAudio();
         return;
       }
       try {
-        document.getElementById('cpx-status-text').textContent = 'Requesting CPX Port...';
-        const port = await navigator.serial.requestPort();
+        stopBuzzerAudio();
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(860, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        activeOscillator = osc;
+        osc.onended = function () {
+          if (activeOscillator === osc) activeOscillator = null;
+        };
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    async function sendCPXSerialCommand(cmd) {
+      if (!cpxConnected || !serialWriter) return;
+      try {
+        var encoder = new TextEncoder();
+        await serialWriter.write(encoder.encode(cmd + '\n'));
+      } catch (e) {}
+    }
+
+    function toggleBuzzerMute() {
+      buzzerMuted = !buzzerMuted;
+      if (buzzerMuted) stopBuzzerAudio();
+      var statusLabel = document.getElementById('buzzer-audio-status-label');
+      var muteBtn = document.getElementById('toggle-buzzer-mute-btn');
+      if (statusLabel) statusLabel.textContent = buzzerMuted ? t('buzzerMuted') : t('buzzerReady');
+      if (muteBtn) muteBtn.textContent = buzzerMuted ? t('unmuteBuzzer') : t('muteBuzzer');
+    }
+
+    function calculateCalibratedMoisturePct(rawAdc) {
+      if (!Number.isFinite(rawAdc) || rawAdc < 0 || rawAdc > 65535) return null;
+      if (dryCalibrationAdc === wetCalibrationAdc) return null;
+      var ratio = (rawAdc - dryCalibrationAdc) / (wetCalibrationAdc - dryCalibrationAdc);
+      return Math.round(Math.min(100, Math.max(0, ratio * 100)));
+    }
+
+    function evaluateCalibratedMoisture(rawAdc) {
+      var buzzerBanner = document.getElementById('soil-buzzer-banner');
+      var warningBanner = document.getElementById('soil-warning-banner');
+      var categoryEl = document.getElementById('soil-moisture-category');
+      var adviceEl = document.getElementById('watering-advice-text');
+      var barEl = document.getElementById('soil-moisture-bar');
+
+      if (!cpxConnected || rawAdc === null || !Number.isFinite(rawAdc) || rawAdc < 0 || rawAdc > 65535) {
+        stopBuzzerAudio();
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.add('hidden');
+        updateDashboardSummary();
+        return;
+      }
+
+      var pct = calculateCalibratedMoisturePct(rawAdc);
+      if (pct === null) {
+        stopBuzzerAudio();
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.add('hidden');
+        categoryEl.textContent = t('catInvalid');
+        adviceEl.textContent = t('calibInvalidMsg');
+        updateDashboardSummary();
+        return;
+      }
+
+      lastValidRawAdc = rawAdc;
+      currentMoisturePct = pct;
+      document.getElementById('soil-moisture-pct').textContent = pct + '%';
+      document.getElementById('soil-moisture-raw').textContent = 'ADC: ' + rawAdc;
+      barEl.style.width = pct + '%';
+
+      if (pct <= 30) {
+        currentMoistureCategory = 'Dry';
+        buzzerBanner.classList.remove('hidden');
+        warningBanner.classList.add('hidden');
+        document.getElementById('soil-buzzer-text').textContent = t('buzzerBannerText')(pct);
+        categoryEl.textContent = t('catDry');
+        categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-rose-600';
+        barEl.className = 'h-full transition-all duration-300 bg-rose-500';
+        adviceEl.textContent = t('drySoilAdvice')(pct, rawAdc);
+        sendCPXSerialCommand('BUZZER:ON');
+        playBuzzerAudio();
+      } else if (pct <= 60) {
+        currentMoistureCategory = 'Moderate';
+        stopBuzzerAudio();
+        sendCPXSerialCommand('BUZZER:OFF');
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.remove('hidden');
+        document.getElementById('soil-warning-text').textContent = t('warningBannerText')(pct);
+        categoryEl.textContent = t('catModerate');
+        categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-amber-600';
+        barEl.className = 'h-full transition-all duration-300 bg-amber-500';
+        adviceEl.textContent = t('moderateSoilAdvice')(pct, rawAdc);
+      } else {
+        currentMoistureCategory = 'Moist';
+        stopBuzzerAudio();
+        sendCPXSerialCommand('BUZZER:OFF');
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.add('hidden');
+        categoryEl.textContent = t('catMoist');
+        categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-emerald-700';
+        barEl.className = 'h-full transition-all duration-300 bg-emerald-600';
+        adviceEl.textContent = t('moistSoilAdvice')(pct, rawAdc);
+      }
+
+      updateDashboardSummary();
+    }
+
+    function updateCalibrationValues() {
+      var dryEl = document.getElementById('dry-calib-input');
+      var wetEl = document.getElementById('wet-calib-input');
+      dryCalibrationAdc = Math.min(65535, Math.max(0, parseInt(dryEl.value, 10) || 0));
+      wetCalibrationAdc = Math.min(65535, Math.max(0, parseInt(wetEl.value, 10) || 52000));
+      try {
+        localStorage.setItem('bioguard_soil_calib_v1', JSON.stringify({
+          dry: dryCalibrationAdc,
+          wet: wetCalibrationAdc
+        }));
+      } catch (e) {}
+      if (cpxConnected && lastValidRawAdc !== null) {
+        evaluateCalibratedMoisture(lastValidRawAdc);
+      }
+    }
+
+    function setCurrentAsDryCalib() {
+      if (!cpxConnected || lastValidRawAdc === null) return;
+      dryCalibrationAdc = lastValidRawAdc;
+      document.getElementById('dry-calib-input').value = lastValidRawAdc;
+      updateCalibrationValues();
+    }
+
+    function setCurrentAsWetCalib() {
+      if (!cpxConnected || lastValidRawAdc === null) return;
+      wetCalibrationAdc = lastValidRawAdc;
+      document.getElementById('wet-calib-input').value = lastValidRawAdc;
+      updateCalibrationValues();
+    }
+
+    async function connectCPX() {
+      if (cpxConnected) return;
+      if (!('serial' in navigator)) {
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('webSerialUnsupported');
+        return;
+      }
+      try {
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('requestingPort');
+        var port = await navigator.serial.requestPort();
         await port.open({ baudRate: 115200 });
+
         serialPort = port;
-        document.getElementById('cpx-status-text').textContent = 'Connected to CPX (USB Serial Active)';
+        cpxConnected = true;
+
+        if (port.writable) {
+          try {
+            serialWriter = port.writable.getWriter();
+          } catch (wErr) {}
+        }
+
+        var statusBar = document.getElementById('cpx-status-bar');
+        statusBar.className = 'p-4 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs font-bold bg-emerald-50 border-emerald-200 text-emerald-900';
+        document.getElementById('cpx-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('connectedActive');
         document.getElementById('connect-cpx-btn').classList.add('hidden');
         document.getElementById('disconnect-cpx-btn').classList.remove('hidden');
         document.getElementById('soil-meter-placeholder').classList.add('hidden');
         document.getElementById('soil-meter-active').classList.remove('hidden');
-        readSerialData();
-      } catch (e) {
-        document.getElementById('cpx-status-text').textContent = 'Connection failed: ' + e.message;
+
+        updateDashboardSummary();
+        readSerialDataStream();
+      } catch (err) {
+        cpxConnected = false;
+        stopBuzzerAudio();
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + (err.message || '');
+        updateDashboardSummary();
       }
     }
 
     async function disconnectCPX() {
+      cpxConnected = false;
+      stopBuzzerAudio();
+      lastValidRawAdc = null;
+      currentMoisturePct = null;
+      currentMoistureCategory = 'Disconnected';
+      document.getElementById('soil-buzzer-banner').classList.add('hidden');
+      document.getElementById('soil-warning-banner').classList.add('hidden');
+
       try {
-        if (serialReader) await serialReader.cancel();
-        if (serialPort) await serialPort.close();
-      } catch {}
+        if (serialWriter) {
+          await sendCPXSerialCommand('BUZZER:OFF');
+          serialWriter.releaseLock();
+          serialWriter = null;
+        }
+        if (serialReader) {
+          await serialReader.cancel();
+          serialReader = null;
+        }
+        if (serialStreamClosed) {
+          await serialStreamClosed.catch(function () {});
+          serialStreamClosed = null;
+        }
+        if (serialPort) {
+          await serialPort.close();
+        }
+      } catch (e) {}
+
       serialPort = null;
+      var statusBar = document.getElementById('cpx-status-bar');
+      statusBar.className = 'p-4 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs font-bold bg-amber-50 border-amber-200 text-amber-900';
+      document.getElementById('cpx-status-dot').className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
+      document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('disconnected');
+      document.getElementById('cpx-raw-serial').classList.add('hidden');
       document.getElementById('connect-cpx-btn').classList.remove('hidden');
       document.getElementById('disconnect-cpx-btn').classList.add('hidden');
-      document.getElementById('cpx-status-text').textContent = 'Disconnected';
+      document.getElementById('soil-meter-placeholder').classList.remove('hidden');
+      document.getElementById('soil-meter-active').classList.add('hidden');
+      document.getElementById('watering-advice-text').textContent = currentLang === 'ta'
+        ? 'மண்ணின் ஈரப்பதத்தை நேரடியாக அறிய சென்சாரை யுஎஸ்பி வழியாக இணைக்கவும்.'
+        : 'Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.';
+      updateDashboardSummary();
     }
 
-    async function readSerialData() {
+    async function readSerialDataStream() {
       if (!serialPort || !serialPort.readable) return;
-      const textDecoder = new TextDecoderStream();
+      var textDecoder = new TextDecoderStream();
       serialStreamClosed = serialPort.readable.pipeTo(textDecoder.writable);
       serialReader = textDecoder.readable.getReader();
+
       try {
         while (true) {
-          const { value, done } = await serialReader.read();
-          if (done) break;
-          if (value) {
-            serialBuffer += value;
-            const lines = serialBuffer.split(/\r?\n/);
+          var result = await serialReader.read();
+          if (result.done) break;
+          if (result.value) {
+            serialBuffer += result.value;
+            var lines = serialBuffer.split(/\r?\n/);
             serialBuffer = lines.pop() || '';
-            for (const line of lines) {
-              const match = line.trim().match(/^MOISTURE:\s*(\d+)$/i);
+            for (var i = 0; i < lines.length; i++) {
+              var trimmed = lines[i].trim();
+              if (!trimmed) continue;
+              var rawEl = document.getElementById('cpx-raw-serial');
+              rawEl.classList.remove('hidden');
+              rawEl.textContent = 'Serial Rx: ' + trimmed;
+
+              var match = trimmed.match(/^MOISTURE:\s*(-?\d+)$/i);
               if (match) {
-                const raw = parseInt(match[1], 10);
-                const pct = Math.round((raw / 65535) * 100);
-                document.getElementById('soil-moisture-raw').textContent = raw;
-                document.getElementById('soil-moisture-pct').textContent = pct + '%';
-                document.getElementById('soil-moisture-bar').style.width = pct + '%';
-                if (raw < moistureThreshold) {
-                  document.getElementById('soil-buzzer-banner').classList.remove('hidden');
-                  if (!buzzerMuted && audioCtx) {
-                    // trigger beep
-                  }
+                var rawVal = parseInt(match[1], 10);
+                if (!isNaN(rawVal) && rawVal >= 0 && rawVal <= 65535) {
+                  evaluateCalibratedMoisture(rawVal);
                 } else {
+                  stopBuzzerAudio();
                   document.getElementById('soil-buzzer-banner').classList.add('hidden');
+                  document.getElementById('soil-warning-banner').classList.add('hidden');
                 }
               }
             }
           }
         }
-      } catch {}
-    }
-
-    function updateMoistureThreshold(val) {
-      moistureThreshold = parseInt(val, 10) || 30000;
-    }
-
-    function checkScheduledReminders() {
-      const now = Date.now();
-      reminders.forEach(r => {
-        if (!r.completed && r.active && r.dateTime) {
-          const target = new Date(r.dateTime).getTime();
-          if (now >= target && !activeAlarmReminder) {
-            activeAlarmReminder = r;
-            document.getElementById('alarm-modal-title').textContent = r.title;
-            document.getElementById('active-alarm-modal').classList.remove('hidden');
-          }
+      } catch (e) {
+        cpxConnected = false;
+        currentMoisturePct = null;
+        stopBuzzerAudio();
+        document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('unexpectedDisconnect');
+        document.getElementById('connect-cpx-btn').classList.remove('hidden');
+        document.getElementById('disconnect-cpx-btn').classList.add('hidden');
+        updateDashboardSummary();
+      } finally {
+        if (serialReader) {
+          try { serialReader.releaseLock(); } catch (e) {}
         }
-      });
+      }
+    }
+
+    // 9. REMINDERS & ASIA/KOLKATA ALARMS
+    function getKolkataInputDateTime(offsetMinutes) {
+      var d = new Date(new Date(Date.now() + offsetMinutes * 60000).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
+    function parseKolkataDateTime(dateTimeStr) {
+      if (!dateTimeStr) return NaN;
+      var isoIST = /[Z+-]\d{2}:?\d{2}$/.test(dateTimeStr) ? dateTimeStr : dateTimeStr + ':00+05:30';
+      return new Date(isoIST).getTime();
+    }
+
+    function saveRemindersToStorage() {
+      try {
+        localStorage.setItem('bioguard_reminders_v6', JSON.stringify(reminders));
+      } catch (e) {}
+      updateDashboardSummary();
+    }
+
+    function playAlarmBeepSequence() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        [0, 0.2, 0.4].forEach(function (delay, idx) {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.type = idx % 2 === 0 ? 'sine' : 'square';
+          osc.frequency.setValueAtTime(700 + idx * 150, audioCtx.currentTime + delay);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + 0.15);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + delay);
+          osc.stop(audioCtx.currentTime + delay + 0.15);
+        });
+      } catch (e) {}
+    }
+
+    function triggerContinuousAlarm(rem) {
+      activeAlarmReminder = rem;
+      document.getElementById('alarm-modal-title').textContent = rem.title;
+      document.getElementById('active-alarm-modal').classList.remove('hidden');
+      playAlarmBeepSequence();
+      if (alarmIntervalId) clearInterval(alarmIntervalId);
+      alarmIntervalId = setInterval(playAlarmBeepSequence, 1500);
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(currentLang === 'ta' ? '🌿 தாவரப் பராமரிப்பு நினைவூட்டல்!' : '🌿 BioGuard AI Reminder Due!', {
+            body: rem.title,
+            tag: rem.id
+          });
+        } catch (e) {}
+      }
     }
 
     function stopActiveAlarm() {
-      if (activeAlarmReminder) {
-        reminders = reminders.map(r => r.id === activeAlarmReminder.id ? { ...r, completed: true, active: false } : r);
-        localStorage.setItem('bioguard_reminders_v6', JSON.stringify(reminders));
+      if (alarmIntervalId) {
+        clearInterval(alarmIntervalId);
+        alarmIntervalId = null;
+      }
+      if (activeAlarmReminder && activeAlarmReminder.id !== 'test-alarm') {
+        reminders = reminders.map(function (r) {
+          return r.id === activeAlarmReminder.id ? Object.assign({}, r, { completed: true, active: false }) : r;
+        });
+        saveRemindersToStorage();
         renderReminders();
       }
       activeAlarmReminder = null;
@@ -530,65 +2794,435 @@
     }
 
     function snoozeActiveAlarm() {
+      if (alarmIntervalId) {
+        clearInterval(alarmIntervalId);
+        alarmIntervalId = null;
+      }
+      if (activeAlarmReminder && activeAlarmReminder.id !== 'test-alarm') {
+        var nextTime = getKolkataInputDateTime(10);
+        triggeredAlarmKeys.delete(activeAlarmReminder.id + '::' + nextTime);
+        reminders = reminders.map(function (r) {
+          return r.id === activeAlarmReminder.id ? Object.assign({}, r, { dateTime: nextTime, active: true }) : r;
+        });
+        saveRemindersToStorage();
+        renderReminders();
+      }
       activeAlarmReminder = null;
       document.getElementById('active-alarm-modal').classList.add('hidden');
     }
 
     function testAlarmSound() {
-      activeAlarmReminder = { id: 'test', title: 'Test Plant Care Alarm 🌿' };
-      document.getElementById('alarm-modal-title').textContent = 'Test Plant Care Alarm 🌿';
-      document.getElementById('active-alarm-modal').classList.remove('hidden');
+      triggerContinuousAlarm({ id: 'test-alarm', title: t('testAlarmTitle') });
     }
 
-    function handleAddReminder(e) {
-      e.preventDefault();
-      const title = document.getElementById('new-reminder-title').value;
-      const dt = document.getElementById('new-reminder-datetime').value;
+    function handleAddReminder(event) {
+      event.preventDefault();
+      var titleInput = document.getElementById('new-reminder-title');
+      var dtInput = document.getElementById('new-reminder-datetime');
+      var title = (titleInput.value || '').trim();
+      var dt = dtInput.value;
       if (!title || !dt) return;
-      reminders.unshift({ id: 'rem-' + Date.now(), title, dateTime: dt, active: true, completed: false });
-      localStorage.setItem('bioguard_reminders_v6', JSON.stringify(reminders));
-      document.getElementById('new-reminder-title').value = '';
+
+      if ('Notification' in window && Notification.permission === 'default') {
+        try { Notification.requestPermission().catch(function () {}); } catch (e) {}
+      }
+
+      reminders.unshift({
+        id: 'rem-' + Date.now(),
+        title: title,
+        dateTime: dt,
+        active: true,
+        completed: false
+      });
+      saveRemindersToStorage();
+      titleInput.value = '';
+      renderReminders();
+    }
+
+    function checkScheduledReminders(appMountTime) {
+      var nowReal = Date.now();
+      if (nowReal - appMountTime < 3000) return;
+      if (activeAlarmReminder) return;
+
+      var didTrigger = false;
+      reminders = reminders.map(function (rem) {
+        if (rem.completed || !rem.active || !rem.dateTime) return rem;
+        var remTime = parseKolkataDateTime(rem.dateTime);
+        var triggerKey = rem.id + '::' + rem.dateTime;
+        if (
+          !isNaN(remTime) &&
+          nowReal >= remTime &&
+          !triggeredAlarmKeys.has(triggerKey) &&
+          rem.lastTriggeredTime !== rem.dateTime &&
+          !didTrigger
+        ) {
+          didTrigger = true;
+          triggeredAlarmKeys.add(triggerKey);
+          triggerContinuousAlarm(rem);
+          return Object.assign({}, rem, { active: false, lastTriggeredTime: rem.dateTime });
+        }
+        return rem;
+      });
+
+      if (didTrigger) {
+        saveRemindersToStorage();
+        renderReminders();
+      }
+    }
+
+    function toggleReminderComplete(id) {
+      reminders = reminders.map(function (r) {
+        if (r.id === id) {
+          var nextCompleted = !r.completed;
+          return Object.assign({}, r, { completed: nextCompleted, active: !nextCompleted });
+        }
+        return r;
+      });
+      saveRemindersToStorage();
+      renderReminders();
+    }
+
+    function deleteReminder(id) {
+      reminders = reminders.filter(function (r) { return r.id !== id; });
+      saveRemindersToStorage();
       renderReminders();
     }
 
     function renderReminders() {
-      const container = document.getElementById('reminders-list-container');
-      document.getElementById('reminders-count-label').textContent = `All Saved Reminders (${reminders.length})`;
+      var container = document.getElementById('reminders-list-container');
+      var countLabel = document.getElementById('reminders-count-label');
+      if (!container) return;
+
+      countLabel.textContent = t('allSavedRems')(reminders.length);
+      updateDashboardSummary();
+
       if (reminders.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 italic p-3 bg-[#FAF8F5] rounded-xl border text-center">No active reminders.</p>`;
+        container.innerHTML = '<p class="text-xs text-slate-500 italic p-3 bg-[#FAF8F5] rounded-xl border border-[#E3ECE1] text-center">' + t('noActiveRems') + '</p>';
         return;
       }
-      container.innerHTML = reminders.map(r => `
-        <div class="p-3.5 rounded-xl border bg-[#FAF8F5] flex justify-between items-center">
-          <div>
-            <p class="text-xs font-bold ${r.completed ? 'line-through text-slate-500' : 'text-[#1B3B2B]'}">${r.title}</p>
-            <p class="text-[11px] text-slate-600">${r.dateTime.replace('T', ' ')}</p>
-          </div>
-          <button onclick="reminders = reminders.filter(x => x.id !== '${r.id}'); localStorage.setItem('bioguard_reminders_v6', JSON.stringify(reminders)); renderReminders();" class="text-rose-600 text-xs font-bold">Delete</button>
-        </div>
-      `).join('');
+
+      container.innerHTML = reminders.map(function (rem) {
+        return (
+          '<div class="p-3.5 rounded-xl border ' + (rem.completed ? 'bg-slate-50 border-slate-200 opacity-75' : 'bg-[#FAF8F5] border-[#E3ECE1]') + ' flex items-start justify-between gap-2">' +
+            '<div>' +
+              '<p class="text-xs font-bold ' + (rem.completed ? 'line-through text-slate-500' : 'text-[#1B3B2B]') + '">' + rem.title + '</p>' +
+              '<p class="text-[11px] text-slate-600 mt-0.5">🕒 ' + rem.dateTime.replace('T', ' ') + (currentLang === 'ta' ? ' இந்திய நேரம்' : ' IST') + '</p>' +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 shrink-0">' +
+              '<button type="button" onclick="window.toggleReminderComplete(\'' + rem.id + '\')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ' + (rem.completed ? 'bg-slate-200 text-slate-700' : 'bg-[#E7F3E5] text-[#1B3B2B]') + '">' +
+                (rem.completed ? t('reopenBtn') : t('doneBtn')) +
+              '</button>' +
+              '<button type="button" onclick="window.deleteReminder(\'' + rem.id + '\')" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-600 text-[10px] font-bold">' + t('deleteBtn') + '</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    // 10. SCAN LOGS & BEFORE/AFTER IMAGE COMPARISON
+    function clearAllScanLogs() {
+      scanHistory = [];
+      try {
+        localStorage.removeItem('bioguard_scan_logs_v5');
+      } catch (e) {}
+      renderScanLogs();
+      updateDashboardSummary();
+    }
+
+    function deleteScanLog(id) {
+      scanHistory = scanHistory.filter(function (s) { return s.id !== id; });
+      try {
+        localStorage.setItem('bioguard_scan_logs_v5', JSON.stringify(scanHistory));
+      } catch (e) {}
+      renderScanLogs();
+      updateDashboardSummary();
+    }
+
+    function openLogDetailModal(id) {
+      var log = scanHistory.find(function (s) { return s.id === id; });
+      if (!log) return;
+      var localized = log.leafKey ? getLocalizedLeafProfile(log.leafKey) : null;
+      var leafTitle = localized ? localized.title : log.tmClass;
+      var diseaseText = localized ? localized.diseaseName : '';
+      var careSummaryText = localized ? localized.summary : '';
+      var fertText = localized ? localized.fertilizerType : '';
+
+      document.getElementById('modal-log-title').textContent = leafTitle + ' (' + log.tmConfidence + '%)';
+      document.getElementById('modal-log-img').src = log.image;
+      document.getElementById('modal-log-content').innerHTML =
+        '<div class="p-3 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1]"><strong>' + (currentLang === 'ta' ? 'நேரம்: ' : 'Timestamp: ') + '</strong>' + log.timestamp + '</div>' +
+        '<div class="p-3 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1]"><strong>' + (currentLang === 'ta' ? 'தாவரப் பராமரிப்புச் செய்தி: ' : 'Care Message: ') + '</strong>' + careSummaryText + '</div>' +
+        '<div class="p-3 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1]"><strong>' + (currentLang === 'ta' ? 'நோய் சிகிச்சை ஆலோசனை: ' : 'Treatment & Health Status: ') + '</strong>' + diseaseText + '</div>' +
+        '<div class="p-3 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1]"><strong>' + (currentLang === 'ta' ? 'உரப் பரிந்துரை: ' : 'Fertilizer Recommendation: ') + '</strong>' + fertText + '</div>';
+      document.getElementById('log-detail-modal').classList.remove('hidden');
+    }
+
+    function closeLogDetailModal() {
+      document.getElementById('log-detail-modal').classList.add('hidden');
+    }
+
+    function handleComparePhotoUpload(event, pastLogId) {
+      var file = event && event.target && event.target.files && event.target.files[0];
+      if (!file) return;
+      var pastLog = scanHistory.find(function (s) { return s.id === pastLogId; });
+      if (!pastLog) return;
+
+      var reader = new FileReader();
+      reader.onload = async function (ev) {
+        var newImg = ev.target && ev.target.result;
+        if (!newImg) return;
+
+        var pastProf = pastLog.leafKey ? getLocalizedLeafProfile(pastLog.leafKey) : null;
+        var pastLabel = pastProf ? pastProf.title : pastLog.tmClass;
+
+        document.getElementById('comp-before-img').src = pastLog.image;
+        document.getElementById('comp-before-meta').textContent = pastLabel + ' (' + pastLog.timestamp + ')';
+        document.getElementById('comp-after-img').src = newImg;
+        document.getElementById('comp-after-meta').textContent = t('compAnalyzingAfter');
+        document.getElementById('comp-report-box').innerHTML = '<p class="font-bold text-[#1B3B2B]">' + t('compComparingMsg') + '</p>';
+        document.getElementById('comparison-modal').classList.remove('hidden');
+
+        try {
+          var canvas = await preprocessImageToCanvas(newImg);
+          var validLeaf = await isLeafPhoto(canvas);
+          if (!validLeaf) {
+            document.getElementById('comp-after-meta').textContent = '--';
+            document.getElementById('comp-report-box').innerHTML = '<p class="text-rose-700 font-bold">' + t('notALeafPhotoMessage') + '</p>';
+            return;
+          }
+
+          var model = await ensureTMModelLoaded();
+          var rawPreds = await model.predict(canvas);
+          var mapped = rawPreds
+            .map(function (p) {
+              var m = mapRawLabelToKey(p.className);
+              return m ? { key: m.key, label: m.label, prob: p.probability, pct: Math.round(p.probability * 100) } : null;
+            })
+            .filter(Boolean)
+            .sort(function (a, b) { return b.prob - a.prob; });
+
+          var topNew = mapped[0];
+          var newProf = getLocalizedLeafProfile(topNew.key);
+          var newLabel = newProf ? newProf.title : topNew.label;
+          document.getElementById('comp-after-meta').textContent = newLabel + ' (' + topNew.pct + '%)';
+
+          var statusText = '';
+          if (currentLang === 'ta') {
+            if (topNew.key === 'healthy' && pastLog.leafKey !== 'healthy') {
+              statusText = 'முன்னேற்றம்: இலை ' + pastLabel + ' நிலையிலிருந்து ஆரோக்கியமான இலை நிலைக்கு மாறியுள்ளது!';
+            } else if (topNew.key !== 'healthy' && pastLog.leafKey === 'healthy') {
+              statusText = 'கவனம் தேவை: முந்தைய ஆரோக்கியமான நிலை உடன் ஒப்பிடும்போது இப்போது ' + newLabel + ' காணப்படுகிறது.';
+            } else {
+              statusText = 'தொடர்ச்சி: தற்போதைய இலை நிலை ' + newLabel + ' (' + topNew.pct + '%).';
+            }
+          } else {
+            if (topNew.key === 'healthy' && pastLog.leafKey !== 'healthy') {
+              statusText = 'IMPROVED: Leaf transitioned from ' + pastLabel + ' to Healthy Leaf!';
+            } else if (topNew.key !== 'healthy' && pastLog.leafKey === 'healthy') {
+              statusText = 'ATTENTION NEEDED: Leaf shows signs of ' + newLabel + ' compared to previous Healthy scan.';
+            } else {
+              statusText = 'CONSISTENT: Current leaf condition is ' + newLabel + ' (' + topNew.pct + '%).';
+            }
+          }
+
+          document.getElementById('comp-report-box').innerHTML =
+            '<p class="font-extrabold text-[#1B3B2B]">' + statusText + '</p>' +
+            '<p class="text-slate-700">' + newProf.summary + '</p>';
+        } catch (e) {
+          document.getElementById('comp-report-box').innerHTML = '<p class="text-rose-700 font-bold">' + t('compFailedMsg') + '</p>';
+        }
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function closeComparisonModal() {
+      document.getElementById('comparison-modal').classList.add('hidden');
     }
 
     function renderScanLogs() {
-      const container = document.getElementById('scan-logs-container');
-      document.getElementById('logs-count-heading').textContent = `Leaf Scan History Logs (${scanHistory.length})`;
+      var container = document.getElementById('scan-logs-container');
+      var heading = document.getElementById('logs-count-heading');
+      var clearBtn = document.getElementById('clear-logs-btn');
+      if (!container) return;
+
+      heading.textContent = t('scanLogsHeading')(scanHistory.length);
+      if (clearBtn) clearBtn.classList.toggle('hidden', scanHistory.length === 0);
+      updateDashboardSummary();
+
       if (scanHistory.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 italic p-4 bg-[#FAF8F5] rounded-xl border text-center">No scans logged yet.</p>`;
+        container.innerHTML =
+          '<div class="p-10 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] text-center space-y-2">' +
+            '<p class="text-xs font-bold text-[#1B3B2B]">' + t('noLogsTitle') + '</p>' +
+            '<p class="text-[11px] text-slate-500">' + t('noLogsDesc') + '</p>' +
+          '</div>';
         return;
       }
-      container.innerHTML = scanHistory.map(s => `
-        <div class="p-4 rounded-xl bg-[#FAF8F5] border flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <img src="${s.image}" class="w-12 h-12 rounded-lg object-cover" />
-            <div>
-              <p class="font-bold text-xs">${s.tmClass} (${s.tmConfidence}%)</p>
-              <p class="text-[10px] text-slate-500">${s.timestamp}</p>
-            </div>
-          </div>
-          <button onclick="scanHistory = scanHistory.filter(x => x.id !== '${s.id}'); localStorage.setItem('bioguard_scan_logs_v5', JSON.stringify(scanHistory)); renderScanLogs();" class="text-rose-600 text-xs font-bold">Delete</button>
-        </div>
-      `).join('');
+
+      container.innerHTML = scanHistory.map(function (item) {
+        var localized = item.leafKey ? getLocalizedLeafProfile(item.leafKey) : null;
+        var itemTitle = localized ? localized.title : item.tmClass;
+        var summaryLine = localized ? localized.diseaseName : '';
+        return (
+          '<div class="p-4 rounded-xl bg-[#FAF8F5] border border-[#E3ECE1] flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+            '<div class="flex items-center gap-3">' +
+              '<img src="' + item.image + '" alt="' + itemTitle + '" class="w-14 h-14 rounded-xl object-cover border border-[#E3ECE1] shrink-0" />' +
+              '<div>' +
+                '<div class="flex flex-wrap items-center gap-2">' +
+                  '<span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#E7F3E5] text-[#1B3B2B]">' + itemTitle + ' (' + item.tmConfidence + '%)</span>' +
+                  '<span class="text-[10px] text-slate-500">' + item.timestamp + '</span>' +
+                '</div>' +
+                '<p class="font-bold text-xs sm:text-sm text-[#1B3B2B] mt-0.5">' + summaryLine + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex flex-wrap items-center gap-2 shrink-0">' +
+              '<button type="button" onclick="window.openLogDetailModal(\'' + item.id + '\')" class="px-3 py-2 rounded-xl bg-[#F2F7F0] hover:bg-[#E5EFE2] text-[#1B3B2B] text-xs font-bold border border-[#E3ECE1]">' + t('viewDetailsBtn') + '</button>' +
+              '<label class="px-3.5 py-2 rounded-xl bg-[#1B3B2B] hover:bg-[#142E21] text-white text-xs font-bold cursor-pointer inline-flex items-center gap-1">' +
+                '<span>' + t('compareBtn') + '</span>' +
+                '<input type="file" accept="image/*" onchange="window.handleComparePhotoUpload(event, \'' + item.id + '\')" class="hidden" />' +
+              '</label>' +
+              '<button type="button" onclick="window.deleteScanLog(\'' + item.id + '\')" class="px-2.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold">' + t('deleteBtn') + '</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
     }
+
+    // 11. EXPOSE ALL HANDLERS GLOBALLY ON WINDOW IMMEDIATELY
+    window.handleImageUpload = handleImageUpload;
+    window.startCamera = startCamera;
+    window.switchCameraFacingMode = switchCameraFacingMode;
+    window.openDeviceCameraFallback = openDeviceCameraFallback;
+    window.stopCamera = stopCamera;
+    window.capturePhoto = capturePhoto;
+    window.analyzeLeaf = analyzeLeaf;
+    window.playVoiceReading = playVoiceReading;
+    window.togglePauseVoiceReading = togglePauseVoiceReading;
+    window.speakAnalysisSummary = speakAnalysisSummary;
+    window.stopVoiceReading = stopVoiceReading;
+    window.hideScanError = hideScanError;
+    window.switchTab = switchTab;
+    window.setLanguage = setLanguage;
+    window.toggleLanguage = function () { setLanguage(currentLang === 'en' ? 'ta' : 'en'); };
+    window.toggleChatbot = toggleChatbot;
+    window.sendQuickChat = sendQuickChat;
+    window.handleChatSubmit = handleChatSubmit;
+    window.connectCPX = connectCPX;
+    window.disconnectCPX = disconnectCPX;
+    window.toggleBuzzerMute = toggleBuzzerMute;
+    window.updateCalibrationValues = updateCalibrationValues;
+    window.setCurrentAsDryCalib = setCurrentAsDryCalib;
+    window.setCurrentAsWetCalib = setCurrentAsWetCalib;
+    window.testAlarmSound = testAlarmSound;
+    window.handleAddReminder = handleAddReminder;
+    window.toggleReminderComplete = toggleReminderComplete;
+    window.deleteReminder = deleteReminder;
+    window.stopActiveAlarm = stopActiveAlarm;
+    window.snoozeActiveAlarm = snoozeActiveAlarm;
+    window.clearAllScanLogs = clearAllScanLogs;
+    window.deleteScanLog = deleteScanLog;
+    window.openLogDetailModal = openLogDetailModal;
+    window.closeLogDetailModal = closeLogDetailModal;
+    window.handleComparePhotoUpload = handleComparePhotoUpload;
+    window.closeComparisonModal = closeComparisonModal;
+
+    // Replay any queued upload events or camera calls captured by early stubs
+    if (Array.isArray(window.__queuedUploadEvents) && window.__queuedUploadEvents.length > 0) {
+      var queued = window.__queuedUploadEvents.splice(0);
+      queued.forEach(function (ev) {
+        try { handleImageUpload(ev); } catch (e) {}
+      });
+    }
+    if (window.__queuedCameraCalls > 0) {
+      window.__queuedCameraCalls = 0;
+      startCamera();
+    }
+
+    // 12. INITIALIZATION ON DOM READY
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+
+      var primaryFileInput = document.getElementById('leaf-file-input');
+      var secondaryFileInput = document.getElementById('leaf-file-input-secondary');
+      var nativeCamCaptureInput = document.getElementById('native-camera-capture-input');
+      if (primaryFileInput) {
+        primaryFileInput.onchange = null;
+        primaryFileInput.addEventListener('change', handleImageUpload);
+      }
+      if (secondaryFileInput) {
+        secondaryFileInput.onchange = null;
+        secondaryFileInput.addEventListener('change', handleImageUpload);
+      }
+      if (nativeCamCaptureInput) {
+        nativeCamCaptureInput.onchange = null;
+        nativeCamCaptureInput.addEventListener('change', handleImageUpload);
+      }
+
+      if ('speechSynthesis' in window && typeof window.speechSynthesis.getVoices === 'function') {
+        refreshSystemVoices();
+        window.speechSynthesis.onvoiceschanged = function () {
+          refreshSystemVoices();
+        };
+      }
+
+      try {
+        var savedLang = localStorage.getItem('bioguard_lang_v1');
+        if (savedLang === 'ta' || savedLang === 'en') {
+          currentLang = savedLang;
+        }
+      } catch (e) {}
+
+      try {
+        scanHistory = JSON.parse(localStorage.getItem('bioguard_scan_logs_v5') || '[]');
+      } catch (e) {
+        scanHistory = [];
+      }
+
+      try {
+        var savedCalib = JSON.parse(localStorage.getItem('bioguard_soil_calib_v1') || 'null');
+        if (savedCalib && typeof savedCalib.dry === 'number' && typeof savedCalib.wet === 'number') {
+          dryCalibrationAdc = savedCalib.dry;
+          wetCalibrationAdc = savedCalib.wet;
+          var dryEl = document.getElementById('dry-calib-input');
+          var wetEl = document.getElementById('wet-calib-input');
+          if (dryEl) dryEl.value = String(dryCalibrationAdc);
+          if (wetEl) wetEl.value = String(wetCalibrationAdc);
+        }
+      } catch (e) {}
+
+      var dtInput = document.getElementById('new-reminder-datetime');
+      if (dtInput) {
+        dtInput.value = getKolkataInputDateTime(60);
+      }
+
+      var appMountTime = Date.now();
+      var updatedStartup = false;
+      reminders = reminders.map(function (rem) {
+        if (!rem.completed && rem.active && rem.dateTime) {
+          var targetMs = parseKolkataDateTime(rem.dateTime);
+          if (!isNaN(targetMs) && targetMs < appMountTime - 5000) {
+            triggeredAlarmKeys.add(rem.id + '::' + rem.dateTime);
+            updatedStartup = true;
+            return Object.assign({}, rem, { active: false, lastTriggeredTime: rem.dateTime });
+          }
+        }
+        return rem;
+      });
+      if (updatedStartup) {
+        saveRemindersToStorage();
+      }
+
+      applyLanguageUI();
+
+      setInterval(function () {
+        checkScheduledReminders(appMountTime);
+      }, 1000);
+
+      ensureMobileNetLoaded().catch(function () {});
+      ensureTMModelLoaded().catch(function () {});
+    });
   </script>
 </body>
 </html>
