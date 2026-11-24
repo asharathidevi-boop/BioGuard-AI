@@ -123,6 +123,12 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
 
+    <!-- OFFLINE STATUS BANNER (Shown only when opened or running without internet) -->
+    <div id="offline-status-banner" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
+      <i data-lucide="wifi-off" class="w-4 h-4 text-rose-600 shrink-0"></i>
+      <span id="offline-status-text">You are Offline. Please check your internet connection.</span>
+    </div>
+
     <!-- =================================================================== -->
     <!-- TAB 1: SCAN & DASHBOARD                                             -->
     <!-- =================================================================== -->
@@ -265,6 +271,12 @@
 
       <!-- RESULTS DASHBOARD -->
       <div id="scan-results-container" class="hidden space-y-6">
+        <div>
+          <button type="button" id="scan-back-btn" onclick="window.handleScanBack()" class="px-4 py-2 rounded-xl bg-white hover:bg-[#F2F7F0] text-[#1B3B2B] text-xs font-bold border border-[#CFE0CC] shadow-2xs">
+            Back
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <!-- Left: Image Preview & Actions -->
           <div class="lg:col-span-5 bg-white rounded-2xl p-4 border border-[#E3ECE1] shadow-xs space-y-3">
@@ -478,24 +490,32 @@
                 <i data-lucide="droplet" class="w-4 h-4 text-[#3E7B54]"></i>
                 <span data-en="Watering Instructions &amp; Sensor Alert Status" data-ta="நீர்ப்பாசன வழிகாட்டுதல் &amp; சென்சார் எச்சரிக்கை நிலை">Watering Instructions &amp; Sensor Alert Status</span>
               </h3>
-              <button type="button" id="buzzer-audio-status-btn" onclick="window.toggleBuzzerMute()" class="px-2.5 py-1 rounded-lg bg-[#F2F7F0] border border-[#E3ECE1] text-[11px] font-bold text-[#1B3B2B] flex items-center gap-1">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-                <span id="buzzer-audio-status-label">Buzzer Ready</span>
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button type="button" id="soil-voice-btn" onclick="window.speakSoilMoistureStatus()" class="px-2.5 py-1 rounded-lg bg-[#E7F3E5] hover:bg-[#D7EAD4] border border-[#CFE0CC] text-[11px] font-bold text-[#1B3B2B] flex items-center gap-1">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                  <span id="soil-voice-label" data-en="Read Status" data-ta="நிலையை வாசி">Read Status</span>
+                </button>
+                <button type="button" id="buzzer-audio-status-btn" onclick="window.toggleBuzzerMute()" class="px-2.5 py-1 rounded-lg bg-[#F2F7F0] border border-[#E3ECE1] text-[11px] font-bold text-[#1B3B2B] flex items-center gap-1">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                  <span id="buzzer-audio-status-label">Buzzer Ready</span>
+                </button>
+              </div>
             </div>
             <p id="watering-advice-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-[#FAF8F5] p-4 rounded-xl border border-[#E3ECE1]">
-              Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.
+              Please check the sensor connection and insert it into the soil
             </p>
+            <p id="soil-voice-status-note" class="hidden text-[11px] text-amber-900 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 font-semibold leading-relaxed"></p>
           </div>
           <div class="p-4 rounded-xl bg-[#F2F7F0] border border-[#E3ECE1] space-y-1.5 text-xs">
             <span id="rules-title" class="font-bold text-[#1B3B2B] flex items-center gap-1.5">
               <i data-lucide="terminal" class="w-3.5 h-3.5 text-[#3E7B54]"></i>
-              <span data-en="Moisture &amp; Buzzer Alert Rules:" data-ta="மண்ணின் ஈரப்பதம் &amp; எச்சரிக்கை விதிகள்:">Moisture &amp; Buzzer Alert Rules:</span>
+              <span data-en="Sensor Placement &amp; Moisture Rules:" data-ta="சென்சார் நிலை &amp; ஈரப்பத விதிகள்:">Sensor Placement &amp; Moisture Rules:</span>
             </span>
             <ul class="list-disc list-inside text-slate-600 space-y-1 text-[11px]">
-              <li id="rule-1" data-en="0% – 30% (Dry): Activates buzzer &amp; alerts for immediate watering." data-ta="0% – 30% (உலர்ந்தது): எச்சரிக்கை ஒலி எழுப்பி உடனடியாக நீர் ஊற்ற அறிவுறுத்தும்.">0% – 30% (Dry): Activates buzzer &amp; alerts for immediate watering.</li>
-              <li id="rule-2" data-en="31% – 60% (Moderate): Shows warning banner without continuous buzzer sound." data-ta="31% – 60% (மிதமானது): தொடர் ஒலியின்றி கவனிப்பு எச்சரிக்கை காட்டும்.">31% – 60% (Moderate): Shows warning banner without continuous buzzer sound.</li>
-              <li id="rule-3" data-en="61% – 100% (Optimal): Stops buzzer completely and immediately." data-ta="61% – 100% (சிறந்தது): எச்சரிக்கை ஒலியை உடனடியாக முழுமையாக நிறுத்தும்.">61% – 100% (Optimal): Stops buzzer completely and immediately.</li>
+              <li id="rule-0" data-en="Sensor Outside Soil (Open-Air Baseline): Prompts to insert the sensor into the soil (buzzer OFF)." data-ta="மண்ணுக்கு வெளியே சென்சார்: மண் ஈரப்பத சென்சாரை மண்ணில் செருக அறிவுறுத்தும் (ஒலி இல்லை).">Sensor Outside Soil (Open-Air Baseline): Prompts to insert the sensor into the soil (buzzer OFF).</li>
+              <li id="rule-1" data-en="0% – 30% (Dry Soil): Displays 'Soil is dry. Please water the plant.' &amp; activates buzzer." data-ta="0% – 30% (உலர்ந்த மண்): 'மண் உலர்ந்துள்ளது. செடிக்கு நீர் ஊற்றவும்.' எனக் காட்டி எச்சரிக்கை ஒலி எழுப்பும்.">0% – 30% (Dry Soil): Displays 'Soil is dry. Please water the plant.' &amp; activates buzzer.</li>
+              <li id="rule-2" data-en="31% – 60% (Moderate Soil): Shows moisture monitoring warning (buzzer OFF)." data-ta="31% – 60% (மிதமான ஈரப்பதம்): தொடர் ஒலியின்றி ஈரப்பத எச்சரிக்கை காட்டும்.">31% – 60% (Moderate Soil): Shows moisture monitoring warning (buzzer OFF).</li>
+              <li id="rule-3" data-en="61% – 100% (Good Soil Moisture): Displays 'Soil moisture level is good.' &amp; stops buzzer." data-ta="61% – 100% (சிறந்த ஈரப்பதம்): 'மண்ணின் ஈரப்பத நிலை நன்றாக உள்ளது.' எனக் காட்டி ஒலியை நிறுத்தும்.">61% – 100% (Good Soil Moisture): Displays 'Soil moisture level is good.' &amp; stops buzzer.</li>
             </ul>
           </div>
         </div>
@@ -753,9 +773,13 @@
         noImageToAnalyze: 'Please upload a leaf image or capture a photo first.',
         analysisFailedPrefix: 'Analysis failed: ',
         calibInvalidMsg: 'Calibration range invalid: Dry ADC and Wet ADC must be different values.',
-        drySoilAdvice: function (pct, rawAdc) { return 'Critical Dry Soil (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is 0%–30% — buzzer activated! Please water your plant immediately.'; },
-        moderateSoilAdvice: function (pct, rawAdc) { return 'Moderate Moisture Warning (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is between 31% and 60% — monitor closely and prepare to water soon (buzzer silent).'; },
-        moistSoilAdvice: function (pct, rawAdc) { return 'Optimal Soil Moisture (' + pct + '% | Raw ADC: ' + rawAdc + '). Soil moisture is 61%–100% — buzzer stopped completely. No watering required.'; },
+        sensorNotInsertedMsg: 'Please insert the soil moisture sensor into the soil.',
+        sensorCheckPlacementMsg: 'Please check the sensor connection and insert it into the soil',
+        catNotInserted: 'Not Inserted',
+        catCheckPlacement: 'Check Placement',
+        drySoilAdvice: function (pct, rawAdc) { return 'Soil is dry. Please water the plant. (' + pct + '% | Raw ADC: ' + rawAdc + ')'; },
+        moderateSoilAdvice: function (pct, rawAdc) { return 'Soil moisture level is moderate (' + pct + '% | Raw ADC: ' + rawAdc + '). Please monitor closely and water soon.'; },
+        moistSoilAdvice: function (pct, rawAdc) { return 'Soil moisture level is good. (' + pct + '% | Raw ADC: ' + rawAdc + ')'; },
         testAlarmTitle: 'Test Plant Care Alarm 🌿',
         compAnalyzingAfter: 'Analysing new scan...',
         compComparingMsg: 'Comparing before and after leaf condition...',
@@ -788,15 +812,15 @@
         connectedActive: 'சென்சார் இணைக்கப்பட்டது (நேரடி வாசிப்பு இயங்குகிறது)',
         unexpectedDisconnect: 'சென்சார் எதிர்பாராத விதமாக துண்டிக்கப்பட்டது',
         webSerialUnsupported: 'இந்த உலாவியில் சென்சார் இணைப்பு வசதி இல்லை. குரோம் அல்லது எட்ஜ் உலாவி பயன்படுத்தவும்.',
-        buzzerBannerText: function (pct) { return 'மிகக் குறைந்த மண்ணின் ஈரப்பதம் (' + pct + '% — 0% முதல் 30% வரை)! எச்சரிக்கை ஒலி இயக்கப்பட்டது.'; },
+        buzzerBannerText: function (pct) { return 'மண் உலர்ந்துள்ளது. செடிக்கு நீர் ஊற்றவும். (' + pct + '% — 0% முதல் 30% வரை)! எச்சரிக்கை ஒலி இயக்கப்பட்டது.'; },
         warningBannerText: function (pct) { return 'மிதமான மண்ணின் ஈரப்பத எச்சரிக்கை (' + pct + '% — 31% முதல் 60% வரை). எச்சரிக்கை ஒலி அணைக்கப்பட்டுள்ளது.'; },
         muteBuzzer: 'ஒலியை அணை',
         unmuteBuzzer: 'ஒலியை இயக்கு',
         buzzerReady: 'எச்சரிக்கை ஒலி தயார்',
         buzzerMuted: 'எச்சரிக்கை ஒலி அணைக்கப்பட்டது',
-        catDry: 'உலர்ந்தது',
-        catModerate: 'மிதமானது',
-        catMoist: 'சிறந்த ஈரப்பதம்',
+        catDry: 'உலர்ந்த மண்',
+        catModerate: 'மிதமான ஈரப்பதம்',
+        catMoist: 'நல்ல ஈரப்பதம்',
         catInvalid: 'தவறான அளவீடு',
         allSavedRems: function (n) { return 'சேமிக்கப்பட்ட நினைவூட்டல்கள் (' + n + ')'; },
         noActiveRems: 'செயலில் உள்ள நினைவூட்டல்கள் எதுவும் இல்லை.',
@@ -835,9 +859,13 @@
         noImageToAnalyze: 'முதலில் இலை படத்தை பதிவேற்றவும் அல்லது புகைப்படம் எடுக்கவும்.',
         analysisFailedPrefix: 'பகுப்பாய்வு தோல்வி: ',
         calibInvalidMsg: 'அளவுத்திருத்த மதிப்புகள் தவறானவை: உலர் மண் மற்றும் ஈர மண் மதிப்புகள் வெவ்வேறாக இருக்க வேண்டும்.',
-        drySoilAdvice: function (pct, rawAdc) { return 'மிகக் குறைந்த மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 0%–30% நிலையில் எச்சரிக்கை ஒலி இயக்கப்பட்டுள்ளது; உடனடியாக நீர்ப்பாசனம் செய்யவும்.'; },
-        moderateSoilAdvice: function (pct, rawAdc) { return 'மிதமான மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 31%–60% நிலையில் எச்சரிக்கை ஒலி இல்லை; விரைவில் நீர்ப்பாசனம் செய்ய தயாராக இருக்கவும்.'; },
-        moistSoilAdvice: function (pct, rawAdc) { return 'சிறந்த மண்ணின் ஈரப்பதம் (' + pct + '% | மதிப்பு: ' + rawAdc + '). 61%–100% நிலையில் எச்சரிக்கை ஒலி முழுமையாக நிறுத்தப்பட்டது; இப்போது நீர் தேவையில்லை.'; },
+        sensorNotInsertedMsg: 'தயவுசெய்து மண் ஈரப்பத சென்சாரை மண்ணில் செருகவும்.',
+        sensorCheckPlacementMsg: 'சென்சார் இணைப்பைச் சரிபார்த்து, அதனை மண்ணில் செருகவும்.',
+        catNotInserted: 'மண்ணில் செருகப்படவில்லை',
+        catCheckPlacement: 'இணைப்பைச் சரிபார்க்கவும்',
+        drySoilAdvice: function (pct, rawAdc) { return 'மண் உலர்ந்துள்ளது. செடிக்கு நீர் ஊற்றவும். (' + pct + '% | மதிப்பு: ' + rawAdc + ')'; },
+        moderateSoilAdvice: function (pct, rawAdc) { return 'மண்ணின் ஈரப்பதம் மிதமாக உள்ளது (' + pct + '% | மதிப்பு: ' + rawAdc + '). கவனமாகப் பார்த்து விரைவில் நீர் ஊற்றவும்.'; },
+        moistSoilAdvice: function (pct, rawAdc) { return 'மண்ணின் ஈரப்பத நிலை நன்றாக உள்ளது. (' + pct + '% | மதிப்பு: ' + rawAdc + ')'; },
         testAlarmTitle: 'சோதனை தாவர ஒலி 🌿',
         compAnalyzingAfter: 'புதிய ஸ்கேன் பகுப்பாய்வு செய்யப்படுகிறது...',
         compComparingMsg: 'முந்தைய மற்றும் தற்போதைய இலை நிலை ஒப்பிடப்படுகிறது...',
@@ -1068,6 +1096,9 @@
     var dryCalibrationAdc = 18000;
     var wetCalibrationAdc = 52000;
     var lastValidRawAdc = null;
+    var recentRawAdcReadings = [];
+    var explicitSensorInsertedFlag = null;
+    var lastSpokenSoilStateKey = '';
     var currentMoisturePct = null;
     var currentMoistureCategory = 'Disconnected';
     var reminders = [];
@@ -1519,11 +1550,11 @@
 
       if (!cpxConnected) {
         document.getElementById('cpx-status-text').textContent = t('statusPrefix') + t('disconnected');
-        document.getElementById('watering-advice-text').textContent = currentLang === 'ta'
-          ? 'மண்ணின் ஈரப்பதத்தை நேரடியாக அறிய சென்சாரை யுஎஸ்பி வழியாக இணைக்கவும்.'
-          : 'Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.';
+        document.getElementById('watering-advice-text').textContent = t('sensorCheckPlacementMsg');
       } else if (lastValidRawAdc !== null) {
-        evaluateCalibratedMoisture(lastValidRawAdc);
+        evaluateCalibratedMoisture(lastValidRawAdc, false);
+      } else {
+        document.getElementById('watering-advice-text').textContent = t('sensorCheckPlacementMsg');
       }
 
       if (lastClassification) {
@@ -1580,7 +1611,13 @@
       }
 
       if (soilPctEl && soilStateEl) {
-        if (cpxConnected && currentMoisturePct !== null) {
+        if (cpxConnected && currentMoistureCategory === 'Not Inserted') {
+          soilPctEl.textContent = '--%';
+          soilStateEl.textContent = t('catNotInserted');
+        } else if (cpxConnected && currentMoistureCategory === 'Check Placement') {
+          soilPctEl.textContent = '--%';
+          soilStateEl.textContent = t('catCheckPlacement');
+        } else if (cpxConnected && currentMoisturePct !== null) {
           soilPctEl.textContent = currentMoisturePct + '%';
           var statusWord = currentMoistureCategory;
           if (currentLang === 'ta') {
@@ -2486,7 +2523,134 @@
       return Math.round(Math.min(100, Math.max(0, ratio * 100)));
     }
 
-    function evaluateCalibratedMoisture(rawAdc) {
+    function classifySensorPlacement(rawAdc) {
+      // If firmware explicitly sends an insertion/probe contact flag, trust it directly
+      if (explicitSensorInsertedFlag === false) {
+        return 'not_inserted';
+      }
+      if (explicitSensorInsertedFlag === true) {
+        return 'inserted';
+      }
+
+      // A single capacitive/resistive ADC reading cannot reliably distinguish open air from
+      // very dry soil when rawAdc is close to dryCalibrationAdc. Only classify "not_inserted"
+      // when we have consecutive stable readings well below the calibrated dry soil baseline
+      // (open-air reading significantly drier than dry soil), and "inserted" when readings
+      // clearly exceed the dry-soil insertion margin.
+      if (dryCalibrationAdc === wetCalibrationAdc) {
+        return 'uncertain';
+      }
+
+      var ascendingScale = wetCalibrationAdc > dryCalibrationAdc;
+      var span = Math.abs(wetCalibrationAdc - dryCalibrationAdc);
+      var openAirThreshold = ascendingScale
+        ? Math.max(0, dryCalibrationAdc - Math.max(2500, Math.round(span * 0.12)))
+        : Math.min(65535, dryCalibrationAdc + Math.max(2500, Math.round(span * 0.12)));
+
+      var insertedMargin = ascendingScale
+        ? dryCalibrationAdc + Math.max(1200, Math.round(span * 0.05))
+        : dryCalibrationAdc - Math.max(1200, Math.round(span * 0.05));
+
+      var isClearlyOpenAir = ascendingScale ? (rawAdc <= openAirThreshold) : (rawAdc >= openAirThreshold);
+      var isClearlyInSoil = ascendingScale ? (rawAdc >= insertedMargin) : (rawAdc <= insertedMargin);
+
+      // Require at least 3 consecutive consistent samples before concluding out-of-soil vs in-soil
+      if (recentRawAdcReadings.length < 3) {
+        return 'uncertain';
+      }
+
+      var recentSlice = recentRawAdcReadings.slice(-3);
+      var minRecent = Math.min.apply(null, recentSlice);
+      var maxRecent = Math.max.apply(null, recentSlice);
+      var jitter = maxRecent - minRecent;
+
+      if (isClearlyOpenAir && jitter <= 1800) {
+        return 'not_inserted';
+      }
+
+      if (isClearlyInSoil) {
+        return 'inserted';
+      }
+
+      // Reading sits right around the dry-soil / open-air boundary: cannot reliably prove placement
+      return 'uncertain';
+    }
+
+    async function speakSoilStatusMessage(messageText) {
+      if (!('speechSynthesis' in window) || !messageText) return;
+      var sessionId = activeSpeechSessionId + 1;
+      activeSpeechSessionId = sessionId;
+      speechQueue = [];
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+      isSpeaking = false;
+      isPaused = false;
+
+      var voices = await ensureVoicesReady();
+      if (sessionId !== activeSpeechSessionId) return;
+
+      var isTamil = currentLang === 'ta';
+      var soilNoteEl = document.getElementById('soil-voice-status-note');
+      var voiceConfig = {
+        voice: null,
+        lang: isTamil ? 'ta-IN' : 'en-US',
+        rate: isTamil ? 0.85 : 0.98,
+        pitch: isTamil ? 1.05 : 1.02
+      };
+
+      if (isTamil) {
+        var tamilPick = pickPreferredIndianTamilFemaleVoice(voices);
+        if (!tamilPick.isTamil || !tamilPick.voice) {
+          if (soilNoteEl) {
+            soilNoteEl.textContent = t('tamilVoiceUnavailable');
+            soilNoteEl.classList.remove('hidden');
+          }
+          return;
+        }
+        voiceConfig.voice = tamilPick.voice;
+        voiceConfig.lang = tamilPick.voice.lang || 'ta-IN';
+        voiceConfig.rate = 0.85;
+        voiceConfig.pitch = 1.05;
+        if (soilNoteEl) {
+          if (!tamilPick.isNaturalFemale) {
+            soilNoteEl.textContent = t('tamilVoiceRoboticNote');
+            soilNoteEl.classList.remove('hidden');
+          } else {
+            soilNoteEl.textContent = '';
+            soilNoteEl.classList.add('hidden');
+          }
+        }
+      } else {
+        var enVoice = pickEnglishVoice(voices);
+        if (enVoice) voiceConfig.voice = enVoice;
+        if (soilNoteEl) {
+          soilNoteEl.textContent = '';
+          soilNoteEl.classList.add('hidden');
+        }
+      }
+
+      var cleanText = isTamil ? sanitizePureTamilSpeech(messageText) : messageText;
+      speechQueue = splitSpeechIntoChunks(cleanText);
+      speakNextQueuedChunk(sessionId, voiceConfig);
+    }
+
+    function speakSoilMoistureStatus() {
+      var adviceEl = document.getElementById('watering-advice-text');
+      var textToRead = adviceEl ? adviceEl.textContent.trim() : t('sensorCheckPlacementMsg');
+      speakSoilStatusMessage(textToRead);
+    }
+
+    function announceSoilStateIfChanged(stateKey, spokenMsg) {
+      if (stateKey && stateKey !== lastSpokenSoilStateKey) {
+        lastSpokenSoilStateKey = stateKey;
+        if (currentLang === 'ta') {
+          speakSoilStatusMessage(spokenMsg);
+        }
+      }
+    }
+
+    function evaluateCalibratedMoisture(rawAdc, allowAutoVoice) {
       var buzzerBanner = document.getElementById('soil-buzzer-banner');
       var warningBanner = document.getElementById('soil-warning-banner');
       var categoryEl = document.getElementById('soil-moisture-category');
@@ -2497,6 +2661,7 @@
         stopBuzzerAudio();
         buzzerBanner.classList.add('hidden');
         warningBanner.classList.add('hidden');
+        adviceEl.textContent = t('sensorCheckPlacementMsg');
         updateDashboardSummary();
         return;
       }
@@ -2513,9 +2678,54 @@
       }
 
       lastValidRawAdc = rawAdc;
+      document.getElementById('soil-moisture-raw').textContent = 'ADC: ' + rawAdc;
+
+      var placementState = classifySensorPlacement(rawAdc);
+
+      if (placementState === 'not_inserted') {
+        currentMoisturePct = null;
+        currentMoistureCategory = 'Not Inserted';
+        stopBuzzerAudio();
+        sendCPXSerialCommand('BUZZER:OFF');
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.add('hidden');
+        document.getElementById('soil-moisture-pct').textContent = '--%';
+        categoryEl.textContent = t('catNotInserted');
+        categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-slate-600';
+        barEl.style.width = '0%';
+        barEl.className = 'h-full transition-all duration-300 bg-slate-400';
+        var notInsertedText = t('sensorNotInsertedMsg');
+        adviceEl.textContent = notInsertedText;
+        if (allowAutoVoice !== false) {
+          announceSoilStateIfChanged('not_inserted', notInsertedText);
+        }
+        updateDashboardSummary();
+        return;
+      }
+
+      if (placementState === 'uncertain') {
+        currentMoisturePct = null;
+        currentMoistureCategory = 'Check Placement';
+        stopBuzzerAudio();
+        sendCPXSerialCommand('BUZZER:OFF');
+        buzzerBanner.classList.add('hidden');
+        warningBanner.classList.add('hidden');
+        document.getElementById('soil-moisture-pct').textContent = '--%';
+        categoryEl.textContent = t('catCheckPlacement');
+        categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-amber-700';
+        barEl.style.width = '0%';
+        barEl.className = 'h-full transition-all duration-300 bg-amber-400';
+        var checkPlacementText = t('sensorCheckPlacementMsg');
+        adviceEl.textContent = checkPlacementText;
+        if (allowAutoVoice !== false) {
+          announceSoilStateIfChanged('uncertain', checkPlacementText);
+        }
+        updateDashboardSummary();
+        return;
+      }
+
       currentMoisturePct = pct;
       document.getElementById('soil-moisture-pct').textContent = pct + '%';
-      document.getElementById('soil-moisture-raw').textContent = 'ADC: ' + rawAdc;
       barEl.style.width = pct + '%';
 
       if (pct <= 30) {
@@ -2529,6 +2739,9 @@
         adviceEl.textContent = t('drySoilAdvice')(pct, rawAdc);
         sendCPXSerialCommand('BUZZER:ON');
         playBuzzerAudio();
+        if (allowAutoVoice !== false) {
+          announceSoilStateIfChanged('dry', currentLang === 'ta' ? 'மண் உலர்ந்துள்ளது. செடிக்கு நீர் ஊற்றவும்.' : 'Soil is dry. Please water the plant.');
+        }
       } else if (pct <= 60) {
         currentMoistureCategory = 'Moderate';
         stopBuzzerAudio();
@@ -2540,6 +2753,9 @@
         categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-amber-600';
         barEl.className = 'h-full transition-all duration-300 bg-amber-500';
         adviceEl.textContent = t('moderateSoilAdvice')(pct, rawAdc);
+        if (allowAutoVoice !== false) {
+          announceSoilStateIfChanged('moderate', currentLang === 'ta' ? 'மண்ணின் ஈரப்பதம் மிதமாக உள்ளது.' : 'Soil moisture level is moderate.');
+        }
       } else {
         currentMoistureCategory = 'Moist';
         stopBuzzerAudio();
@@ -2550,6 +2766,9 @@
         categoryEl.className = 'text-xs font-extrabold uppercase mt-1 text-emerald-700';
         barEl.className = 'h-full transition-all duration-300 bg-emerald-600';
         adviceEl.textContent = t('moistSoilAdvice')(pct, rawAdc);
+        if (allowAutoVoice !== false) {
+          announceSoilStateIfChanged('good', currentLang === 'ta' ? 'மண்ணின் ஈரப்பத நிலை நன்றாக உள்ளது.' : 'Soil moisture level is good.');
+        }
       }
 
       updateDashboardSummary();
@@ -2567,7 +2786,7 @@
         }));
       } catch (e) {}
       if (cpxConnected && lastValidRawAdc !== null) {
-        evaluateCalibratedMoisture(lastValidRawAdc);
+        evaluateCalibratedMoisture(lastValidRawAdc, false);
       }
     }
 
@@ -2598,6 +2817,9 @@
 
         serialPort = port;
         cpxConnected = true;
+        recentRawAdcReadings = [];
+        explicitSensorInsertedFlag = null;
+        lastSpokenSoilStateKey = '';
 
         if (port.writable) {
           try {
@@ -2613,6 +2835,7 @@
         document.getElementById('disconnect-cpx-btn').classList.remove('hidden');
         document.getElementById('soil-meter-placeholder').classList.add('hidden');
         document.getElementById('soil-meter-active').classList.remove('hidden');
+        document.getElementById('watering-advice-text').textContent = t('sensorCheckPlacementMsg');
 
         updateDashboardSummary();
         readSerialDataStream();
@@ -2628,6 +2851,9 @@
       cpxConnected = false;
       stopBuzzerAudio();
       lastValidRawAdc = null;
+      recentRawAdcReadings = [];
+      explicitSensorInsertedFlag = null;
+      lastSpokenSoilStateKey = '';
       currentMoisturePct = null;
       currentMoistureCategory = 'Disconnected';
       document.getElementById('soil-buzzer-banner').classList.add('hidden');
@@ -2662,9 +2888,7 @@
       document.getElementById('disconnect-cpx-btn').classList.add('hidden');
       document.getElementById('soil-meter-placeholder').classList.remove('hidden');
       document.getElementById('soil-meter-active').classList.add('hidden');
-      document.getElementById('watering-advice-text').textContent = currentLang === 'ta'
-        ? 'மண்ணின் ஈரப்பதத்தை நேரடியாக அறிய சென்சாரை யுஎஸ்பி வழியாக இணைக்கவும்.'
-        : 'Connect your Circuit Playground Express (CPX) via USB to read live MOISTURE:value data from pad A1.';
+      document.getElementById('watering-advice-text').textContent = t('sensorCheckPlacementMsg');
       updateDashboardSummary();
     }
 
@@ -2689,11 +2913,25 @@
               rawEl.classList.remove('hidden');
               rawEl.textContent = 'Serial Rx: ' + trimmed;
 
+              var insertedMatch = trimmed.match(/^(?:INSERTED|IN_SOIL|PROBE):\s*(0|1|true|false|yes|no)$/i);
+              if (insertedMatch) {
+                var flagNorm = insertedMatch[1].toLowerCase();
+                explicitSensorInsertedFlag = (flagNorm === '1' || flagNorm === 'true' || flagNorm === 'yes');
+                if (lastValidRawAdc !== null) {
+                  evaluateCalibratedMoisture(lastValidRawAdc, true);
+                }
+                continue;
+              }
+
               var match = trimmed.match(/^MOISTURE:\s*(-?\d+)$/i);
               if (match) {
                 var rawVal = parseInt(match[1], 10);
                 if (!isNaN(rawVal) && rawVal >= 0 && rawVal <= 65535) {
-                  evaluateCalibratedMoisture(rawVal);
+                  recentRawAdcReadings.push(rawVal);
+                  if (recentRawAdcReadings.length > 6) {
+                    recentRawAdcReadings.shift();
+                  }
+                  evaluateCalibratedMoisture(rawVal, true);
                 } else {
                   stopBuzzerAudio();
                   document.getElementById('soil-buzzer-banner').classList.add('hidden');
@@ -3040,6 +3278,28 @@
       document.getElementById('comparison-modal').classList.add('hidden');
     }
 
+    function updateOfflineBannerStatus() {
+      var banner = document.getElementById('offline-status-banner');
+      if (!banner) return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function handleScanBack() {
+      stopVoiceReading();
+      hideScanError();
+      var resultsContainer = document.getElementById('scan-results-container');
+      var loadingState = document.getElementById('scan-loading-state');
+      var emptyState = document.getElementById('scan-empty-state');
+      if (resultsContainer) resultsContainer.classList.add('hidden');
+      if (loadingState) loadingState.classList.add('hidden');
+      if (emptyState) emptyState.classList.remove('hidden');
+      updateDashboardSummary();
+    }
+
     function renderScanLogs() {
       var container = document.getElementById('scan-logs-container');
       var heading = document.getElementById('logs-count-heading');
@@ -3110,6 +3370,7 @@
     window.connectCPX = connectCPX;
     window.disconnectCPX = disconnectCPX;
     window.toggleBuzzerMute = toggleBuzzerMute;
+    window.speakSoilMoistureStatus = speakSoilMoistureStatus;
     window.updateCalibrationValues = updateCalibrationValues;
     window.setCurrentAsDryCalib = setCurrentAsDryCalib;
     window.setCurrentAsWetCalib = setCurrentAsWetCalib;
@@ -3125,6 +3386,7 @@
     window.closeLogDetailModal = closeLogDetailModal;
     window.handleComparePhotoUpload = handleComparePhotoUpload;
     window.closeComparisonModal = closeComparisonModal;
+    window.handleScanBack = handleScanBack;
 
     // Replay any queued upload events or camera calls captured by early stubs
     if (Array.isArray(window.__queuedUploadEvents) && window.__queuedUploadEvents.length > 0) {
@@ -3215,6 +3477,10 @@
       }
 
       applyLanguageUI();
+      updateOfflineBannerStatus();
+
+      window.addEventListener('online', updateOfflineBannerStatus);
+      window.addEventListener('offline', updateOfflineBannerStatus);
 
       setInterval(function () {
         checkScheduledReminders(appMountTime);
