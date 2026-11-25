@@ -1056,22 +1056,146 @@
       function playTamilAudioFallback(text) {
         return new Promise((resolve) => {
           try {
-            const snippet = String(text || '').slice(0, 180);
-            if (!snippet) {
+            const raw = String(text || '').trim();
+            if (!raw) {
               resolve(false);
               return;
             }
-            const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ta&client=tw-ob&q=${encodeURIComponent(snippet)}`;
-            const audio = new Audio(url);
-            activeTamilAudio = audio;
-            audio.oncanplaythrough = () => {
-              audio.play().then(() => resolve(true)).catch(() => resolve(false));
+
+            // Split long Tamil narration into safe segments so TTS endpoints accept every chunk
+            const chunks = [];
+            const sentences = raw.split(/(?<=[.!?।])\s+/);
+            let current = '';
+            for (const part of sentences) {
+              if ((current + ' ' + part).trim().length <= 165) {
+                current = (current + ' ' + part).trim();
+              } else {
+                if (current) chunks.push(current);
+                if (part.length > 165) {
+                  for (let i = 0; i < part.length; i += 160) {
+                    chunks.push(part.slice(i, i + 160));
+                  }
+                  current = '';
+                } else {
+                  current = part;
+                }
+              }
+            }
+            if (current) chunks.push(current);
+
+            const endpoints = [
+              (q) => `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=ta&client=gtx&q=${encodeURIComponent(q)}`,
+              (q) => `https://translate.google.com/translate_tts?ie=UTF-8&tl=ta-IN&client=tw-ob&q=${encodeURIComponent(q)}`
+            ];
+
+            let playedAny = false;
+            let index = 0;
+
+            const playChunk = () => {
+              if (index >= chunks.length) {
+                activeTamilAudio = null;
+                resolve(playedAny);
+                return;
+              }
+              const chunk = chunks[index++];
+              let epIdx = 0;
+
+              const tryEndpoint = () => {
+                if (epIdx >= endpoints.length) {
+                  playChunk();
+                  return;
+                }
+                const audio = new Audio();
+                audio.preload = 'auto';
+                audio.src = endpoints[epIdx++](chunk);
+                activeTamilAudio = audio;
+
+                let finished = false;
+                const done = (ok) => {
+                  if (finished) return;
+                  finished = true;
+                  if (ok) {
+                    playedAny = true;
+                    playChunk();
+                  } else {
+                    tryEndpoint();
+                  }
+                };
+
+                audio.onended = () => done(true);
+                audio.onerror = () => done(false);
+
+                const playPromise = audio.play();
+                if (playPromise && typeof playPromise.then === 'function') {
+                  playPromise.catch(() => done(false));
+                }
+              };
+
+              tryEndpoint();
             };
-            audio.onerror = () => resolve(false);
-            audio.play().then(() => resolve(true)).catch(() => resolve(false));
+
+            playChunk();
           } catch {
             resolve(false);
           }
+        });
+      }
+
+      function waitForTamilBrowserVoices(timeoutMs = 1800) {
+        return new Promise((resolve) => {
+          if (!('speechSynthesis' in window)) {
+            resolve([]);
+            return;
+          }
+
+          const findTamil = (list) =>
+            (Array.isArray(list) ? list : []).filter(
+              (v) => v && typeof v.lang === 'string' && (/^ta[-_]?IN$/i.test(v.lang) || /^ta([-_]|$)/i.test(v.lang))
+            );
+
+          const immediate = findTamil(window.speechSynthesis.getVoices());
+          if (immediate.length > 0) {
+            resolve(immediate);
+            return;
+          }
+
+          let settled = false;
+          let pollTimer = null;
+          let maxTimer = null;
+
+          const finish = (voices) => {
+            if (settled) return;
+            settled = true;
+            if (pollTimer) clearInterval(pollTimer);
+            if (maxTimer) clearTimeout(maxTimer);
+            try {
+              window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+            } catch {}
+            resolve(voices);
+          };
+
+          const onVoicesChanged = () => {
+            const matches = findTamil(window.speechSynthesis.getVoices());
+            if (matches.length > 0) {
+              finish(matches);
+            }
+          };
+
+          try {
+            window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+          } catch {}
+
+          // Poll periodically because some deployed Chromium builds populate getVoices() asynchronously without firing voiceschanged cleanly
+          pollTimer = setInterval(() => {
+            const matches = findTamil(window.speechSynthesis.getVoices());
+            if (matches.length > 0) {
+              finish(matches);
+            }
+          }, 150);
+
+          maxTimer = setTimeout(() => {
+            finish(findTamil(window.speechSynthesis.getVoices()));
+          }, timeoutMs);
         });
       }
 
@@ -1100,34 +1224,18 @@
             return;
           }
 
-          if ('speechSynthesis' in window) {
-            const waitedVoices = await new Promise((resolve) => {
-              let settled = false;
-              const onVoicesChanged = () => {
-                if (settled) return;
-                settled = true;
-                window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
-                resolve(window.speechSynthesis.getVoices());
-              };
-              window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
-              setTimeout(() => {
-                if (settled) return;
-                settled = true;
-                window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
-                resolve(window.speechSynthesis.getVoices());
-              }, 450);
-            });
-
-            if (playTamilSpeechWithSynthesis(narration, waitedVoices)) {
-              if (banner) banner.classList.add('hidden');
-              return;
-            }
+          const waitedTamilVoices = await waitForTamilBrowserVoices(1800);
+          if (waitedTamilVoices.length > 0 && playTamilSpeechWithSynthesis(narration, waitedTamilVoices)) {
+            if (banner) banner.classList.add('hidden');
+            return;
           }
 
           const playedFallback = await playTamilAudioFallback(narration);
           if (!playedFallback && banner) {
             banner.textContent = t('noTamilVoiceMsg');
             banner.classList.remove('hidden');
+          } else if (banner) {
+            banner.classList.add('hidden');
           }
           return;
         }
