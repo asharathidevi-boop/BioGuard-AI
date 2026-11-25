@@ -595,9 +595,12 @@
       const STORAGE_REMINDERS_KEY = 'bioguard_reminders_v6';
       const STORAGE_CORRECTIONS_KEY = 'bioguard_corrections_v1';
       const STORAGE_AI_FEEDBACK_KEY = 'bioguard_ai_feedback_v1';
+      const IDB_NAME = 'bioguard_ai_db_v1';
+      const IDB_STORE_CORRECTIONS = 'corrections';
 
       let currentLang = 'en';
       let currentImageDataUrl = null;
+      let currentImageHash = null;
       let currentScanRecord = null;
       let latestAiPredictionLabel = null;
       let selectedFeedbackCategory = 'Healthy Leaf';
@@ -617,6 +620,95 @@
       let reminders = [];
       let corrections = [];
       let aiFeedbackEntries = [];
+      let correctionsReadyPromise = null;
+
+      async function computeSha256Fingerprint(inputStr) {
+        if (!inputStr || typeof inputStr !== 'string') return null;
+        try {
+          const encoder = new TextEncoder();
+          const data = encoder.encode(inputStr);
+          if (window.crypto && window.crypto.subtle && typeof window.crypto.subtle.digest === 'function') {
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+          }
+        } catch {}
+        let h1 = 0x811c9dc5;
+        let h2 = 0x01000193;
+        for (let i = 0; i < inputStr.length; i++) {
+          const ch = inputStr.charCodeAt(i);
+          h1 ^= ch;
+          h1 = Math.imul(h1, 0x01000193);
+          h2 ^= ch + i;
+          h2 = Math.imul(h2, 0x85ebca6b);
+        }
+        return (h1 >>> 0).toString(16).padStart(8, '0') + (h2 >>> 0).toString(16).padStart(8, '0');
+      }
+
+      function openCorrectionsDB() {
+        return new Promise((resolve, reject) => {
+          if (!('indexedDB' in window)) {
+            reject(new Error('IndexedDB unavailable'));
+            return;
+          }
+          const req = window.indexedDB.open(IDB_NAME, 1);
+          req.onupgradeneeded = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains(IDB_STORE_CORRECTIONS)) {
+              db.createObjectStore(IDB_STORE_CORRECTIONS, { keyPath: 'id' });
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error || new Error('IndexedDB open error'));
+        });
+      }
+
+      async function readCorrectionsFromIndexedDB() {
+        const db = await openCorrectionsDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE_CORRECTIONS, 'readonly');
+          const store = tx.objectStore(IDB_STORE_CORRECTIONS);
+          const req = store.getAll();
+          req.onsuccess = () => {
+            const rows = Array.isArray(req.result) ? req.result : [];
+            rows.sort((a, b) => (b.savedAtMs || 0) - (a.savedAtMs || 0));
+            resolve(rows);
+          };
+          req.onerror = () => reject(req.error || new Error('IndexedDB read error'));
+        });
+      }
+
+      async function syncCorrectionsToIndexedDB(records) {
+        const db = await openCorrectionsDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE_CORRECTIONS, 'readwrite');
+          const store = tx.objectStore(IDB_STORE_CORRECTIONS);
+          store.clear();
+          for (const item of records) {
+            store.put(item);
+          }
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error || new Error('IndexedDB write error'));
+        });
+      }
+
+      function normalizeCorrectionCategory(cat) {
+        const raw = (cat || '').trim();
+        const lower = raw.toLowerCase();
+        if (lower.includes('dry')) return 'Dry Leaf';
+        if (lower.includes('insect')) return 'Insect Damaged Leaf';
+        if (lower.includes('healthy')) return 'Healthy Leaf';
+        return raw || 'Healthy Leaf';
+      }
+
+      async function enrichCorrectionsWithHashes(list) {
+        const enriched = [];
+        for (const item of list) {
+          const sha256 = item.imageSha256 || (item.imageDataUrl ? await computeSha256Fingerprint(item.imageDataUrl) : null);
+          enriched.push(Object.assign({}, item, { imageSha256: sha256 }));
+        }
+        return enriched;
+      }
 
       function loadState() {
         try {
@@ -636,19 +728,28 @@
           aiFeedbackEntries = [];
         }
 
-        const scanEl = document.getElementById('kpi-total-scans');
-        const corrEl = document.getElementById('kpi-total-corrections');
-        const remEl = document.getElementById('kpi-active-reminders');
-        if (scanEl) scanEl.textContent = String(scanLogs.length);
-        if (corrEl) corrEl.textContent = String(corrections.length);
-        if (remEl) remEl.textContent = String(reminders.filter((r) => !r.completed).length);
+        correctionsReadyPromise = (async () => {
+          try {
+            const idbCorrections = await readCorrectionsFromIndexedDB();
+            if (idbCorrections.length > 0) {
+              corrections = await enrichCorrectionsWithHashes(idbCorrections);
+            } else if (corrections.length > 0) {
+              corrections = await enrichCorrectionsWithHashes(corrections);
+              await syncCorrectionsToIndexedDB(corrections);
+            }
+          } catch {
+            corrections = await enrichCorrectionsWithHashes(corrections);
+          }
+          renderDashboard();
+          renderCorrections();
+          return corrections;
+        })();
 
-        const hEl = document.getElementById('count-healthy-samples');
-        const dEl = document.getElementById('count-dry-samples');
-        const iEl = document.getElementById('count-insect-samples');
-        if (hEl) hEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('healthy')).length);
-        if (dEl) dEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('dry')).length);
-        if (iEl) iEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('insect')).length);
+        renderDashboard();
+      }
+
+      function renderDashboard() {
+        renderTrainerDatasetSummary();
       }
 
       function saveState() {
@@ -1365,7 +1466,7 @@
         const guide = buildGuidanceForClass(rawCategory);
         document.getElementById('result-condition-title').textContent = guide.displayLabel;
         document.getElementById('result-confidence-badge').textContent = isVerifiedMatch
-          ? (currentLang === 'ta' ? 'சரிபார்க்கப்பட்டது' : 'Verified')
+          ? (currentLang === 'ta' ? 'முன்பு சரிபார்க்கப்பட்ட முடிவு' : 'Previously Verified Result')
           : confidenceText;
         document.getElementById('result-detailed-analysis').textContent = guide.detailedAnalysis;
         document.getElementById('result-condition-summary').textContent = guide.summary;
@@ -1378,6 +1479,10 @@
 
       async function analyzeLeafDataUrl(dataUrl) {
         currentImageDataUrl = dataUrl;
+        currentImageHash = await computeSha256Fingerprint(dataUrl);
+        if (correctionsReadyPromise) {
+          await correctionsReadyPromise;
+        }
         window.clearScanMessage();
         const savedBanner = document.getElementById('correction-saved-status');
         if (savedBanner) savedBanner.classList.add('hidden');
@@ -1416,8 +1521,11 @@
             return;
           }
 
-          const exactMatch = corrections.find((c) => c.imageDataUrl === dataUrl);
+          const exactMatch = corrections.find(
+            (c) => (currentImageHash && c.imageSha256 === currentImageHash) || (!c.imageSha256 && c.imageDataUrl === dataUrl)
+          );
           if (exactMatch) {
+            const primaryCategory = normalizeCorrectionCategory(exactMatch.correctedCategory);
             document.getElementById('scan-loading-state').classList.add('hidden');
             document.getElementById('scan-results-panel').classList.remove('hidden');
             document.getElementById('inline-train-correct-card').classList.remove('hidden');
@@ -1425,19 +1533,21 @@
             const banner = document.getElementById('exact-match-banner');
             banner.classList.remove('hidden');
             banner.textContent = currentLang === 'ta'
-              ? 'முன்பு சரிபார்க்கப்பட்ட முடிவு: ' + exactMatch.correctedCategory
-              : 'Previously Verified Result: ' + exactMatch.correctedCategory;
+              ? 'Previously Verified Result • சேமிக்கப்பட்ட திருத்தம்: ' + primaryCategory
+              : 'Previously Verified Result — Saved Correction: ' + primaryCategory;
 
-            populateDetailedResultView(exactMatch.correctedCategory, 'Verified', true);
+            populateDetailedResultView(primaryCategory, 'Previously Verified Result', true);
             currentScanRecord = {
               id: 'scan-' + Date.now(),
               timestamp: new Date().toLocaleString(),
-              rawCategory: exactMatch.correctedCategory,
-              condition: exactMatch.correctedCategory,
-              confidence: 'Verified',
+              rawCategory: primaryCategory,
+              condition: primaryCategory,
+              confidence: 'Previously Verified Result',
               isVerifiedMatch: true,
+              imageSha256: currentImageHash,
               image: dataUrl
             };
+            showAiFeedbackPanel(primaryCategory + ' (Previously Verified Result)', dataUrl);
             return;
           }
 
@@ -1535,48 +1645,48 @@
         document.getElementById('scan-empty-state').classList.remove('hidden');
         window.clearScanMessage();
       };
-
-      window.selectCorrectionCategory = function (cat) {
-        const sel = document.getElementById('correction-category-select');
-        if (sel) sel.value = cat;
-      };
-
-      window.syncCorrectionRadio = function (cat) {
-        const radios = document.querySelectorAll('input[name="leaf-correction-type"]');
-        radios.forEach((r) => {
-          r.checked = r.value === cat;
-        });
-      };
-
-      window.submitCorrection = function () {
+      window.submitCorrection = async function () {
         if (!currentImageDataUrl) return;
+        const hash = currentImageHash || (await computeSha256Fingerprint(currentImageDataUrl));
+        currentImageHash = hash;
         const sel = document.getElementById('correction-category-select');
         const checkedRadio = document.querySelector('input[name="leaf-correction-type"]:checked');
         const cat = (checkedRadio && checkedRadio.value) || (sel && sel.value) || 'Healthy';
+        const displayCategory = normalizeCorrectionCategory(cat);
         if (sel) sel.value = cat;
         window.syncCorrectionRadio(cat);
         const notes = document.getElementById('correction-notes-input').value.trim();
-        corrections.unshift({
-          id: 'corr-' + Date.now(),
-          timestamp: new Date().toLocaleString(),
+        const savedAtMs = Date.now();
+        const newCorrection = {
+          id: 'corr-' + savedAtMs,
+          savedAtMs,
+          timestamp: new Date(savedAtMs).toLocaleString(),
           originalPrediction: currentScanRecord ? currentScanRecord.condition : 'Unknown',
           confidence: currentScanRecord ? currentScanRecord.confidence : '',
-          correctedCategory: cat,
+          correctedCategory: displayCategory,
+          rawSelectedCategory: cat,
+          imageSha256: hash,
           notes,
           imageDataUrl: currentImageDataUrl
-        });
+        };
+        corrections = corrections.filter((c) => !(hash && c.imageSha256 === hash));
+        corrections.unshift(newCorrection);
         trainingSamples.push({
-          id: 'sample-' + Date.now(),
-          name: 'scan-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-'),
+          id: 'sample-' + savedAtMs,
+          name: 'scan-' + new Date(savedAtMs).toISOString().slice(0, 19).replace(/[:T]/g, '-'),
           label: cat,
+          imageSha256: hash,
           dataUrl: currentImageDataUrl
         });
         saveState();
+        try {
+          await syncCorrectionsToIndexedDB(corrections);
+        } catch {}
         document.getElementById('correction-notes-input').value = '';
         const savedBanner = document.getElementById('correction-saved-status');
         if (savedBanner) {
           savedBanner.textContent =
-            'Saved "' + cat + '" correction with the scanned leaf image in the dataset. Saving a correction does not automatically retrain the AI model.';
+            'Previously Verified Result saved as "' + displayCategory + '" in IndexedDB (SHA-256 matched). Original prediction remains recorded in history; saving a correction does not retrain the Teachable Machine model.';
           savedBanner.classList.remove('hidden');
         }
         renderDashboard();
