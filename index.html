@@ -1,151 +1,2132 @@
-<!-- ... existing code ... -->
-    body {
-      background: linear-gradient(160deg, #071A18 0%, #0B252C 48%, #0E3328 100%);
-      color: #1E293B;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioGuard AI — Plant Health &amp; Soil Monitoring System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(160deg, #071A18 0%, #0B252C 48%, #0E3328 100%);
+      --hero-gradient: linear-gradient(135deg, #061817 0%, #0C2C38 52%, #103B2C 100%);
+      --card-bg: #F6FBF8;
+      --card-border: #C8DDD6;
+      --primary-btn: #34D399;
+      --primary-btn-hover: #10B981;
+      --active-tab: #22D3EE;
+      --text-dark: #1E293B;
+      --text-light: #FFFFFF;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(160deg, #071A18 0%, #0B252C 48%, #0E3328 100%) !important;
+      color: #1E293B !important;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
-    .bioguard-hero-banner {
-      background: linear-gradient(135deg, #061817 0%, #0C2C38 52%, #103B2C 100%);
-      color: #FFFFFF;
+
+    /* Custom Typography & Animations */
+    .font-serif-heading {
+      font-family: 'Playfair Display', 'Noto Sans Tamil', Georgia, serif;
     }
-    .bioguard-card {
-      background-color: #F6FBF8;
-      border: 1px solid #C8DDD6;
-      box-shadow: 0 12px 28px -10px rgba(4, 20, 22, 0.35);
-      color: #1E293B;
+
+    .font-sans-body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
     }
-    .bioguard-primary-btn {
-      background-color: #34D399;
-      color: #051B14;
-      border: 1px solid #10B981;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
     }
-    .bioguard-primary-btn:hover {
-      background-color: #10B981;
-      color: #04140F;
-    }
-    .bioguard-active-tab {
-      background-color: #22D3EE;
-      color: #05151C;
-    }
+
     .animate-fade-in {
-<!-- ... existing code ... -->
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #F2F7F0;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #CFE0CC;
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #95D5A6;
+    }
+
+    .bioguard-hero-banner {
+      background: linear-gradient(135deg, #061817 0%, #0C2C38 52%, #103B2C 100%) !important;
+      color: #FFFFFF !important;
+      border: 1px solid #1E4D58;
+    }
+
+    .bioguard-card {
+      background-color: #F6FBF8 !important;
+      border: 1px solid #C8DDD6 !important;
+      box-shadow: 0 12px 28px -10px rgba(4, 20, 22, 0.42);
+      color: #1E293B !important;
+    }
+
+    .bioguard-primary-btn {
+      background-color: #34D399 !important;
+      color: #051B14 !important;
+      border: 1px solid #10B981 !important;
+    }
+
+    .bioguard-primary-btn:hover {
+      background-color: #10B981 !important;
+      color: #051B14 !important;
+      border-color: #10B981 !important;
+    }
+
+    .bioguard-active-tab {
+      background-color: #22D3EE !important;
+      color: #05151C !important;
+    }
+
+    .animate-fade-in {
+      animation: bgFadeIn 0.22s ease-out;
+    }
+
+    @keyframes bgFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="pb-16">
+  <!-- OFFLINE STATUS BANNER -->
+  <div id="offline-banner" class="hidden bg-rose-950/95 border-b border-rose-500/40 text-rose-100 px-4 py-2.5 text-center text-xs font-bold">
+    <span data-en="You are Offline. Please check your internet connection." data-ta="நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். தயவுசெய்து உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.">
+      You are Offline. Please check your internet connection.
+    </span>
+  </div>
+
+  <!-- TOP HEADER & NAVIGATION -->
   <header class="sticky top-0 z-40 bg-[#07191C]/95 backdrop-blur-md border-b border-[#193E47] shadow-lg text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#124A36] to-[#0E4A6E] border border-[#38BDF8]/35 text-[#86EFAC] flex items-center justify-center shadow-sm shrink-0">
-          <i data-lucide="leaf" class="w-6 h-6"></i>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#124A36] to-[#0E4A6E] border border-[#38BDF8]/40 text-[#86EFAC] flex items-center justify-center shadow-sm shrink-0">
+          <i data-lucide="leaf" class="w-5 h-5"></i>
         </div>
-        <div>
-          <h1 class="font-serif-heading text-lg sm:text-xl font-extrabold text-white tracking-tight leading-none">
+        <div class="min-w-0">
+          <h1 class="font-serif-heading text-lg sm:text-xl font-extrabold text-white tracking-tight leading-none truncate">
             BioGuard AI
           </h1>
-          <p id="brand-subtitle" class="text-[10px] font-bold text-[#67E8F9] uppercase tracking-wider mt-1" data-en="Plant Health System" data-ta="தாவர ஆரோக்கிய அமைப்பு">
-            Plant Health System
+          <p class="text-[10px] font-bold text-[#67E8F9] uppercase tracking-wider mt-1 truncate" data-en="Plant Health &amp; Soil System" data-ta="தாவர ஆரோக்கிய &amp; மண் அமைப்பு">
+            Plant Health &amp; Soil System
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 shrink-0">
         <nav class="hidden md:flex items-center gap-1 bg-[#0C232B] p-1 rounded-xl border border-[#1C4552]">
-          <button type="button" onclick="window.switchTab('scan')" id="nav-desktop-scan" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bioguard-active-tab shadow-xs" data-en="Scan &amp; Dashboard" data-ta="ஸ்கேன் &amp; டாஷ்போர்டு">Scan &amp; Dashboard</button>
-          <button type="button" onclick="window.switchTab('soil')" id="nav-desktop-soil" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="CPX Soil &amp; Buzzer" data-ta="மண்ணின் ஈரப்பதம் &amp; பஸர்">CPX Soil &amp; Buzzer</button>
-          <button type="button" onclick="window.switchTab('logs')" id="nav-desktop-logs" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="Reminders &amp; Logs" data-ta="நினைவூட்டல் &amp; பதிவுகள்">Reminders &amp; Logs</button>
-          <button type="button" onclick="window.switchTab('training')" id="nav-desktop-training" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="AI Training Data" data-ta="AI பயிற்சி தரவு">AI Training Data</button>
-          <button type="button" onclick="window.switchTab('about')" id="nav-desktop-about" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="About &amp; Creators" data-ta="குறிப்பு &amp; உருவாக்கியோர்">About &amp; Creators</button>
+          <button type="button" id="nav-desktop-scan" onclick="window.switchTab('scan')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bioguard-active-tab" data-en="Scan &amp; Dashboard" data-ta="ஸ்கேன் &amp; டாஷ்போர்டு">Scan &amp; Dashboard</button>
+          <button type="button" id="nav-desktop-soil" onclick="window.switchTab('soil')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="CPX Soil &amp; Buzzer" data-ta="மண் ஈரப்பதம் &amp; பஸர்">CPX Soil &amp; Buzzer</button>
+          <button type="button" id="nav-desktop-logs" onclick="window.switchTab('logs')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="Reminders &amp; Logs" data-ta="நினைவூட்டல் &amp; பதிவுகள்">Reminders &amp; Logs</button>
+          <button type="button" id="nav-desktop-about" onclick="window.switchTab('about')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]" data-en="About &amp; Creators" data-ta="குறிப்பு &amp; உருவாக்கியோர்">About &amp; Creators</button>
         </nav>
 
         <div class="flex items-center gap-1 bg-[#0C232B] p-1 rounded-xl border border-[#1C4552]">
-          <button type="button" onclick="window.setLanguage('en')" id="lang-en-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn">
-            English
-          </button>
-          <button type="button" onclick="window.setLanguage('ta')" id="lang-ta-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]">
-            தமிழ்
-          </button>
+          <button type="button" id="lang-en-btn" onclick="window.setLanguage('en')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn">English</button>
+          <button type="button" id="lang-ta-btn" onclick="window.setLanguage('ta')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]">தமிழ்</button>
         </div>
       </div>
     </div>
 
-    <div class="md:hidden flex items-center justify-around bg-[#091F26] border-t border-[#193E47] px-2 py-2">
-      <button type="button" onclick="window.switchTab('scan')" id="nav-mobile-scan" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bioguard-active-tab" data-en="Scan" data-ta="ஸ்கேன்">Scan</button>
-      <button type="button" onclick="window.switchTab('soil')" id="nav-mobile-soil" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white" data-en="CPX Soil" data-ta="மண் ஈரப்பதம்">CPX Soil</button>
-      <button type="button" onclick="window.switchTab('logs')" id="nav-mobile-logs" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white" data-en="Logs &amp; Alerts" data-ta="பதிவுகள்">Logs &amp; Alerts</button>
-      <button type="button" onclick="window.switchTab('training')" id="nav-mobile-training" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white" data-en="AI Data" data-ta="AI தரவு">AI Data</button>
-      <button type="button" onclick="window.switchTab('about')" id="nav-mobile-about" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white" data-en="About" data-ta="குறிப்பு">About</button>
+    <!-- MOBILE NAVIGATION -->
+    <div class="md:hidden flex items-center justify-around bg-[#091F26] border-t border-[#193E47] px-2 py-2 gap-1 overflow-x-auto">
+      <button type="button" id="nav-mobile-scan" onclick="window.switchTab('scan')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bioguard-active-tab whitespace-nowrap" data-en="Scan" data-ta="ஸ்கேன்">Scan</button>
+      <button type="button" id="nav-mobile-soil" onclick="window.switchTab('soil')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white whitespace-nowrap" data-en="CPX Soil" data-ta="மண் ஈரப்பதம்">CPX Soil</button>
+      <button type="button" id="nav-mobile-logs" onclick="window.switchTab('logs')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white whitespace-nowrap" data-en="Logs &amp; Alerts" data-ta="பதிவுகள்">Logs &amp; Alerts</button>
+      <button type="button" id="nav-mobile-about" onclick="window.switchTab('about')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-white whitespace-nowrap" data-en="About" data-ta="குறிப்பு">About</button>
     </div>
   </header>
-<!-- ... existing code ... -->
-      var enBtn = document.getElementById('lang-en-btn');
-      var taBtn = document.getElementById('lang-ta-btn');
-      if (enBtn && taBtn) {
-        enBtn.className = currentLang === 'en'
-          ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn'
-          : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
-        taBtn.className = currentLang === 'ta'
-          ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn'
-          : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
-      }
 
-      document.querySelectorAll('[data-en][data-ta]').forEach(function (el) {
-<!-- ... existing code ... -->
-    function checkScheduledReminders(appMountTime) {
-      // Never auto-open the reminder modal on app load or background tick; open only on explicit user click.
-      if (!appMountTime) return;
-      var modal = document.getElementById('reminder-alarm-modal');
-      if (modal && !modal.dataset.userOpened && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
-      }
-    }
+  <!-- MAIN WORKSPACE -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+    <!-- TAB 1: SCAN & DIAGNOSE -->
+    <section id="tab-panel-scan" class="space-y-6 animate-fade-in">
+      <div class="bioguard-hero-banner rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#113D47] border border-[#22D3EE]/40 text-[#67E8F9] text-xs font-bold">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span data-en="Teachable Machine &amp; Vision Diagnostics" data-ta="டீச்சபிள் மெஷின் &amp; விஷன் பகுப்பாய்வு">Teachable Machine &amp; Vision Diagnostics</span>
+          </div>
+          <h2 class="font-serif-heading text-2xl sm:text-3xl font-extrabold text-white" data-en="Leaf Condition, Disease &amp; Care Analysis" data-ta="இலை நிலை, நோய் &amp; பராமரிப்பு பகுப்பாய்வு">
+            Leaf Condition, Disease &amp; Care Analysis
+          </h2>
+          <p class="text-xs sm:text-sm text-[#D1FAE5] max-w-2xl" data-en="Upload a leaf image or capture with your camera to detect Healthy Leaf, Dry Leaf, or Insect Damaged Leaf status, review disease &amp; fertilizer guidance, and save corrections." data-ta="ஆரோக்கியமான இலை, காய்ந்த இலை அல்லது பூச்சி தாக்கிய இலையைக் கண்டறிய இலைப் படத்தை பதிவேற்றவும் அல்லது கேமராவில் எடுக்கவும்.">
+            Upload a leaf image or capture with your camera to detect Healthy Leaf, Dry Leaf, or Insect Damaged Leaf status, review disease &amp; fertilizer guidance, and save corrections.
+          </p>
+        </div>
 
-    function openReminderModalByUser() {
-      var modal = document.getElementById('reminder-alarm-modal');
-      if (modal) {
-        modal.dataset.userOpened = 'true';
-        modal.classList.remove('hidden');
-      }
-      if (typeof window.testAlarmSound === 'function') {
-        window.testAlarmSound();
-      }
-    }
-    window.openReminderModalByUser = openReminderModalByUser;
+        <div class="flex flex-wrap items-center justify-center gap-3 w-full lg:w-auto shrink-0">
+          <label for="leaf-file-input" class="flex-1 sm:flex-initial px-5 py-3 rounded-xl bioguard-primary-btn text-xs font-extrabold cursor-pointer transition-all shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            <span data-en="Upload Leaf Image" data-ta="இலை படத்தை பதிவேற்று">Upload Leaf Image</span>
+          </label>
+          <input id="leaf-file-input" type="file" accept="image/*" onchange="window.handleLeafFileChange(event)" class="sr-only" />
 
-    function closeReminderModalByUser() {
-      var modal = document.getElementById('reminder-alarm-modal');
-      if (modal) {
-        delete modal.dataset.userOpened;
-        modal.classList.add('hidden');
-      }
-      if (typeof window.stopActiveAlarm === 'function') {
-        window.stopActiveAlarm();
-      }
-    }
-    window.closeReminderModalByUser = closeReminderModalByUser;
+          <button type="button" onclick="window.startCamera()" class="flex-1 sm:flex-initial px-5 py-3 rounded-xl bg-[#0F3844] hover:bg-[#154A59] text-[#67E8F9] border border-[#22D3EE]/40 text-xs font-extrabold transition-all shadow-md flex items-center justify-center gap-2">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+            <span data-en="Capture Camera" data-ta="கேமராவில் எடு">Capture Camera</span>
+          </button>
+        </div>
+      </div>
 
-    function renderScanLogs() {
-<!-- ... existing code ... -->
-        if (dBtn) {
-          dBtn.className = tKey === tabName
-            ? 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bioguard-active-tab shadow-xs'
-            : 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
+      <!-- CAMERA MODAL -->
+      <div id="camera-modal" class="hidden bioguard-card rounded-2xl p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between border-b border-[#C8DDD6] pb-3">
+          <h3 class="font-serif-heading text-lg font-bold text-[#062326] flex items-center gap-2">
+            <i data-lucide="camera" class="w-5 h-5 text-[#0E7490]"></i>
+            <span data-en="Live Camera Leaf Capture" data-ta="நேரடி கேமரா இலைப் படம்">Live Camera Leaf Capture</span>
+          </h3>
+          <button type="button" onclick="window.stopCamera()" class="p-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="relative aspect-video max-w-2xl mx-auto rounded-xl overflow-hidden bg-slate-950 border border-[#1E4D58]">
+          <video id="camera-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3">
+          <button type="button" onclick="window.capturePhoto()" class="px-6 py-3 rounded-xl bioguard-primary-btn font-extrabold text-xs shadow-md">
+            <span data-en="Take Photo &amp; Analyse" data-ta="புகைப்படம் எடுத்து பகுப்பாய்வு செய்">Take Photo &amp; Analyse</span>
+          </button>
+          <button type="button" onclick="window.stopCamera()" class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs">
+            <span data-en="Cancel" data-ta="ரத்து செய்">Cancel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ERROR / NOTICE BANNER -->
+      <div id="scan-message-box" class="hidden p-4 rounded-2xl bg-amber-50 border-2 border-amber-400 text-amber-950 text-xs sm:text-sm font-extrabold shadow-md flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-700 shrink-0"></i>
+          <span id="scan-message-text"></span>
+        </div>
+        <button type="button" onclick="window.clearScanMessage()" class="px-3 py-1 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold shrink-0">
+          <span data-en="Dismiss" data-ta="மூடு">Dismiss</span>
+        </button>
+      </div>
+
+      <!-- DEDICATED UNCLEAR IMAGE WARNING CARD IN RESULT AREA -->
+      <div id="scan-unclear-panel" class="hidden bioguard-card rounded-2xl p-6 sm:p-8 border-2 border-amber-400 space-y-4">
+        <div class="flex items-center justify-between">
+          <button type="button" onclick="window.handleBackFromScan()" class="px-4 py-2 rounded-xl bg-[#0B252C] hover:bg-[#113740] text-white text-xs font-bold border border-[#22D3EE]/35 inline-flex items-center gap-1.5">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#22D3EE]"></i>
+            <span data-en="Back" data-ta="பின்னால்">Back</span>
+          </button>
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-100 text-amber-950 border border-amber-300" data-en="Image Clarity Check Failed" data-ta="படத் தெளிவு சோதனை தோல்வி">
+            Image Clarity Check Failed
+          </span>
+        </div>
+        <div class="p-5 rounded-xl bg-amber-50 border border-amber-300 flex items-start gap-3">
+          <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-700 shrink-0 mt-0.5"></i>
+          <div class="space-y-1">
+            <p id="scan-unclear-message-text" class="text-sm sm:text-base font-extrabold text-amber-950">
+              Image is not clear. Please upload or capture a clear image.
+            </p>
+            <p class="text-xs text-amber-900" data-en="AI classification and training correction are paused until a sharp, well-lit image is provided." data-ta="தெளிவான, நல்ல வெளிச்சம் கொண்ட படம் வழங்கப்படும் வரை AI வகைப்பாடு மற்றும் திருத்தம் நிறுத்தப்பட்டுள்ளது.">
+              AI classification and training correction are paused until a sharp, well-lit image is provided.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY SCAN STATE -->
+      <div id="scan-empty-state" class="bioguard-card rounded-2xl p-10 text-center space-y-4">
+        <div class="w-14 h-14 rounded-2xl bg-[#E2F3EC] text-[#065F46] flex items-center justify-center mx-auto border border-[#A7F3D0]">
+          <i data-lucide="sprout" class="w-7 h-7"></i>
+        </div>
+        <div class="max-w-lg mx-auto space-y-1.5">
+          <h3 class="font-serif-heading text-xl font-bold text-[#062326]" data-en="Ready to Scan Your Plant Leaf" data-ta="உங்கள் தாவர இலையை ஸ்கேன் செய்யத் தயார்">
+            Ready to Scan Your Plant Leaf
+          </h3>
+          <p class="text-xs text-slate-700 leading-relaxed" data-en="Select a leaf photo or use the camera above. BioGuard AI checks for exact prior corrections, validates leaf photos, and classifies Healthy Leaf, Dry Leaf, or Insect Damaged Leaf." data-ta="மேலே உள்ள இலைப் படத்தைத் தேர்ந்தெடுக்கவும் அல்லது கேமராவைப் பயன்படுத்தவும். BioGuard AI ஆரோக்கியமான, காய்ந்த அல்லது பூச்சி தாக்கிய இலையை வகைப்படுத்தும்.">
+            Select a leaf photo or use the camera above. BioGuard AI checks for exact prior corrections, validates leaf photos, and classifies Healthy Leaf, Dry Leaf, or Insect Damaged Leaf.
+          </p>
+        </div>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div id="scan-loading-state" class="hidden bioguard-card rounded-2xl p-10 text-center space-y-3">
+        <div class="w-11 h-11 border-4 border-[#0E7490]/25 border-t-[#0E7490] rounded-full animate-spin mx-auto"></div>
+        <h3 class="font-serif-heading text-lg font-bold text-[#062326]" data-en="Analysing leaf condition..." data-ta="இலை நிலையை பகுப்பாய்வு செய்கிறது...">
+          Analysing leaf condition...
+        </h3>
+      </div>
+
+      <!-- SCAN RESULTS PANEL -->
+      <div id="scan-results-panel" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <button type="button" onclick="window.handleBackFromScan()" class="px-4 py-2 rounded-xl bg-[#0B252C] hover:bg-[#113740] text-white text-xs font-bold border border-[#22D3EE]/35 inline-flex items-center gap-1.5">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#22D3EE]"></i>
+            <span data-en="Back" data-ta="பின்னால்">Back</span>
+          </button>
+
+          <button type="button" onclick="window.speakCurrentResult()" class="px-4 py-2 rounded-xl bioguard-primary-btn text-xs font-extrabold inline-flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+            <span data-en="Voice Summary" data-ta="குரல் சுருக்கம்">Voice Summary</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-5 bioguard-card rounded-2xl p-4 space-y-3">
+            <div class="aspect-4/3 rounded-xl overflow-hidden bg-slate-950 border border-[#C8DDD6]">
+              <img id="scanned-leaf-preview" src="" alt="Uploaded Leaf" class="w-full h-full object-cover" />
+            </div>
+            <div id="exact-match-banner" class="hidden p-3 rounded-xl bg-cyan-50 border border-cyan-300 text-cyan-950 text-xs font-bold"></div>
+          </div>
+
+          <div class="lg:col-span-7 bioguard-card rounded-2xl p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#C8DDD6] pb-3">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#0E7490] block" data-en="Original AI Prediction" data-ta="அசல் AI கணிப்பு">Original AI Prediction</span>
+                <h3 id="result-condition-title" class="font-serif-heading text-2xl font-extrabold text-[#062326]">Healthy Leaf</h3>
+              </div>
+              <span id="result-confidence-badge" class="px-3 py-1 rounded-full text-xs font-extrabold bg-[#DCFCE7] text-[#065F46] border border-[#86EFAC]">94%</span>
+            </div>
+
+            <!-- 3. DETAILED LEAF ANALYSIS -->
+            <div class="p-4 rounded-xl bg-white border border-[#C8DDD6] space-y-1.5">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#0E7490]" data-en="Detailed Leaf Analysis" data-ta="விரிவான இலை பகுப்பாய்வு">
+                Detailed Leaf Analysis
+              </h4>
+              <p id="result-detailed-analysis" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+            </div>
+
+            <!-- 4. CARE MESSAGE -->
+            <div class="p-4 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] space-y-1.5">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#065F46]" data-en="Care Message" data-ta="பராமரிப்பு செய்தி">
+                Care Message
+              </h4>
+              <p id="result-condition-summary" class="text-xs sm:text-sm text-slate-800 leading-relaxed"></p>
+            </div>
+
+            <!-- 5 & 6. FERTILIZER & WATERING RECOMMENDATIONS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-4 rounded-xl bg-white border border-[#C8DDD6] space-y-1.5">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#065F46]" data-en="Fertilizer Recommendation" data-ta="உரப் பரிந்துரை">
+                  Fertilizer Recommendation
+                </h4>
+                <p id="result-fertilizer-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-white border border-[#C8DDD6] space-y-1.5">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#0E7490]" data-en="Watering Recommendation" data-ta="நீர்ப்பாசனப் பரிந்துரை">
+                  Watering Recommendation
+                </h4>
+                <p id="result-watering-text" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+              </div>
+            </div>
+
+            <!-- 7. MAINTENANCE TIPS -->
+            <div class="p-4 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] space-y-2">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#065F46]" data-en="Maintenance Tips" data-ta="பராமரிப்பு குறிப்புகள்">
+                Maintenance Tips
+              </h4>
+              <ul id="result-care-list" class="space-y-1.5 text-xs sm:text-sm text-slate-800 list-disc list-inside"></ul>
+            </div>
+
+            <!-- 8. DISEASE INFORMATION -->
+            <div class="p-4 rounded-xl bg-white border border-[#C8DDD6] space-y-1.5">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#0E7490]" data-en="Disease Information" data-ta="நோய் விவரங்கள்">
+                Disease Information
+              </h4>
+              <p id="result-disease-info" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+            </div>
+
+            <!-- INLINE PREDICTION VERIFICATION & CORRECTION -->
+            <div id="inline-train-correct-card" class="p-4 rounded-xl bg-[#FAF8F5] border border-[#C8DDD6] space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-[#0E7490] block" data-en="Dataset Correction" data-ta="தரவுத்தொகுப்பு திருத்தம்">Dataset Correction</span>
+                  <h4 class="font-serif-heading text-base font-extrabold text-[#062326]" data-en="Train / Correct This Image" data-ta="இந்தப் படத்தைப் பயிற்றுவி / திருத்து">
+                    Train / Correct This Image
+                  </h4>
+                </div>
+                <span class="text-[11px] font-semibold text-slate-600" data-en="What type of leaf is this?" data-ta="இது எந்த வகையான இலை?">
+                  What type of leaf is this?
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold text-[#062326]" role="radiogroup" aria-label="What type of leaf is this?">
+                <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[#C8DDD6] cursor-pointer hover:border-[#34D399]">
+                  <input type="radio" name="leaf-correction-type" value="Healthy" checked onchange="window.selectCorrectionCategory(this.value)" />
+                  <span data-en="Healthy" data-ta="ஆரோக்கியமானது">Healthy</span>
+                </label>
+                <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[#C8DDD6] cursor-pointer hover:border-[#34D399]">
+                  <input type="radio" name="leaf-correction-type" value="Dry" onchange="window.selectCorrectionCategory(this.value)" />
+                  <span data-en="Dry" data-ta="காய்ந்தது">Dry</span>
+                </label>
+                <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[#C8DDD6] cursor-pointer hover:border-[#34D399]">
+                  <input type="radio" name="leaf-correction-type" value="Insect Damaged" onchange="window.selectCorrectionCategory(this.value)" />
+                  <span data-en="Insect Damaged" data-ta="பூச்சி தாக்கியது">Insect Damaged</span>
+                </label>
+              </div>
+
+              <input type="hidden" id="correction-category-select" value="Healthy" />
+
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input id="correction-notes-input" type="text" placeholder="Optional note (e.g., young leaf tip)" class="flex-1 px-3 py-2 rounded-xl border border-[#C8DDD6] bg-white text-xs" />
+                <button type="button" onclick="window.submitCorrection()" class="px-4 py-2 rounded-xl bioguard-primary-btn text-xs font-extrabold shrink-0">
+                  <span data-en="Save Correction" data-ta="திருத்தத்தைச் சேமி">Save Correction</span>
+                </button>
+              </div>
+
+              <div id="correction-saved-status" class="hidden p-3 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] text-xs font-bold"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CPX SOIL HARDWARE -->
+    <section id="tab-panel-soil" class="hidden space-y-6 animate-fade-in">
+      <div class="bioguard-card rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="font-serif-heading text-xl sm:text-2xl font-bold text-[#062326]" data-en="Circuit Playground Express Soil Moisture" data-ta="சர்க்யூட் பிளேகிரவுண்ட் எக்ஸ்பிரஸ் மண் ஈரப்பதம்">
+            Circuit Playground Express Soil Moisture
+          </h2>
+          <p class="text-xs text-slate-700 mt-1" data-en="Connect CPX via Web Serial (115200 baud) to stream MOISTURE readings and trigger alerts." data-ta="MOISTURE தரவைப் பெற Web Serial வழியாக CPX ஐ இணைக்கவும்.">
+            Connect CPX via Web Serial (115200 baud) to stream MOISTURE readings and trigger alerts.
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="window.connectCPX()" class="px-4 py-2.5 rounded-xl bioguard-primary-btn text-xs font-extrabold" data-en="Connect CPX Sensor" data-ta="CPX சென்சாரை இணை">Connect CPX Sensor</button>
+          <button type="button" onclick="window.disconnectCPX()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold" data-en="Disconnect" data-ta="துண்டி">Disconnect</button>
+        </div>
+      </div>
+
+      <!-- AI FEEDBACK & MODEL IMPROVEMENT (ALWAYS VISIBLE AFTER ANY SCAN OR NON-LEAF/INVALID MESSAGE) -->
+      <div id="ai-feedback-improvement-panel" class="hidden bioguard-card rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#C8DDD6] pb-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#0E7490] block" data-en="Teachable Machine Retraining Queue" data-ta="டீச்சபிள் மெஷின் மறுபயிற்சி வரிசை">
+              Teachable Machine Retraining Queue
+            </span>
+            <h3 class="font-serif-heading text-lg sm:text-xl font-extrabold text-[#062326]" data-en="AI Feedback &amp; Model Improvement" data-ta="AI கருத்து &amp; மாதிரி மேம்பாடு">
+              AI Feedback &amp; Model Improvement
+            </h3>
+          </div>
+          <span id="feedback-ai-prediction-label" class="px-3 py-1 rounded-full text-xs font-bold bg-[#E2F3EC] text-[#065F46] border border-[#A7F3D0] self-start sm:self-center">
+            AI Prediction: None
+          </span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p class="text-xs sm:text-sm font-extrabold text-[#062326]" data-en="Is the AI Result Correct?" data-ta="AI முடிவு சரியானதா?">
+            Is the AI Result Correct?
+          </p>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="feedback-yes-btn" onclick="window.handleFeedbackResultCorrect()" class="px-4 py-2 rounded-xl bg-[#DCFCE7] hover:bg-[#BBF7D0] text-[#065F46] border border-[#86EFAC] text-xs font-extrabold transition-all">
+              <span data-en="Yes, Result is Correct" data-ta="ஆம், முடிவு சரியானது">Yes, Result is Correct</span>
+            </button>
+            <button type="button" id="feedback-no-btn" onclick="window.handleOpenFeedbackCorrection()" class="px-4 py-2 rounded-xl bg-[#0C2C38] hover:bg-[#123E4F] text-white text-xs font-bold transition-all">
+              <span data-en="No, Correct the Result" data-ta="இல்லை, முடிவைத் திருத்தவும்">No, Correct the Result</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="feedback-status-banner" class="hidden p-3 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] text-xs font-bold"></div>
+
+        <!-- CORRECTION SELECTOR FOR "No, Correct the Result" -->
+        <div id="feedback-correction-editor" class="hidden p-4 rounded-xl bg-white border border-[#94B8AE] space-y-3">
+          <p class="text-xs font-extrabold text-[#062326]" data-en="Select the actual classification for this image:" data-ta="இந்தப் படத்திற்கான உண்மையான வகைப்பாட்டைத் தேர்ந்தெடுக்கவும்:">
+            Select the actual classification for this image:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs font-bold text-[#062326]" role="radiogroup" aria-label="Corrected AI Result">
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] cursor-pointer">
+              <input type="radio" name="ai-feedback-category" value="Healthy Leaf" checked onchange="window.selectFeedbackCategory(this.value)" />
+              <span data-en="Healthy Leaf" data-ta="ஆரோக்கியமான இலை">Healthy Leaf</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] cursor-pointer">
+              <input type="radio" name="ai-feedback-category" value="Dry Leaf" onchange="window.selectFeedbackCategory(this.value)" />
+              <span data-en="Dry Leaf" data-ta="காய்ந்த இலை">Dry Leaf</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] cursor-pointer">
+              <input type="radio" name="ai-feedback-category" value="Insect Damaged Leaf" onchange="window.selectFeedbackCategory(this.value)" />
+              <span data-en="Insect Damaged Leaf" data-ta="பூச்சி தாக்கிய இலை">Insect Damaged Leaf</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] cursor-pointer">
+              <input type="radio" name="ai-feedback-category" value="Not a Leaf" onchange="window.selectFeedbackCategory(this.value)" />
+              <span data-en="Not a Leaf" data-ta="இலை அல்ல">Not a Leaf</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] cursor-pointer">
+              <input type="radio" name="ai-feedback-category" value="Other / Not Sure" onchange="window.selectFeedbackCategory(this.value)" />
+              <span data-en="Other / Not Sure" data-ta="மற்றவை / உறுதியாகத் தெரியவில்லை">Other / Not Sure</span>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <button type="button" onclick="window.submitAiFeedbackCorrection()" class="px-4 py-2 rounded-xl bioguard-primary-btn text-xs font-extrabold">
+              <span data-en="Submit Feedback" data-ta="கருத்தைச் சமர்ப்பி">Submit Feedback</span>
+            </button>
+            <button type="button" onclick="window.cancelAiFeedbackCorrection()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold">
+              <span data-en="Cancel" data-ta="ரத்து செய்">Cancel</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- REVIEW QUEUE BEFORE ADDING TO RETRAINING DATASET -->
+        <div class="p-4 rounded-xl bg-[#FAF8F5] border border-[#C8DDD6] space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h4 class="text-xs font-extrabold uppercase tracking-wider text-[#062326]" data-en="Saved Feedback Review &amp; Retraining Staging" data-ta="சேமிக்கப்பட்ட கருத்து மதிப்பாய்வு &amp; மறுபயிற்சி தயாரிப்பு">
+                Saved Feedback Review &amp; Retraining Staging
+              </h4>
+              <p class="text-[11px] text-slate-600" data-en="Review saved corrections before adding them to the future Teachable Machine retraining dataset. Saving feedback alone does not retrain the model." data-ta="எதிர்கால மறுபயிற்சித் தரவுத்தொகுப்பில் சேர்ப்பதற்கு முன் திருத்தங்களை மதிப்பாய்வு செய்யவும். கருத்து சேமிப்பதால் மட்டும் மாதிரி தானாகப் பயிற்றுவிக்கப்படாது.">
+                Review saved corrections before adding them to the future Teachable Machine retraining dataset. Saving feedback alone does not retrain the model.
+              </p>
+            </div>
+            <span id="feedback-staging-counts" class="text-[11px] font-extrabold text-[#0E7490] bg-cyan-50 px-2.5 py-1 rounded-lg border border-cyan-200">
+              Pending Review: 0 • Staged for Retraining: 0
+            </span>
+          </div>
+
+          <div id="ai-feedback-review-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: REMINDERS & LOGS -->
+    <section id="tab-panel-logs" class="hidden space-y-6 animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 bioguard-card rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <h2 class="font-serif-heading text-xl font-bold text-[#062326]" data-en="Plant Care Reminders" data-ta="தாவர பராமரிப்பு நினைவூட்டல்கள்">Plant Care Reminders</h2>
+            <button type="button" onclick="window.exportCorrectionsJson()" class="px-3 py-1.5 rounded-lg bg-[#0C2C38] hover:bg-[#123E4F] text-white text-xs font-bold" data-en="Export JSON" data-ta="JSON ஏற்றுமதி">Export JSON</button>
+          </div>
+          <form onsubmit="window.addReminderItem(event)" class="space-y-3">
+            <input id="reminder-title-input" type="text" required placeholder="e.g., Water indoor herbs" class="w-full px-3 py-2 rounded-xl border border-[#C8DDD6] bg-white text-xs" />
+            <input id="reminder-time-input" type="datetime-local" required class="w-full px-3 py-2 rounded-xl border border-[#C8DDD6] bg-white text-xs" />
+            <button type="submit" class="w-full py-2.5 rounded-xl bioguard-primary-btn text-xs font-extrabold" data-en="Save Reminder" data-ta="நினைவூட்டலைச் சேமி">Save Reminder</button>
+          </form>
+          <div id="reminders-list" class="space-y-2 pt-2"></div>
+        </div>
+
+        <div class="lg:col-span-7 bioguard-card rounded-2xl p-6 space-y-4">
+          <h2 class="font-serif-heading text-xl font-bold text-[#062326]" data-en="Scan History Logs" data-ta="ஸ்கேன் வரலாற்றுப் பதிவுகள்">Scan History Logs</h2>
+          <div id="scan-logs-list" class="space-y-3"></div>
+          <div class="pt-3 border-t border-[#C8DDD6] space-y-2">
+            <h3 class="font-serif-heading text-base font-bold text-[#062326]">Saved Training Corrections</h3>
+            <div id="corrections-list" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ABOUT & CREATORS -->
+    <section id="tab-panel-about" class="hidden space-y-6 animate-fade-in">
+      <div class="bioguard-card rounded-2xl p-6 sm:p-8 space-y-4">
+        <h2 class="font-serif-heading text-2xl font-bold text-[#062326]" data-en="About BioGuard AI" data-ta="BioGuard AI பற்றி">About BioGuard AI</h2>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed" data-en="BioGuard AI supports leaf health classification, disease &amp; fertilizer guidance, CPX soil moisture alerts, bilingual English/Tamil support, reminders, scan logs, and local AI feedback storage." data-ta="BioGuard AI இலை ஆரோக்கிய வகைப்பாடு, நோய் &amp; உர ஆலோசனை, CPX மண் ஈரப்பதம், தமிழ்/ஆங்கில ஆதரவு மற்றும் நினைவூட்டல்களை வழங்குகிறது.">
+          BioGuard AI supports leaf health classification, disease &amp; fertilizer guidance, CPX soil moisture alerts, bilingual English/Tamil support, reminders, scan logs, and local AI feedback storage.
+        </p>
+        <div class="p-4 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0]">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#065F46] block" data-en="Creators" data-ta="உருவாக்கியவர்கள்">Creators</span>
+          <p class="font-serif-heading text-lg font-extrabold text-[#062326] mt-1">K. Aparna &amp; G. Kayathri</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- REMINDER ALARM MODAL (OPENS ONLY ON EXPLICIT USER ACTION) -->
+  <div id="reminder-alarm-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bioguard-card rounded-2xl max-w-md w-full p-6 border-2 border-amber-400 shadow-2xl space-y-4 text-center">
+      <h3 class="font-serif-heading text-xl font-extrabold text-[#062326]" data-en="Plant Care Reminder" data-ta="தாவர பராமரிப்பு நினைவூட்டல்">Plant Care Reminder</h3>
+      <p id="reminder-modal-title" class="text-sm font-bold text-slate-800" data-en="Time to check soil moisture and leaf health." data-ta="மண் ஈரப்பதம் மற்றும் இலை ஆரோக்கியத்தைச் சரிபார்க்க வேண்டிய நேரம்.">
+        Time to check soil moisture and leaf health.
+      </p>
+      <div class="flex justify-center gap-3 pt-2">
+        <button type="button" onclick="window.closeReminderModalByUser()" class="px-5 py-2.5 rounded-xl bioguard-primary-btn text-xs font-extrabold" data-en="Close" data-ta="மூடு">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING BILINGUAL CHATBOT -->
+  <div class="fixed bottom-5 right-4 sm:right-6 z-40 flex flex-col items-end">
+    <div id="chat-drawer" class="hidden mb-3 w-[90vw] sm:w-88 bioguard-card rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="bg-[#07191C] text-white px-4 py-3 flex items-center justify-between">
+        <span class="font-serif-heading text-sm font-bold">BioGuard AI Assistant</span>
+        <button type="button" onclick="window.toggleChatDrawer()" class="text-white/80 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="chat-history-box" class="p-3 space-y-2 max-h-64 overflow-y-auto text-xs bg-white/70">
+        <div class="p-2.5 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[#062326]">
+          Vanakkam! Ask about leaf care, watering, or fertilizer in English or Tamil (தமிழ்).
+        </div>
+      </div>
+      <form onsubmit="window.sendChatMessage(event)" class="p-2.5 bg-white border-t border-[#C8DDD6] flex gap-2">
+        <input id="chat-input" type="text" placeholder="Ask a plant question..." class="flex-1 px-3 py-2 rounded-xl border border-[#C8DDD6] text-xs" />
+        <button type="submit" class="px-3.5 py-2 rounded-xl bioguard-primary-btn text-xs font-extrabold">Send</button>
+      </form>
+    </div>
+
+    <button type="button" onclick="window.toggleChatDrawer()" class="w-13 h-13 rounded-full bg-[#07191C] hover:bg-[#0E2F36] text-[#22D3EE] border-2 border-[#34D399] shadow-xl flex items-center justify-center transition-transform hover:scale-105">
+      <i data-lucide="message-square" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      const TM_MODEL_BASE_URL = 'https://teachablemachine.withgoogle.com/models/B-SoEzTPH/';
+      const STORAGE_LOGS_KEY = 'bioguard_scan_logs_v5';
+      const STORAGE_REMINDERS_KEY = 'bioguard_reminders_v6';
+      const STORAGE_CORRECTIONS_KEY = 'bioguard_corrections_v1';
+      const STORAGE_AI_FEEDBACK_KEY = 'bioguard_ai_feedback_v1';
+
+      let currentLang = 'en';
+      let currentImageDataUrl = null;
+      let currentScanRecord = null;
+      let latestAiPredictionLabel = null;
+      let selectedFeedbackCategory = 'Healthy Leaf';
+      let tmModel = null;
+      let localTrainerHead = null;
+      let trainedModelVersion = null;
+      let mobilenetFeatureNet = null;
+      let trainedClassifierHead = null;
+      let localModelVersionNum = 0;
+      let trainingSamples = [];
+      let cameraStream = null;
+      let serialPort = null;
+      let serialReader = null;
+      let serialStreamClosed = null;
+
+      let scanLogs = [];
+      let reminders = [];
+      let corrections = [];
+      let aiFeedbackEntries = [];
+
+      function loadState() {
+        try {
+          const rawLogs = localStorage.getItem(STORAGE_LOGS_KEY);
+          const rawReminders = localStorage.getItem(STORAGE_REMINDERS_KEY);
+          const rawCorrections = localStorage.getItem(STORAGE_CORRECTIONS_KEY);
+          const rawFeedback = localStorage.getItem(STORAGE_AI_FEEDBACK_KEY);
+
+          scanLogs = rawLogs ? JSON.parse(rawLogs) : [];
+          reminders = rawReminders ? JSON.parse(rawReminders) : [];
+          corrections = rawCorrections ? JSON.parse(rawCorrections) : [];
+          aiFeedbackEntries = rawFeedback ? JSON.parse(rawFeedback) : [];
+        } catch (err) {
+          scanLogs = [];
+          reminders = [];
+          corrections = [];
+          aiFeedbackEntries = [];
         }
-        if (mBtn) {
-          mBtn.className = tKey === tabName
-            ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold bioguard-active-tab'
-            : 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-white';
+
+        const scanEl = document.getElementById('kpi-total-scans');
+        const corrEl = document.getElementById('kpi-total-corrections');
+        const remEl = document.getElementById('kpi-active-reminders');
+        if (scanEl) scanEl.textContent = String(scanLogs.length);
+        if (corrEl) corrEl.textContent = String(corrections.length);
+        if (remEl) remEl.textContent = String(reminders.filter((r) => !r.completed).length);
+
+        const hEl = document.getElementById('count-healthy-samples');
+        const dEl = document.getElementById('count-dry-samples');
+        const iEl = document.getElementById('count-insect-samples');
+        if (hEl) hEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('healthy')).length);
+        if (dEl) dEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('dry')).length);
+        if (iEl) iEl.textContent = String(corrections.filter((c) => c.correctedCategory.toLowerCase().includes('insect')).length);
+      }
+
+      function saveState() {
+        try { localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(scanLogs)); } catch {}
+        try { localStorage.setItem(STORAGE_REMINDERS_KEY, JSON.stringify(reminders)); } catch {}
+        try { localStorage.setItem(STORAGE_CORRECTIONS_KEY, JSON.stringify(corrections)); } catch {}
+        try { localStorage.setItem(STORAGE_AI_FEEDBACK_KEY, JSON.stringify(aiFeedbackEntries)); } catch {}
+      }
+
+      function showAiFeedbackPanel(predictionText, imageDataUrl) {
+        latestAiPredictionLabel = predictionText || 'Unknown';
+        if (imageDataUrl) {
+          currentImageDataUrl = imageDataUrl;
+        }
+        const panel = document.getElementById('ai-feedback-improvement-panel');
+        const predBadge = document.getElementById('feedback-ai-prediction-label');
+        const statusBanner = document.getElementById('feedback-status-banner');
+        const editor = document.getElementById('feedback-correction-editor');
+        if (panel) panel.classList.remove('hidden');
+        if (predBadge) {
+          predBadge.textContent = (currentLang === 'ta' ? 'AI கணிப்பு: ' : 'AI Prediction: ') + latestAiPredictionLabel;
+        }
+        if (statusBanner) statusBanner.classList.add('hidden');
+        if (editor) editor.classList.add('hidden');
+        renderAiFeedbackList();
+      }
+
+      window.selectFeedbackCategory = function (cat) {
+        selectedFeedbackCategory = cat || 'Healthy Leaf';
+        const radios = document.querySelectorAll('input[name="ai-feedback-category"]');
+        radios.forEach((r) => {
+          r.checked = r.value === selectedFeedbackCategory;
+        });
+      };
+
+      window.handleOpenFeedbackCorrection = function () {
+        const editor = document.getElementById('feedback-correction-editor');
+        const statusBanner = document.getElementById('feedback-status-banner');
+        if (editor) editor.classList.remove('hidden');
+        if (statusBanner) statusBanner.classList.add('hidden');
+        window.selectFeedbackCategory(selectedFeedbackCategory);
+      };
+
+      window.cancelAiFeedbackCorrection = function () {
+        const editor = document.getElementById('feedback-correction-editor');
+        if (editor) editor.classList.add('hidden');
+      };
+
+      window.handleFeedbackResultCorrect = function () {
+        if (!currentImageDataUrl && !latestAiPredictionLabel) return;
+        const confirmedLabel = latestAiPredictionLabel || 'Unknown';
+        const entry = {
+          id: 'fb-' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          imageDataUrl: currentImageDataUrl || '',
+          aiPredictedResult: latestAiPredictionLabel || 'Unknown',
+          userCorrectedResult: confirmedLabel,
+          isExactMatch: true,
+          reviewStatus: 'confirmed',
+          stagedForRetraining: false
+        };
+        aiFeedbackEntries.unshift(entry);
+        if (aiFeedbackEntries.length > 100) aiFeedbackEntries = aiFeedbackEntries.slice(0, 100);
+        saveState();
+
+        const statusBanner = document.getElementById('feedback-status-banner');
+        const editor = document.getElementById('feedback-correction-editor');
+        if (editor) editor.classList.add('hidden');
+        if (statusBanner) {
+          statusBanner.textContent = currentLang === 'ta'
+            ? 'கருத்து சேமிக்கப்பட்டது: AI முடிவு "' + confirmedLabel + '" சரியானது எனப் பதிவு செய்யப்பட்டது.'
+            : 'Feedback saved: Confirmed AI prediction "' + confirmedLabel + '" is accurate.';
+          statusBanner.classList.remove('hidden');
+        }
+        renderAiFeedbackList();
+      };
+
+      window.submitAiFeedbackCorrection = function () {
+        const checked = document.querySelector('input[name="ai-feedback-category"]:checked');
+        const correctedLabel = (checked && checked.value) || selectedFeedbackCategory || 'Other / Not Sure';
+        const aiPred = latestAiPredictionLabel || 'Unknown';
+
+        const entry = {
+          id: 'fb-' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          imageDataUrl: currentImageDataUrl || '',
+          aiPredictedResult: aiPred,
+          userCorrectedResult: correctedLabel,
+          isExactMatch: false,
+          reviewStatus: 'pending_review',
+          stagedForRetraining: false
+        };
+
+        aiFeedbackEntries.unshift(entry);
+        if (aiFeedbackEntries.length > 100) aiFeedbackEntries = aiFeedbackEntries.slice(0, 100);
+        saveState();
+
+        const editor = document.getElementById('feedback-correction-editor');
+        const statusBanner = document.getElementById('feedback-status-banner');
+        if (editor) editor.classList.add('hidden');
+        if (statusBanner) {
+          statusBanner.textContent = currentLang === 'ta'
+            ? 'கருத்து வெற்றிகரமாகச் சேமிக்கப்பட்டது! உண்மையான வகை: "' + correctedLabel + '". மறுபயிற்சித் தரவுத்தொகுப்பில் சேர்க்க கீழே மதிப்பாய்வு செய்யவும்.'
+            : 'Feedback saved successfully! Corrected label: "' + correctedLabel + '". Review below before adding to the retraining dataset (model is not retrained automatically).';
+          statusBanner.classList.remove('hidden');
+        }
+        renderAiFeedbackList();
+      };
+
+      window.approveFeedbackForRetraining = function (id) {
+        aiFeedbackEntries = aiFeedbackEntries.map((item) => {
+          if (item.id !== id) return item;
+          const alreadyAdded = trainingSamples.some((s) => s.sourceFeedbackId === item.id);
+          if (!alreadyAdded && item.imageDataUrl) {
+            trainingSamples.push({
+              id: 'sample-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+              sourceFeedbackId: item.id,
+              name: 'feedback-' + item.userCorrectedResult.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+              label: item.userCorrectedResult,
+              dataUrl: item.imageDataUrl
+            });
+          }
+          return Object.assign({}, item, {
+            reviewStatus: 'approved_for_retraining',
+            stagedForRetraining: true
+          });
+        });
+        saveState();
+        renderTrainerDatasetSummary();
+        renderAiFeedbackList();
+      };
+
+      window.deleteFeedbackEntry = function (id) {
+        aiFeedbackEntries = aiFeedbackEntries.filter((item) => item.id !== id);
+        trainingSamples = trainingSamples.filter((s) => s.sourceFeedbackId !== id);
+        saveState();
+        renderTrainerDatasetSummary();
+        renderAiFeedbackList();
+      };
+
+      function renderAiFeedbackList() {
+        const listEl = document.getElementById('ai-feedback-review-list');
+        const countsEl = document.getElementById('feedback-staging-counts');
+        if (!listEl) return;
+
+        const pendingCount = aiFeedbackEntries.filter((f) => !f.isExactMatch && !f.stagedForRetraining).length;
+        const stagedCount = aiFeedbackEntries.filter((f) => f.stagedForRetraining).length;
+        if (countsEl) {
+          countsEl.textContent = 'Pending Review: ' + pendingCount + ' • Staged for Retraining: ' + stagedCount;
+        }
+
+        if (!aiFeedbackEntries.length) {
+          listEl.innerHTML = '<p class="text-xs text-slate-600">No feedback submitted yet. Every scan or non-leaf check includes feedback options above.</p>';
+          return;
+        }
+
+        listEl.innerHTML = aiFeedbackEntries.map((item) => {
+          const badgeText = item.isExactMatch
+            ? 'Confirmed Correct'
+            : item.stagedForRetraining
+            ? 'Added to Retraining Dataset'
+            : 'Pending Review';
+          const badgeClass = item.stagedForRetraining
+            ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+            : item.isExactMatch
+            ? 'bg-cyan-100 text-cyan-900 border-cyan-300'
+            : 'bg-amber-100 text-amber-950 border-amber-300';
+
+          const thumbHtml = item.imageDataUrl
+            ? '<img src="' + item.imageDataUrl + '" alt="Feedback Scan" class="w-12 h-12 rounded-lg object-cover border border-[#C8DDD6] shrink-0" />'
+            : '<div class="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600 shrink-0">No Img</div>';
+
+          const approveBtn = (!item.isExactMatch && !item.stagedForRetraining && item.imageDataUrl)
+            ? '<button type="button" onclick="window.approveFeedbackForRetraining(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg bg-[#34D399] hover:bg-[#10B981] text-[#051B14] text-[11px] font-extrabold">Add to Retraining Dataset</button>'
+            : '';
+
+          return (
+            '<div class="p-3 rounded-xl bg-white border border-[#C8DDD6] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">' +
+              '<div class="flex items-center gap-3 min-w-0">' +
+                thumbHtml +
+                '<div class="min-w-0">' +
+                  '<div class="flex flex-wrap items-center gap-1.5">' +
+                    '<span class="font-extrabold text-[#062326]">Corrected: ' + item.userCorrectedResult + '</span>' +
+                    '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ' + badgeClass + '">' + badgeText + '</span>' +
+                  '</div>' +
+                  '<p class="text-[11px] text-slate-600 truncate">AI Predicted: ' + item.aiPredictedResult + '</p>' +
+                  '<p class="text-[10px] text-slate-500">' + item.timestamp + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex flex-wrap items-center gap-1.5 shrink-0">' +
+                approveBtn +
+                '<button type="button" onclick="window.deleteFeedbackEntry(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 text-[11px] font-bold">Delete</button>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      function updateOfflineBanner() {
+        const banner = document.getElementById('offline-banner');
+        if (!banner) return;
+        if (navigator.onLine === false) {
+          banner.classList.remove('hidden');
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll('[data-en][data-ta]').forEach((el) => {
+          const text = currentLang === 'ta' ? el.getAttribute('data-ta') : el.getAttribute('data-en');
+          if (text !== null) el.textContent = text;
+        });
+
+        const enBtn = document.getElementById('lang-en-btn');
+        const taBtn = document.getElementById('lang-ta-btn');
+        if (enBtn && taBtn) {
+          enBtn.className = currentLang === 'en'
+            ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn'
+            : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
+          taBtn.className = currentLang === 'ta'
+            ? 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all bioguard-primary-btn'
+            : 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
+        }
+        if (currentScanRecord && currentScanRecord.rawCategory) {
+          populateDetailedResultView(
+            currentScanRecord.rawCategory,
+            currentScanRecord.confidence,
+            currentScanRecord.isVerifiedMatch
+          );
+        }
+        renderDashboard();
+        renderReminders();
+        renderScanLogs();
+        renderCorrections();
+        renderAiFeedbackList();
+      }
+
+      window.setLanguage = function (lang) {
+        currentLang = lang === 'ta' ? 'ta' : 'en';
+        applyLanguage();
+      };
+
+      window.switchTab = function (tabName) {
+        const tabs = ['scan', 'soil', 'logs', 'about'];
+        tabs.forEach((t) => {
+          const panel = document.getElementById('tab-panel-' + t);
+          if (panel) {
+            if (t === tabName) panel.classList.remove('hidden');
+            else panel.classList.add('hidden');
+          }
+          const dBtn = document.getElementById('nav-desktop-' + t);
+          const mBtn = document.getElementById('nav-mobile-' + t);
+          if (dBtn) {
+            dBtn.className = t === tabName
+              ? 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bioguard-active-tab'
+              : 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-white hover:bg-[#133540]';
+          }
+          if (mBtn) {
+            mBtn.className = t === tabName
+              ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold bioguard-active-tab whitespace-nowrap'
+              : 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-white whitespace-nowrap';
+          }
+        });
+      };
+
+      function renderDashboard() {
+        renderTrainerDatasetSummary();
+      }
+
+      function renderTrainerDatasetSummary() {
+        const summaryEl = document.getElementById('trainer-dataset-summary');
+        const listEl = document.getElementById('trainer-samples-list');
+        if (!summaryEl || !listEl) return;
+
+        const healthyCount = trainingSamples.filter((s) => s.label === 'Healthy').length;
+        const dryCount = trainingSamples.filter((s) => s.label === 'Dry').length;
+        const insectCount = trainingSamples.filter((s) => s.label === 'Insect Damaged').length;
+
+        summaryEl.textContent =
+          'Labeled Samples: ' + trainingSamples.length +
+          ' total (Healthy: ' + healthyCount +
+          ', Dry: ' + dryCount +
+          ', Insect Damaged: ' + insectCount + ')';
+
+        if (!trainingSamples.length) {
+          listEl.innerHTML = '<p class="text-xs text-slate-500">No training samples added yet.</p>';
+          return;
+        }
+
+        listEl.innerHTML = trainingSamples.map((sample, idx) => (
+          '<div class="p-2.5 rounded-xl bg-[#F6FBF8] border border-[#C8DDD6] flex items-center justify-between gap-2 text-xs">' +
+            '<div class="flex items-center gap-2.5 min-w-0">' +
+              '<img src="' + sample.dataUrl + '" alt="Sample" class="w-10 h-10 rounded-lg object-cover border border-[#C8DDD6] shrink-0" />' +
+              '<div class="min-w-0">' +
+                '<p class="font-extrabold text-[#062326] truncate">' + sample.label + '</p>' +
+                '<p class="text-[11px] text-slate-600 truncate">' + sample.name + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" onclick="window.removeTrainingSample(' + idx + ')" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 text-[11px] font-bold shrink-0">Remove</button>' +
+          '</div>'
+        )).join('');
+      }
+
+      window.removeTrainingSample = function (index) {
+        trainingSamples = trainingSamples.filter((_, i) => i !== index);
+        renderTrainerDatasetSummary();
+      };
+
+      window.clearTrainingSamples = function () {
+        trainingSamples = [];
+        renderTrainerDatasetSummary();
+      };
+
+      async function ensureMobileNetFeatureExtractor() {
+        if (mobilenetFeatureNet) return mobilenetFeatureNet;
+        await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js');
+        mobilenetFeatureNet = await window.mobilenet.load({ version: 2, alpha: 1.0 });
+        return mobilenetFeatureNet;
+      }
+
+      function dataUrlToCanvas224(dataUrl) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 224;
+            canvas.height = 224;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 224, 224);
+            resolve(canvas);
+          };
+          img.onerror = () => reject(new Error('Unable to load image for training.'));
+          img.src = dataUrl;
+        });
+      }
+
+      window.trainLocalLeafModel = async function () {
+        const classes = ['Healthy', 'Dry', 'Insect Damaged'];
+        const presentClasses = classes.filter((c) => trainingSamples.some((s) => s.label === c));
+        const statusEl = document.getElementById('trainer-progress-text');
+        const barEl = document.getElementById('trainer-progress-bar');
+        const metricsEl = document.getElementById('trainer-metrics-output');
+        const versionBadge = document.getElementById('trained-model-version-badge');
+        const trainBtn = document.getElementById('train-local-model-btn');
+
+        if (trainingSamples.length < 3 || presentClasses.length < 2) {
+          if (statusEl) {
+            statusEl.textContent = 'Please add at least 3 labeled images covering at least 2 classes (Healthy, Dry, Insect Damaged) before training.';
+          }
+          return;
+        }
+
+        try {
+          if (trainBtn) trainBtn.disabled = true;
+          if (barEl) barEl.style.width = '15%';
+          if (statusEl) statusEl.textContent = 'Loading MobileNet feature extractor and computing embeddings...';
+
+          const mobilenet = await ensureMobileNetFeatureExtractor();
+          const tf = window.tf;
+
+          const embeddingsList = [];
+          const oneHotList = [];
+
+          for (let i = 0; i < trainingSamples.length; i++) {
+            const sample = trainingSamples[i];
+            const canvas = await dataUrlToCanvas224(sample.dataUrl);
+            const emb = tf.tidy(() => mobilenet.infer(canvas, true));
+            const arr = Array.from(await emb.data());
+            emb.dispose();
+            embeddingsList.push(arr);
+
+            const classIdx = classes.indexOf(sample.label);
+            const oneHot = [0, 0, 0];
+            if (classIdx >= 0) oneHot[classIdx] = 1;
+            oneHotList.push(oneHot);
+          }
+
+          if (trainedClassifierHead) {
+            try { trainedClassifierHead.dispose(); } catch {}
+          }
+
+          const inputDim = embeddingsList[0].length;
+          const head = tf.sequential();
+          head.add(tf.layers.dense({ inputShape: [inputDim], units: 32, activation: 'relu' }));
+          head.add(tf.layers.dense({ units: classes.length, activation: 'softmax' }));
+          head.compile({
+            optimizer: tf.train.adam(0.005),
+            loss: 'categoricalCrossentropy',
+            metrics: ['accuracy']
+          });
+
+          const xs = tf.tensor2d(embeddingsList);
+          const ys = tf.tensor2d(oneHotList);
+          const epochs = 25;
+
+          let finalLoss = 0;
+          let finalAcc = 0;
+
+          await head.fit(xs, ys, {
+            epochs,
+            batchSize: Math.min(8, trainingSamples.length),
+            shuffle: true,
+            callbacks: {
+              onEpochEnd: (epoch, logs) => {
+                const pct = Math.min(98, Math.round(20 + ((epoch + 1) / epochs) * 78));
+                if (barEl) barEl.style.width = pct + '%';
+                finalLoss = typeof logs.loss === 'number' ? logs.loss : finalLoss;
+                finalAcc = typeof logs.acc === 'number' ? logs.acc : (typeof logs.accuracy === 'number' ? logs.accuracy : finalAcc);
+                if (statusEl) {
+                  statusEl.textContent = 'Training epoch ' + (epoch + 1) + ' of ' + epochs + ' — loss: ' + finalLoss.toFixed(4);
+                }
+              }
+            }
+          });
+
+          xs.dispose();
+          ys.dispose();
+          trainedClassifierHead = head;
+          trainedModelVersion += 1;
+
+          if (barEl) barEl.style.width = '100%';
+          if (statusEl) {
+            statusEl.textContent = 'Training complete! Local browser model v' + trainedModelVersion + ' is ready for testing on ' + trainingSamples.length + ' samples.';
+          }
+          if (versionBadge) {
+            versionBadge.textContent = 'Local Trainer: v' + trainedModelVersion + ' (Trained)';
+          }
+          if (metricsEl) {
+            metricsEl.textContent =
+              'Version v' + trainedModelVersion +
+              ' | Samples: ' + trainingSamples.length +
+              ' | Epochs: ' + epochs +
+              ' | Final Loss: ' + finalLoss.toFixed(4) +
+              ' | Training Accuracy: ' + Math.round(finalAcc * 100) + '%';
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.textContent = 'Training error: ' + (err && err.message ? err.message : 'Unable to train local model.');
+          }
+        } finally {
+          if (trainBtn) trainBtn.disabled = false;
+        }
+      };
+
+      async function testTrainedLocalModelWithDataUrl(dataUrl) {
+        const resultBox = document.getElementById('trainer-test-result');
+        const previewEl = document.getElementById('trainer-test-preview');
+        const predEl = document.getElementById('trainer-test-prediction');
+        const detailsEl = document.getElementById('trainer-test-details');
+        const verEl = document.getElementById('trainer-test-version');
+
+        if (!trainedClassifierHead || !mobilenetFeatureNet) {
+          if (resultBox && predEl && detailsEl) {
+            resultBox.classList.remove('hidden');
+            if (previewEl) previewEl.src = dataUrl;
+            predEl.textContent = 'No trained local model available yet.';
+            detailsEl.textContent = 'Please click "Train Model" first to train a local model version.';
+          }
+          return;
+        }
+
+        const classes = ['Healthy', 'Dry', 'Insect Damaged'];
+        const canvas = await dataUrlToCanvas224(dataUrl);
+        const tf = window.tf;
+
+        const probs = tf.tidy(() => {
+          const emb = mobilenetFeatureNet.infer(canvas, true);
+          const out = trainedClassifierHead.predict(emb);
+          return Array.from(out.dataSync());
+        });
+
+        let bestIdx = 0;
+        for (let i = 1; i < probs.length; i++) {
+          if (probs[i] > probs[bestIdx]) bestIdx = i;
+        }
+
+        const bestLabel = classes[bestIdx];
+        const bestPct = Math.round((probs[bestIdx] || 0) * 100);
+        const breakdown = classes.map((c, i) => c + ': ' + Math.round((probs[i] || 0) * 100) + '%').join(' • ');
+
+        if (verEl) verEl.textContent = 'Model Version: v' + trainedModelVersion;
+        if (resultBox && previewEl && predEl && detailsEl) {
+          resultBox.classList.remove('hidden');
+          previewEl.src = dataUrl;
+          predEl.textContent = 'Predicted Class: ' + bestLabel + ' (' + bestPct + '%) — Local Model v' + trainedModelVersion;
+          detailsEl.textContent = breakdown;
+        }
+      }
+
+      function showScanMessage(msg) {
+        const box = document.getElementById('scan-message-box');
+        const txt = document.getElementById('scan-message-text');
+        if (box && txt) {
+          txt.textContent = msg;
+          box.classList.remove('hidden');
+        }
+      }
+
+      window.clearScanMessage = function () {
+        const box = document.getElementById('scan-message-box');
+        if (box) box.classList.add('hidden');
+      };
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const existing = document.querySelector('script[src="' + src + '"]');
+          if (existing && existing.getAttribute('data-loaded') === 'true') return resolve();
+          const s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.onload = () => {
+            s.setAttribute('data-loaded', 'true');
+            resolve();
+          };
+          s.onerror = () => reject(new Error('Failed to load ' + src));
+          document.head.appendChild(s);
+        });
+      }
+
+      async function ensureTMModel() {
+        if (tmModel) return tmModel;
+        await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js');
+        tmModel = await window.tmImage.load(TM_MODEL_BASE_URL + 'model.json', TM_MODEL_BASE_URL + 'metadata.json');
+        return tmModel;
+      }
+
+      function evaluateImageClarity(canvas) {
+        const w = canvas.width;
+        const h = canvas.height;
+        if (!w || !h) return false;
+        const ctx = canvas.getContext('2d');
+        const data = ctx.getImageData(0, 0, w, h).data;
+        const total = w * h;
+        const gray = new Float32Array(total);
+
+        let sumLum = 0;
+        let sumSqLum = 0;
+        for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+          const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          gray[p] = lum;
+          sumLum += lum;
+          sumSqLum += lum * lum;
+        }
+
+        const meanLum = sumLum / total;
+        const varianceLum = sumSqLum / total - meanLum * meanLum;
+        const stdLum = Math.sqrt(Math.max(0, varianceLum));
+
+        // Reject images that are too dark, washed out / overexposed, or flat/low-contrast
+        if (meanLum < 38 || meanLum > 238 || stdLum < 18) {
+          return false;
+        }
+
+        // Compute 2D Laplacian variance + Tenengrad gradient energy to reliably catch blurry/out-of-focus images
+        let lapSum = 0;
+        let lapSqSum = 0;
+        let gradEnergySum = 0;
+        let count = 0;
+        for (let y = 1; y < h - 1; y++) {
+          const row = y * w;
+          for (let x = 1; x < w - 1; x++) {
+            const idx = row + x;
+            const lap =
+              gray[idx - w] +
+              gray[idx + w] +
+              gray[idx - 1] +
+              gray[idx + 1] -
+              4 * gray[idx];
+            const gx = gray[idx + 1] - gray[idx - 1];
+            const gy = gray[idx + w] - gray[idx - w];
+            lapSum += lap;
+            lapSqSum += lap * lap;
+            gradEnergySum += gx * gx + gy * gy;
+            count++;
+          }
+        }
+
+        if (count === 0) return false;
+        const lapMean = lapSum / count;
+        const lapVar = lapSqSum / count - lapMean * lapMean;
+        const meanGradEnergy = gradEnergySum / count;
+
+        // Normalized sharpness relative to overall brightness contrast so smooth blurred photos are caught
+        const normalizedLap = lapVar / Math.max(1, stdLum);
+
+        return lapVar >= 165 && meanGradEnergy >= 320 && normalizedLap >= 4.2;
+      }
+
+      function isLikelyLeafCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let greenOrFoliagePixels = 0;
+        let totalPixels = 0;
+        for (let i = 0; i < imgData.length; i += 4) {
+          const r = imgData[i];
+          const g = imgData[i + 1];
+          const b = imgData[i + 2];
+          totalPixels++;
+          const isGreenLeaf = g > r + 10 && g > b + 8 && g > 40;
+          const isDryOrAutumnLeaf = r > 110 && g > 75 && b < 75 && r >= g && g > b + 15;
+          if (isGreenLeaf || isDryOrAutumnLeaf) {
+            greenOrFoliagePixels++;
+          }
+        }
+        return totalPixels > 0 && (greenOrFoliagePixels / totalPixels) >= 0.16;
+      }
+
+      function buildGuidanceForClass(label) {
+        const lower = (label || '').toLowerCase();
+        if (lower.includes('dry')) {
+          return {
+            displayLabel: currentLang === 'ta' ? 'காய்ந்த இலை (Dry Leaf)' : 'Dry Leaf',
+            detailedAnalysis: currentLang === 'ta'
+              ? 'இலையின் ஓரங்கள் மற்றும் நுனிகளில் ஈரப்பத இழப்பு, சுருங்குதல் மற்றும் நிறம் மங்குதல் காணப்படுகிறது. இது வேர் மண்டலத்தில் நீர் பற்றாக்குறை அல்லது அதிக வெப்ப அழுத்தத்தைக் குறிக்கிறது.'
+              : 'Visual inspection shows moisture depletion, slight curling, and dry/crisp margins along the leaf blade, indicating root-zone dehydration or heat stress.',
+            summary: currentLang === 'ta'
+              ? 'உடனடியாக வேர் பகுதிக்கு ஆழமாக நீர் ஊற்றி, கடுமையான மதிய வெயிலிலிருந்து தாவரத்தைப் பாதுகாக்கவும்.'
+              : 'Provide immediate deep root watering and shelter the plant from intense afternoon sun until leaf turgor recovers.',
+            fertilizer: currentLang === 'ta'
+              ? 'இலை முழுமையாக ஈரப்பதம் பெறும் வரை அதிக செறிவுள்ள இரசாயன உரங்களைத் தவிர்க்கவும். மண் ஈரமான பிறகு நீர்த்த கடற்பாசி சாறு (Seaweed extract) அல்லது மண்புழு உரம் இடவும்.'
+              : 'Hold concentrated chemical fertilizers until the plant is fully rehydrated. Once soil moisture stabilizes, apply diluted seaweed extract or mild vermicompost.',
+            watering: currentLang === 'ta'
+              ? 'தொட்டியின் அடியில் நீர் வடியும் வரை வேர் பகுதியில் மெதுவாக நீர் ஊற்றவும். மேல் 1–2 அங்குல மண் காய்ந்தவுடன் மீண்டும் நீர் பாய்ச்சவும்.'
+              : 'Water slowly and deeply at the soil base until excess drains from the bottom holes; re-water whenever the top 1–2 inches of soil feel dry.',
+            care: currentLang === 'ta'
+              ? [
+                  'மண்ணின் வேர் பகுதிக்கு மெதுவாகவும் ஆழமாகவும் நீர் ஊற்றவும்.',
+                  'கடும் வெயிலில் இருந்து தற்காலிகமாக நிழலில் வைக்கவும்.',
+                  'முற்றிலும் காய்ந்த பழுப்பு இலை நுனிகளைச் சுத்தமான கத்தரிக்கோலால் நீக்கவும்.',
+                  'மண்ணின் ஈரப்பதத்தைத் தக்கவைக்க லேசான இயற்கை மூடாக்கு (Mulch) இடவும்.'
+                ]
+              : [
+                  'Water deeply at the soil base until excess drains freely.',
+                  'Move out of harsh midday direct sun while foliage rehydrates.',
+                  'Trim completely brown, brittle leaf tips with clean scissors.',
+                  'Apply a thin layer of organic mulch to reduce surface evaporation.'
+                ],
+            diseaseInfo: currentLang === 'ta'
+              ? 'தற்போது காய்ந்த நிலை (நீர் பற்றாக்குறை) மட்டுமே முக்கியமாகக் காணப்படுகிறது; தொற்று நோய்க்கான தெளிவான அறிகுறிகள் உறுதிப்படுத்தப்படவில்லை. ஈரப்பதம் சீரான பிறகும் மஞ்சள் புள்ளிகள் பரவினால் இலையை மீண்டும் பரிசோதிக்கவும்.'
+              : 'Primary signs match abiotic moisture stress (dryness) rather than a confirmed infectious pathogen. Re-check if dark lesions or fungal spots spread after rehydration.'
+          };
+        }
+        if (lower.includes('insect')) {
+          return {
+            displayLabel: currentLang === 'ta' ? 'பூச்சி தாக்கிய இலை (Insect Damaged)' : 'Insect Damaged',
+            detailedAnalysis: currentLang === 'ta'
+              ? 'இலையின் விளிம்புகள் கடிக்கப்பட்டும், மேற்பரப்பில் சிறு துளைகள் அல்லது புள்ளிகள் காணப்படுகின்றன. இது கம்பளிப்பூச்சிகள், வண்டுகள் அல்லது சாறு உறிஞ்சும் பூச்சிகளின் தாக்கத்தைக் குறிக்கிறது.'
+              : 'Physical notches, irregular holes, or stippled feeding marks appear on the leaf surface and edges, consistent with chewing caterpillars, beetles, or sap-feeding insects.',
+            summary: currentLang === 'ta'
+              ? 'இலையின் அடிப்பகுதியையும் தண்டுகளையும் பரிசோதித்து, பாதிக்கப்பட்ட செடியைத் தனிமைப்படுத்தி இயற்கை வேப்பெண்ணெய் கரைசல் தெளிக்கவும்.'
+              : 'Inspect leaf undersides and stems for active pests, isolate affected foliage, and apply a targeted organic neem oil treatment.',
+            fertilizer: currentLang === 'ta'
+              ? 'வேர் வலிமைக்கும் பூச்சி எதிர்ப்புத் திறனுக்கும் மண்ணில் வேப்பம் பிண்ணாக்கு (Neem cake) மற்றும் பொட்டாசியம் நிறைந்த வாழைப்பழத் தோல் உரம் அல்லது மண்புழு உரம் இடவும்.'
+              : 'Mix organic neem cake powder into topsoil along with potassium-rich compost or banana-peel tea to strengthen cell walls and support new leaf recovery.',
+            watering: currentLang === 'ta'
+              ? 'காலையில் வேர் பகுதியில் மட்டும் சீராக நீர் ஊற்றவும்; பூஞ்சை வளர்ச்சியைத் தவிர்க்க மாலையில் இலைகளின் மீது நீர் தெளிப்பதைத் தவிர்க்கவும்.'
+              : 'Water consistently at the root zone in the morning; avoid wetting foliage late in the evening to prevent secondary fungal issues on damaged tissue.',
+            care: currentLang === 'ta'
+              ? [
+                  'இலையின் அடிப்பகுதி மற்றும் தண்டு இணைப்புகளில் பூச்சிகள் அல்லது முட்டைகள் உள்ளதா எனப் பார்க்கவும்.',
+                  'காலை அல்லது மாலையில் நீர்த்த வேப்பெண்ணெய் (Neem Oil) கரைசல் தெளிக்கவும்.',
+                  'பாதிக்கப்பட்ட செடியை மற்ற செடிகளிலிருந்து 7–10 நாட்கள் சற்று விலக்கி வைக்கவும்.',
+                  'அதிகமாகச் சேதமடைந்த இலைகளை அகற்றி அப்புறப்படுத்தவும்.'
+                ]
+              : [
+                  'Check leaf undersides and stem joints for hidden caterpillars, aphids, or egg clusters.',
+                  'Spray diluted cold-pressed neem oil or mild insecticidal soap in early morning or late evening.',
+                  'Isolate heavily affected plants from nearby healthy plants for 7–10 days.',
+                  'Prune severely chewed leaves and dispose of them away from garden beds.'
+                ],
+            diseaseInfo: currentLang === 'ta'
+              ? 'கண்டறியப்பட்ட சேதம் பூச்சி கடித்ததால் ஏற்பட்டதாகத் தெரிகிறது; தனிப்பட்ட பூஞ்சை அல்லது பாக்டீரியா நோய் உறுதிப்படுத்தப்படவில்லை. பூச்சி கடித்த காயங்கள் வழியே தொற்று ஏற்படாமல் இருக்க இலையை உலர்வாகவும் சுத்தமாகவும் பராமரிக்கவும்.'
+              : 'Observed damage aligns with insect feeding rather than a confirmed primary fungal or bacterial disease. Keep wounded leaf surfaces clean and dry to prevent secondary infection.'
+          };
+        }
+        return {
+          displayLabel: currentLang === 'ta' ? 'ஆரோக்கியமான இலை (Healthy)' : 'Healthy',
+          detailedAnalysis: currentLang === 'ta'
+            ? 'இலை அடர் பச்சை நிறத்துடன், சீரான பச்சையம் மற்றும் சேதமில்லாத இலை அமைப்பைக் கொண்டுள்ளது. வறட்சி, பூச்சி கடி அல்லது நோய் புள்ளிகள் எதுவும் காணப்படவில்லை.'
+            : 'Foliage exhibits vibrant green chlorophyll coloration, firm turgor, and intact leaf structure with no visible signs of dehydration, pest feeding, or lesions.',
+          summary: currentLang === 'ta'
+            ? 'உங்கள் தாவரம் ஆரோக்கியமாக உள்ளது. தற்போதைய சூரிய ஒளி, சீரான நீர்ப்பாசனம் மற்றும் தூய்மையான பராமரிப்பைத் தொடரவும்.'
+            : 'Your plant foliage is in healthy condition. Maintain your current balanced light exposure, watering routine, and periodic leaf checks.',
+          fertilizer: currentLang === 'ta'
+            ? 'தற்போது அவசர உரம் தேவையில்லை. வளரும் பருவத்தில் மாதம் ஒருமுறை சமச்சீர் மண்புழு உரம் (Vermicompost) அல்லது நீர்த்த பஞ்சகவ்யா/கடற்பாசி உரம் இடலாம்.'
+            : 'No immediate corrective fertilizer is needed. During active growth months, feed lightly once a month with balanced vermicompost or diluted organic compost tea.',
+          watering: currentLang === 'ta'
+            ? 'மேல் 1–2 அங்குல மண் காய்ந்தவுடன் மட்டும் நீர் ஊற்றவும். வேர் அழுகலைத் தவிர்க்க தொட்டியில் நீர் தேங்காமல் பார்த்துக் கொள்ளவும்.'
+            : 'Water only when the top 1–2 inches of soil feel dry to the touch, ensuring free drainage so roots remain oxygenated and never waterlogged.',
+          care: currentLang === 'ta'
+            ? [
+                'தினமும் 4–6 மணி நேரம் பொருத்தமான மறைமுக சூரிய வெளிச்சம் வழங்கவும்.',
+                'மேல் மண் காய்ந்தவுடன் மட்டும் நீர் ஊற்றவும்.',
+                'இரண்டு வாரங்களுக்கு ஒருமுறை ஈரமான துணியால் இலைகளின் தூசியை மெதுவாகத் துடைக்கவும்.',
+                'வழக்கமான பராமரிப்பின் போது இலையின் அடிப்பகுதியையும் சரிபார்க்கவும்.'
+              ]
+            : [
+                'Provide 4–6 hours of bright, species-appropriate indirect light daily.',
+                'Water only when the topsoil begins drying; avoid waterlogging.',
+                'Gently wipe dust off leaves with a damp cloth every two weeks to aid photosynthesis.',
+                'Inspect leaf undersides periodically to catch early pest activity.'
+              ],
+          diseaseInfo: currentLang === 'ta'
+            ? 'தொற்று நோய் அல்லது பூஞ்சை அறிகுறிகள் எதுவும் கண்டறியப்படவில்லை. நல்ல காற்றோட்டத்தைப் பராமரிப்பதன் மூலம் தாவரத்தை நோயின்றி பாதுகாக்கலாம்.'
+            : 'No signs of fungal, bacterial, or viral plant disease are detected. Maintain good airflow around foliage to keep the plant disease-free.'
+        };
+      }
+
+      function populateDetailedResultView(rawCategory, confidenceText, isVerifiedMatch) {
+        const guide = buildGuidanceForClass(rawCategory);
+        document.getElementById('result-condition-title').textContent = guide.displayLabel;
+        document.getElementById('result-confidence-badge').textContent = isVerifiedMatch
+          ? (currentLang === 'ta' ? 'சரிபார்க்கப்பட்டது' : 'Verified')
+          : confidenceText;
+        document.getElementById('result-detailed-analysis').textContent = guide.detailedAnalysis;
+        document.getElementById('result-condition-summary').textContent = guide.summary;
+        document.getElementById('result-fertilizer-text').textContent = guide.fertilizer;
+        document.getElementById('result-watering-text').textContent = guide.watering;
+        document.getElementById('result-disease-info').textContent = guide.diseaseInfo;
+        const ul = document.getElementById('result-care-list');
+        ul.innerHTML = guide.care.map((item) => '<li>' + item + '</li>').join('');
+      }
+
+      async function analyzeLeafDataUrl(dataUrl) {
+        currentImageDataUrl = dataUrl;
+        window.clearScanMessage();
+        const savedBanner = document.getElementById('correction-saved-status');
+        if (savedBanner) savedBanner.classList.add('hidden');
+        const unclearPanel = document.getElementById('scan-unclear-panel');
+        if (unclearPanel) unclearPanel.classList.add('hidden');
+        document.getElementById('scan-empty-state').classList.add('hidden');
+        document.getElementById('scan-results-panel').classList.add('hidden');
+        document.getElementById('scan-loading-state').classList.remove('hidden');
+
+        try {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.src = dataUrl;
+          await new Promise((res, rej) => {
+            img.onload = res;
+            img.onerror = rej;
+          });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = 224;
+          canvas.height = 224;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, 224, 224);
+
+          if (!evaluateImageClarity(canvas)) {
+            document.getElementById('scan-loading-state').classList.add('hidden');
+            document.getElementById('scan-results-panel').classList.add('hidden');
+            document.getElementById('inline-train-correct-card').classList.add('hidden');
+            const unclearMsg = currentLang === 'ta'
+              ? 'படம் தெளிவாக இல்லை. தெளிவான படத்தைப் பதிவேற்றவும் அல்லது கேமராவில் எடுக்கவும்.'
+              : 'Image is not clear. Please upload or capture a clear image.';
+            showScanMessage(unclearMsg);
+            const unclearTextEl = document.getElementById('scan-unclear-message-text');
+            if (unclearTextEl) unclearTextEl.textContent = unclearMsg;
+            if (unclearPanel) unclearPanel.classList.remove('hidden');
+            return;
+          }
+
+          const exactMatch = corrections.find((c) => c.imageDataUrl === dataUrl);
+          if (exactMatch) {
+            document.getElementById('scan-loading-state').classList.add('hidden');
+            document.getElementById('scan-results-panel').classList.remove('hidden');
+            document.getElementById('inline-train-correct-card').classList.remove('hidden');
+            document.getElementById('scanned-leaf-preview').src = dataUrl;
+            const banner = document.getElementById('exact-match-banner');
+            banner.classList.remove('hidden');
+            banner.textContent = currentLang === 'ta'
+              ? 'முன்பு சரிபார்க்கப்பட்ட முடிவு: ' + exactMatch.correctedCategory
+              : 'Previously Verified Result: ' + exactMatch.correctedCategory;
+
+            populateDetailedResultView(exactMatch.correctedCategory, 'Verified', true);
+            currentScanRecord = {
+              id: 'scan-' + Date.now(),
+              timestamp: new Date().toLocaleString(),
+              rawCategory: exactMatch.correctedCategory,
+              condition: exactMatch.correctedCategory,
+              confidence: 'Verified',
+              isVerifiedMatch: true,
+              image: dataUrl
+            };
+            return;
+          }
+
+          if (!isLikelyLeafCanvas(canvas)) {
+            document.getElementById('scan-loading-state').classList.add('hidden');
+            const messageText = currentLang === 'ta'
+              ? 'இது இலைப் படம் அல்ல. தயவுசெய்து இலைப் படத்தைப் பதிவேற்றவும்.'
+              : 'This is not a leaf image. Please upload a leaf photo.';
+            showScanMessage(messageText);
+
+            // Image is clear: ALWAYS display the scanned preview, original AI prediction, and Train / Correct This Image section
+            document.getElementById('scan-empty-state').classList.add('hidden');
+            document.getElementById('scan-results-panel').classList.remove('hidden');
+            document.getElementById('exact-match-banner').classList.add('hidden');
+            document.getElementById('inline-train-correct-card').classList.remove('hidden');
+            document.getElementById('scanned-leaf-preview').src = dataUrl;
+            document.getElementById('result-condition-title').textContent = currentLang === 'ta'
+              ? 'இது இலைப் படம் அல்ல'
+              : 'This is not a leaf image';
+            document.getElementById('result-confidence-badge').textContent = currentLang === 'ta' ? 'இலை அல்ல' : 'Not a Leaf';
+            document.getElementById('result-detailed-analysis').textContent = messageText;
+            document.getElementById('result-condition-summary').textContent = currentLang === 'ta'
+              ? 'தெளிவான ஒளியில் ஒற்றை இலையை அருகில் எடுத்து மீண்டும் ஸ்கேன் செய்யவும் அல்லது கீழே உள்ள சரியான வகையைத் தேர்ந்தெடுக்கவும்.'
+              : 'If this clear photo is a real leaf, select Healthy, Dry, or Insect Damaged in the Train / Correct This Image section below to save a correction.';
+            document.getElementById('result-fertilizer-text').textContent = currentLang === 'ta'
+              ? 'இலை வகை உறுதிப்படுத்தப்பட்ட பிறகு உரப் பரிந்துரை காண்பிக்கப்படும்.'
+              : 'Fertilizer recommendation will display once the leaf condition is confirmed.';
+            document.getElementById('result-watering-text').textContent = currentLang === 'ta'
+              ? 'இலை வகை உறுதிப்படுத்தப்பட்ட பிறகு நீர்ப்பாசனப் பரிந்துரை காண்பிக்கப்படும்.'
+              : 'Watering recommendation will display once the leaf condition is confirmed.';
+            document.getElementById('result-disease-info').textContent = currentLang === 'ta'
+              ? 'இலை வகை உறுதிப்படுத்தப்படாததால் நோய் தகவல் கணிக்கப்படவில்லை.'
+              : 'No disease claim made until leaf classification is confirmed.';
+            document.getElementById('result-care-list').innerHTML =
+              '<li>' + (currentLang === 'ta'
+                ? 'இது உண்மையான இலைப் படமாக இருந்தால், கீழே உள்ள சரியான வகையைத் தேர்ந்தெடுத்து திருத்தத்தைச் சேமிக்கவும்.'
+                : 'If this is a real leaf photo, select the correct leaf category below and click Save Correction.') + '</li>';
+            currentScanRecord = {
+              id: 'scan-' + Date.now(),
+              timestamp: new Date().toLocaleString(),
+              rawCategory: null,
+              condition: 'This is not a leaf image',
+              confidence: 'Not a Leaf',
+              isVerifiedMatch: false,
+              image: dataUrl
+            };
+            return;
+          }
+
+          const model = await ensureTMModel();
+          const predictions = await model.predict(canvas);
+          predictions.sort((a, b) => b.probability - a.probability);
+          const top = predictions[0] || { className: 'Healthy Leaf', probability: 0.85 };
+          const pct = Math.round((top.probability || 0) * 100);
+          const cleanLabel = top.className.replace(/[-_]+/g, ' ').trim() || 'Healthy Leaf';
+
+          document.getElementById('scan-loading-state').classList.add('hidden');
+          document.getElementById('scan-results-panel').classList.remove('hidden');
+          document.getElementById('inline-train-correct-card').classList.remove('hidden');
+          document.getElementById('exact-match-banner').classList.add('hidden');
+          document.getElementById('scanned-leaf-preview').src = dataUrl;
+
+          populateDetailedResultView(cleanLabel, pct + '%', false);
+
+          currentScanRecord = {
+            id: 'scan-' + Date.now(),
+            timestamp: new Date().toLocaleString(),
+            rawCategory: cleanLabel,
+            condition: cleanLabel,
+            confidence: pct + '%',
+            isVerifiedMatch: false,
+            image: dataUrl
+          };
+          scanLogs.unshift(currentScanRecord);
+          if (scanLogs.length > 50) scanLogs = scanLogs.slice(0, 50);
+          saveState();
+          renderDashboard();
+          renderScanLogs();
+          showAiFeedbackPanel(cleanLabel + ' (' + pct + '%)', dataUrl);
+        } catch (err) {
+          document.getElementById('scan-loading-state').classList.add('hidden');
+          document.getElementById('scan-results-panel').classList.add('hidden');
+          document.getElementById('inline-train-correct-card').classList.add('hidden');
+          document.getElementById('scan-empty-state').classList.remove('hidden');
+          const errMsg = err && err.message ? err.message : 'Unable to analyse leaf image.';
+          showScanMessage(errMsg);
+        }
+      }
+
+      window.handleBackFromScan = function () {
+        document.getElementById('scan-results-panel').classList.add('hidden');
+        document.getElementById('scan-loading-state').classList.add('hidden');
+        const unclearPanel = document.getElementById('scan-unclear-panel');
+        if (unclearPanel) unclearPanel.classList.add('hidden');
+        document.getElementById('scan-empty-state').classList.remove('hidden');
+        window.clearScanMessage();
+      };
+
+      window.selectCorrectionCategory = function (cat) {
+        const sel = document.getElementById('correction-category-select');
+        if (sel) sel.value = cat;
+      };
+
+      window.syncCorrectionRadio = function (cat) {
+        const radios = document.querySelectorAll('input[name="leaf-correction-type"]');
+        radios.forEach((r) => {
+          r.checked = r.value === cat;
+        });
+      };
+
+      window.submitCorrection = function () {
+        if (!currentImageDataUrl) return;
+        const sel = document.getElementById('correction-category-select');
+        const checkedRadio = document.querySelector('input[name="leaf-correction-type"]:checked');
+        const cat = (checkedRadio && checkedRadio.value) || (sel && sel.value) || 'Healthy';
+        if (sel) sel.value = cat;
+        window.syncCorrectionRadio(cat);
+        const notes = document.getElementById('correction-notes-input').value.trim();
+        corrections.unshift({
+          id: 'corr-' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          originalPrediction: currentScanRecord ? currentScanRecord.condition : 'Unknown',
+          confidence: currentScanRecord ? currentScanRecord.confidence : '',
+          correctedCategory: cat,
+          notes,
+          imageDataUrl: currentImageDataUrl
+        });
+        trainingSamples.push({
+          id: 'sample-' + Date.now(),
+          name: 'scan-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-'),
+          label: cat,
+          dataUrl: currentImageDataUrl
+        });
+        saveState();
+        document.getElementById('correction-notes-input').value = '';
+        const savedBanner = document.getElementById('correction-saved-status');
+        if (savedBanner) {
+          savedBanner.textContent =
+            'Saved "' + cat + '" correction with the scanned leaf image in the dataset. Saving a correction does not automatically retrain the AI model.';
+          savedBanner.classList.remove('hidden');
+        }
+        renderDashboard();
+        renderCorrections();
+      };
+
+      function categoryToIndex(cat) {
+        const lower = (cat || '').toLowerCase();
+        if (lower.includes('dry')) return 1;
+        if (lower.includes('insect')) return 2;
+        return 0;
+      }
+
+      function indexToCategory(idx) {
+        if (idx === 1) return 'Dry';
+        if (idx === 2) return 'Insect Damaged';
+        return 'Healthy';
+      }
+
+      async function extractImageVector(dataUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = dataUrl;
+        await new Promise((res, rej) => {
+          img.onload = res;
+          img.onerror = rej;
+        });
+        const c = document.createElement('canvas');
+        c.width = 32;
+        c.height = 32;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, 32, 32);
+        const pixels = ctx.getImageData(0, 0, 32, 32).data;
+        const vec = new Float32Array(32 * 32 * 3);
+        for (let i = 0, j = 0; i < pixels.length; i += 4, j += 3) {
+          vec[j] = pixels[i] / 255;
+          vec[j + 1] = pixels[i + 1] / 255;
+          vec[j + 2] = pixels[i + 2] / 255;
+        }
+        return vec;
+      }
+
+      window.trainLocalModelFromDataset = async function () {
+        const statusBox = document.getElementById('trainer-status-box');
+        const validSamples = corrections.filter((c) => c.imageDataUrl && c.correctedCategory);
+        const distinctClasses = new Set(validSamples.map((c) => categoryToIndex(c.correctedCategory)));
+
+        if (validSamples.length < 2 || distinctClasses.size < 2) {
+          if (statusBox) {
+            statusBox.textContent = currentLang === 'ta'
+              ? 'பயிற்சிக்குப் போதுமான படங்கள் இல்லை. குறைந்தது 2 வெவ்வேறு வகைகளில் சேமிக்கப்பட்ட திருத்தப் படங்கள் தேவை.'
+              : 'Not enough training images yet. Save at least 2 corrected leaf scans across at least 2 categories (Healthy, Dry, Insect Damaged) before training.';
+          }
+          return;
+        }
+
+        try {
+          await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+          if (statusBox) statusBox.textContent = 'Preparing dataset tensors and training local classifier...';
+
+          const xsList = [];
+          const ysList = [];
+          for (const sample of validSamples) {
+            const vec = await extractImageVector(sample.imageDataUrl);
+            xsList.push(vec);
+            const y = [0, 0, 0];
+            y[categoryToIndex(sample.correctedCategory)] = 1;
+            ysList.push(y);
+          }
+
+          const xs = window.tf.tensor2d(xsList, [xsList.length, 32 * 32 * 3]);
+          const ys = window.tf.tensor2d(ysList, [ysList.length, 3]);
+
+          if (localTrainerHead) {
+            try { localTrainerHead.dispose(); } catch {}
+          }
+
+          const model = window.tf.sequential();
+          model.add(window.tf.layers.dense({ inputShape: [32 * 32 * 3], units: 24, activation: 'relu' }));
+          model.add(window.tf.layers.dense({ units: 3, activation: 'softmax' }));
+          model.compile({
+            optimizer: window.tf.train.adam(0.01),
+            loss: 'categoricalCrossentropy'
+          });
+
+          const epochs = 15;
+          await model.fit(xs, ys, {
+            epochs,
+            batchSize: Math.min(8, xsList.length),
+            shuffle: true,
+            callbacks: {
+              onEpochEnd: (epoch, logs) => {
+                if (statusBox) {
+                  const lossVal = logs && typeof logs.loss === 'number' ? logs.loss.toFixed(4) : 'n/a';
+                  statusBox.textContent = `Training Progress: Epoch ${epoch + 1}/${epochs} — Loss: ${lossVal} (${validSamples.length} samples)`;
+                }
+              }
+            }
+          });
+
+          xs.dispose();
+          ys.dispose();
+          localTrainerHead = model;
+          trainedModelVersion = 'local-v' + new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+          if (statusBox) {
+            statusBox.textContent = `Training Completed (${trainedModelVersion}) using ${validSamples.length} saved correction samples. Ready to test with a new leaf image.`;
+          }
+        } catch (err) {
+          if (statusBox) {
+            statusBox.textContent = 'Training failed: ' + (err && err.message ? err.message : 'Unable to train model.');
+          }
+        }
+      };
+
+      async function predictWithLocalTrainedModel(dataUrl) {
+        const outBox = document.getElementById('trainer-test-output');
+        const previewEl = document.getElementById('trainer-test-preview');
+        const predEl = document.getElementById('trainer-test-prediction');
+        const verEl = document.getElementById('trainer-test-version');
+
+        if (outBox) outBox.classList.remove('hidden');
+        if (previewEl) previewEl.src = dataUrl;
+
+        if (!localTrainerHead || !window.tf) {
+          if (predEl) predEl.textContent = 'No locally trained model available yet. Click Train Model first.';
+          if (verEl) verEl.textContent = 'Saved corrections alone do not retrain a model until Train Model completes.';
+          return;
+        }
+
+        const vec = await extractImageVector(dataUrl);
+        const inputTensor = window.tf.tensor2d([vec], [1, 32 * 32 * 3]);
+        const probsTensor = localTrainerHead.predict(inputTensor);
+        const probs = await probsTensor.data();
+        inputTensor.dispose();
+        probsTensor.dispose();
+
+        let bestIdx = 0;
+        for (let i = 1; i < probs.length; i++) {
+          if (probs[i] > probs[bestIdx]) bestIdx = i;
+        }
+
+        if (predEl) predEl.textContent = 'Local Model Prediction: ' + indexToCategory(bestIdx);
+        if (verEl) verEl.textContent = 'Model Version: ' + trainedModelVersion;
+      }
+
+      window.submitCorrection = function () {
+        if (!currentImageDataUrl) return;
+        const sel = document.getElementById('correction-category-select');
+        const checkedRadio = document.querySelector('input[name="leaf-correction-type"]:checked');
+        const cat = (checkedRadio && checkedRadio.value) || (sel && sel.value) || 'Healthy';
+        if (sel) sel.value = cat;
+        window.syncCorrectionRadio(cat);
+        const notes = document.getElementById('correction-notes-input').value.trim();
+        corrections.unshift({
+          id: 'corr-' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          originalPrediction: currentScanRecord ? currentScanRecord.condition : 'Unknown',
+          confidence: currentScanRecord ? currentScanRecord.confidence : '',
+          correctedCategory: cat,
+          notes,
+          imageDataUrl: currentImageDataUrl
+        });
+        trainingSamples.push({
+          id: 'sample-' + Date.now(),
+          name: 'scan-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-'),
+          label: cat,
+          dataUrl: currentImageDataUrl
+        });
+        saveState();
+        document.getElementById('correction-notes-input').value = '';
+        const savedBanner = document.getElementById('correction-saved-status');
+        if (savedBanner) {
+          savedBanner.textContent =
+            'Saved "' + cat + '" correction with the scanned leaf image in the dataset. Saving a correction does not automatically retrain the AI model.';
+          savedBanner.classList.remove('hidden');
+        }
+        renderDashboard();
+        renderCorrections();
+      };
+
+      function renderCorrections() {
+        const container = document.getElementById('corrections-list');
+        if (!container) return;
+        if (!corrections.length) {
+          container.innerHTML = '<p class="text-xs text-slate-600">No saved corrections yet.</p>';
+          return;
+        }
+        container.innerHTML = corrections.map((c) => (
+          '<div class="p-3.5 rounded-xl bg-white border border-[#C8DDD6] flex items-center justify-between gap-3">' +
+            '<div class="flex items-center gap-3 min-w-0">' +
+              '<img src="' + c.imageDataUrl + '" alt="Leaf" class="w-12 h-12 rounded-lg object-cover border border-[#C8DDD6] shrink-0" />' +
+              '<div class="min-w-0 text-xs">' +
+                '<p class="font-extrabold text-[#062326] truncate">' + c.correctedCategory + '</p>' +
+                '<p class="text-slate-600 truncate">Original: ' + c.originalPrediction + (c.notes ? ' • ' + c.notes : '') + '</p>' +
+                '<p class="text-[10px] text-slate-500">' + c.timestamp + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<button type="button" onclick="window.deleteCorrection(\'' + c.id + '\')" class="px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 text-[11px] font-bold shrink-0">Delete</button>' +
+          '</div>'
+        )).join('');
+      }
+
+      window.deleteCorrection = function (id) {
+        corrections = corrections.filter((c) => c.id !== id);
+        saveState();
+        renderDashboard();
+        renderCorrections();
+      };
+
+      window.exportCorrectionsJson = function () {
+        const blob = new Blob([JSON.stringify(corrections, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bioguard-ai-corrections.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      function renderReminders() {
+        const list = document.getElementById('reminders-list');
+        if (!list) return;
+        if (!reminders.length) {
+          list.innerHTML = '<p class="text-xs text-slate-600">No reminders saved.</p>';
+          return;
+        }
+        list.innerHTML = reminders.map((r) => (
+          '<div class="p-3 rounded-xl bg-white border border-[#C8DDD6] flex items-center justify-between gap-2 text-xs">' +
+            '<div>' +
+              '<p class="font-bold text-[#062326] ' + (r.completed ? 'line-through opacity-60' : '') + '">' + r.title + '</p>' +
+              '<p class="text-[11px] text-slate-500">' + r.dateTime + '</p>' +
+            '</div>' +
+            '<div class="flex gap-1.5">' +
+              '<button type="button" onclick="window.toggleReminderDone(\'' + r.id + '\')" class="px-2.5 py-1 rounded-lg bg-[#DCFCE7] text-[#065F46] font-bold text-[11px]">' + (r.completed ? 'Reopen' : 'Done') + '</button>' +
+              '<button type="button" onclick="window.deleteReminder(\'' + r.id + '\')" class="px-2 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold text-[11px]">X</button>' +
+            '</div>' +
+          '</div>'
+        )).join('');
+      }
+
+      window.addReminderItem = function (e) {
+        e.preventDefault();
+        const titleEl = document.getElementById('reminder-title-input');
+        const timeEl = document.getElementById('reminder-time-input');
+        if (!titleEl.value.trim() || !timeEl.value) return;
+        reminders.unshift({
+          id: 'rem-' + Date.now(),
+          title: titleEl.value.trim(),
+          dateTime: timeEl.value,
+          completed: false
+        });
+        titleEl.value = '';
+        saveState();
+        renderDashboard();
+        renderReminders();
+      };
+
+      window.toggleReminderDone = function (id) {
+        reminders = reminders.map((r) => (r.id === id ? Object.assign({}, r, { completed: !r.completed }) : r));
+        saveState();
+        renderDashboard();
+        renderReminders();
+      };
+
+      window.deleteReminder = function (id) {
+        reminders = reminders.filter((r) => r.id !== id);
+        saveState();
+        renderDashboard();
+        renderReminders();
+      };
+
+      function renderScanLogs() {
+        const list = document.getElementById('scan-logs-list');
+        if (!list) return;
+        if (!scanLogs.length) {
+          list.innerHTML = '<p class="text-xs text-slate-600">No leaf scans logged yet.</p>';
+          return;
+        }
+        list.innerHTML = scanLogs.map((s) => (
+          '<div class="p-3 rounded-xl bg-white border border-[#C8DDD6] flex items-center justify-between gap-3 text-xs">' +
+            '<div class="flex items-center gap-3 min-w-0">' +
+              '<img src="' + s.image + '" alt="Log" class="w-11 h-11 rounded-lg object-cover border border-[#C8DDD6] shrink-0" />' +
+              '<div class="min-w-0">' +
+                '<p class="font-extrabold text-[#062326] truncate">' + s.condition + ' (' + s.confidence + ')</p>' +
+                '<p class="text-[11px] text-slate-500">' + s.timestamp + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        )).join('');
+      }
+
+      window.openReminderModalByUser = function () {
+        const modal = document.getElementById('reminder-alarm-modal');
+        if (modal) modal.classList.remove('hidden');
+      };
+
+      window.closeReminderModalByUser = function () {
+        const modal = document.getElementById('reminder-alarm-modal');
+        if (modal) modal.classList.add('hidden');
+      };
+
+      window.startCamera = async function () {
+        window.clearScanMessage();
+        const modal = document.getElementById('camera-modal');
+        const video = document.getElementById('camera-video');
+        if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+          showScanMessage(
+            currentLang === 'ta'
+              ? 'இந்த உலாவியில் கேமரா ஆதரவு இல்லை. இலைப் படத்தைப் பதிவேற்றவும்.'
+              : 'Camera API is not supported in this browser. Please upload a leaf image instead.'
+          );
+          return;
+        }
+        try {
+          window.stopCamera();
+          if (modal) modal.classList.remove('hidden');
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false
+          });
+          if (video) {
+            video.srcObject = cameraStream;
+            await video.play().catch(() => {});
+          }
+        } catch (err) {
+          if (modal) modal.classList.add('hidden');
+          showScanMessage(
+            currentLang === 'ta'
+              ? 'கேமராவைத் திறக்க முடியவில்லை. அனுமதியைச் சரிபார்க்கவும் அல்லது படத்தைப் பதிவேற்றவும்.'
+              : (err && err.message ? err.message : 'Unable to start camera. Please check camera permission or upload an image.')
+          );
+        }
+      };
+
+      window.stopCamera = function () {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach((t) => t.stop());
+          cameraStream = null;
+        }
+        const video = document.getElementById('camera-video');
+        if (video) {
+          video.pause();
+          video.srcObject = null;
+        }
+        const modal = document.getElementById('camera-modal');
+        if (modal) modal.classList.add('hidden');
+      };
+
+      window.capturePhoto = function () {
+        const video = document.getElementById('camera-video');
+        if (!video) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const previewEl = document.getElementById('scanned-leaf-preview');
+        if (previewEl) previewEl.src = dataUrl;
+        window.stopCamera();
+        analyzeLeafDataUrl(dataUrl);
+      };
+
+      window.handleLeafFileChange = function (ev) {
+        const inputEl = ev && ev.target ? ev.target : document.getElementById('leaf-file-input');
+        const file = inputEl && inputEl.files ? inputEl.files[0] : null;
+        if (!file) return;
+        window.clearScanMessage();
+        const reader = new FileReader();
+        reader.onload = function (loadEv) {
+          if (loadEv.target && typeof loadEv.target.result === 'string') {
+            const dataUrl = loadEv.target.result;
+            const previewEl = document.getElementById('scanned-leaf-preview');
+            if (previewEl) previewEl.src = dataUrl;
+            analyzeLeafDataUrl(dataUrl);
+          }
+        };
+        reader.onerror = function () {
+          showScanMessage(
+            currentLang === 'ta'
+              ? 'படக் கோப்பைப் படிக்க முடியவில்லை.'
+              : 'Unable to read the selected image file.'
+          );
+        };
+        reader.readAsDataURL(file);
+        if (inputEl) inputEl.value = '';
+      };
+
+      window.stopCamera = function () {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach((t) => t.stop());
+          cameraStream = null;
+        }
+        const video = document.getElementById('camera-video');
+        if (video) video.srcObject = null;
+        document.getElementById('camera-modal').classList.add('hidden');
+      };
+
+      window.capturePhoto = function () {
+        const video = document.getElementById('camera-video');
+        if (!video) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        window.stopCamera();
+        analyzeLeafDataUrl(dataUrl);
+      };
+
+      window.speakCurrentResult = function () {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const title = document.getElementById('result-condition-title').textContent || '';
+        const summary = document.getElementById('result-condition-summary').textContent || '';
+        const utter = new SpeechSynthesisUtterance(title + '. ' + summary);
+        if (currentLang === 'ta') {
+          const voices = window.speechSynthesis.getVoices();
+          const taVoice = voices.find((v) => /ta(-|_|$)/i.test(v.lang));
+          if (!taVoice) return;
+          utter.voice = taVoice;
+          utter.lang = taVoice.lang;
+        } else {
+          utter.lang = 'en-US';
+        }
+        window.speechSynthesis.speak(utter);
+      };
+
+      window.connectCPX = async function () {
+        const statusEl = document.getElementById('soil-status-message');
+        const rawEl = document.getElementById('soil-raw-readout');
+        const kpiEl = document.getElementById('kpi-soil-status');
+        try {
+          if (!('serial' in navigator)) {
+            statusEl.textContent = 'Web Serial API is not supported in this browser.';
+            return;
+          }
+          serialPort = await navigator.serial.requestPort();
+          await serialPort.open({ baudRate: 115200 });
+          if (kpiEl) kpiEl.textContent = 'Connected';
+          rawEl.textContent = 'Serial Status: Connected @ 115200 baud';
+
+          const decoder = new TextDecoderStream();
+          serialStreamClosed = serialPort.readable.pipeTo(decoder.writable);
+          serialReader = decoder.readable.getReader();
+          let buffer = '';
+
+          while (true) {
+            const { value, done } = await serialReader.read();
+            if (done) break;
+            if (value) {
+              buffer += value;
+              const lines = buffer.split(/\r?\n/);
+              buffer = lines.pop() || '';
+              for (const line of lines) {
+                const clean = line.trim();
+                if (!clean) continue;
+                rawEl.textContent = 'Serial Rx: ' + clean;
+                const m = clean.match(/^MOISTURE:\s*(\d+)$/i);
+                if (m) {
+                  const adc = parseInt(m[1], 10);
+                  if (adc < 8000) {
+                    statusEl.textContent = currentLang === 'ta'
+                      ? 'தயவுசெய்து மண் ஈரப்பத சென்சாரை மண்ணில் செருகவும்.'
+                      : 'Please insert the soil moisture sensor into the soil.';
+                  } else if (adc < 30000) {
+                    statusEl.textContent = currentLang === 'ta'
+                      ? 'மண் உலர்ந்துள்ளது. செடிக்கு நீர் ஊற்றவும்.'
+                      : 'Soil is dry. Please water the plant.';
+                  } else {
+                    statusEl.textContent = currentLang === 'ta'
+                      ? 'மண்ணின் ஈரப்பத நிலை நன்றாக உள்ளது.'
+                      : 'Soil moisture level is good.';
+                  }
+                }
+              }
+            }
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.textContent = currentLang === 'ta'
+              ? 'சென்சார் இணைப்பைச் சரிபார்த்து, அதனை மண்ணில் செருகவும்'
+              : 'Please check the sensor connection and insert it into the soil';
+          }
+        }
+      };
+
+      window.disconnectCPX = async function () {
+        try {
+          if (serialReader) { await serialReader.cancel(); serialReader = null; }
+          if (serialStreamClosed) { await serialStreamClosed.catch(() => {}); serialStreamClosed = null; }
+          if (serialPort) { await serialPort.close(); serialPort = null; }
+        } catch {}
+        const kpiEl = document.getElementById('kpi-soil-status');
+        if (kpiEl) kpiEl.textContent = 'Disconnected';
+        document.getElementById('soil-raw-readout').textContent = 'Serial Status: Disconnected';
+      };
+
+      window.toggleChatDrawer = function () {
+        const drawer = document.getElementById('chat-drawer');
+        if (drawer) drawer.classList.toggle('hidden');
+      };
+
+      window.sendChatMessage = function (e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const box = document.getElementById('chat-history-box');
+        const q = input.value.trim();
+        if (!q || !box) return;
+        input.value = '';
+
+        const userDiv = document.createElement('div');
+        userDiv.className = 'p-2 rounded-xl bg-[#0C2C38] text-white ml-6';
+        userDiv.textContent = q;
+        box.appendChild(userDiv);
+
+        const botDiv = document.createElement('div');
+        botDiv.className = 'p-2.5 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[#062326] mr-6';
+        const hasTamil = /[\u0B80-\u0BFF]/.test(q) || q.toLowerCase().includes('tamil');
+        botDiv.textContent = hasTamil
+          ? 'இலை ஆரோக்கியத்திற்கு சீரான வெளிச்சம், சரியான நீர்ப்பாசனம் மற்றும் சத்தான மண் அவசியம்.'
+          : 'For healthy leaves, maintain balanced sunlight, water when dry, and avoid over-fertilizing stressed plants.';
+        box.appendChild(botDiv);
+        box.scrollTop = box.scrollHeight;
+      };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        loadState();
+        updateOfflineBanner();
+        window.addEventListener('online', updateOfflineBanner);
+        window.addEventListener('offline', updateOfflineBanner);
+
+        const fileInput = document.getElementById('leaf-file-input');
+        if (fileInput) {
+          fileInput.removeEventListener('change', window.handleLeafFileChange);
+          fileInput.addEventListener('change', window.handleLeafFileChange);
+        }
+
+        const alarmModal = document.getElementById('reminder-alarm-modal');
+        if (alarmModal) alarmModal.classList.add('hidden');
+
+        applyLanguage();
+        renderAiFeedbackList();
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
         }
       });
-      if (tabName === 'training') {
-<!-- ... existing code ... -->
-      var appMountTime = Date.now();
-      var startupModal = document.getElementById('reminder-alarm-modal');
-      if (startupModal) {
-        delete startupModal.dataset.userOpened;
-        startupModal.classList.add('hidden');
-      }
-      setInterval(function () { checkScheduledReminders(appMountTime); }, 1000);
-
-      applyLanguageUI();
-      initTeachableMachine().catch(function () {});
-    });
+    })();
   </script>
 </body>
 </html>
