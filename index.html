@@ -3,137 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BioGuard AI — Plant Health System</title>
+  <title>BioGuard AI — Leaf Health &amp; Soil Monitoring</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      color-scheme: dark;
-    }
     body {
-      font-family: 'Inter', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top right, rgba(14, 116, 144, 0.28), transparent 45%),
-                  linear-gradient(145deg, #061813 0%, #09252c 52%, #05131c 100%);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #041d17 0%, #072c2a 48%, #08233a 100%);
       color: #ecfdf5;
       min-height: 100vh;
     }
     .glass-card {
-      background: linear-gradient(160deg, rgba(10, 38, 34, 0.86) 0%, rgba(8, 30, 44, 0.88) 100%);
+      background: rgba(6, 36, 33, 0.78);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(45, 212, 191, 0.22);
-      box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.65);
-    }
-    .btn-primary-grad {
-      background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
-    }
-    .btn-primary-grad:hover {
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      box-shadow: 0 14px 34px rgba(2, 14, 18, 0.45);
     }
   </style>
 </head>
-<body class="antialiased selection:bg-emerald-500/30 selection:text-emerald-100">
-  <!-- Top Navigation & Language Controls -->
-  <header class="sticky top-0 z-30 border-b border-teal-500/20 bg-[#061813]/90 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+<body class="antialiased selection:bg-emerald-500 selection:text-white pb-20">
+  <!-- HEADER & NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-teal-500/25">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-sky-600 flex items-center justify-center text-white font-extrabold shadow-md">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-sky-600 flex items-center justify-center text-white font-extrabold text-lg shadow">
           🌿
         </div>
         <div>
-          <h1 id="app-title" class="text-lg sm:text-xl font-extrabold tracking-tight text-emerald-100">
-            BioGuard AI
-          </h1>
-          <p id="app-subtitle" class="text-[11px] font-medium text-teal-300/80">
+          <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">BioGuard AI</h1>
+          <p id="app-subtitle" class="text-[11px] text-teal-200/80">
             Leaf Health Diagnostics, Soil Moisture &amp; Care Assistant
           </p>
         </div>
       </div>
 
-      <nav class="flex flex-wrap items-center gap-2">
-        <button
-          id="nav-scan-btn"
-          type="button"
-          onclick="window.switchSection('scan')"
-          class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-sky-700 text-white shadow transition"
-        >
-          Leaf Scan
-        </button>
-        <button
-          id="nav-soil-btn"
-          type="button"
-          onclick="window.switchSection('soil')"
-          class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
-        >
-          Soil Moisture &amp; Buzzer
-        </button>
-        <button
-          id="nav-logs-btn"
-          type="button"
-          onclick="window.switchSection('logs')"
-          class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
-        >
-          Reminder &amp; Logs
-        </button>
-        <button
-          id="nav-about-btn"
-          type="button"
-          onclick="window.switchSection('about')"
-          class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
-        >
-          About &amp; Creators
-        </button>
-      </nav>
+      <div class="flex flex-wrap items-center gap-2">
+        <nav class="flex flex-wrap items-center gap-1.5">
+          <button
+            id="nav-scan-btn"
+            type="button"
+            onclick="window.switchSection('scan')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-sky-700 text-white shadow transition"
+          >
+            Leaf Scan
+          </button>
+          <button
+            id="nav-soil-btn"
+            type="button"
+            onclick="window.switchSection('soil')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
+          >
+            Soil Moisture &amp; Buzzer
+          </button>
+          <button
+            id="nav-logs-btn"
+            type="button"
+            onclick="window.switchSection('logs')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
+          >
+            Reminder &amp; Logs
+          </button>
+          <button
+            id="nav-about-btn"
+            type="button"
+            onclick="window.switchSection('about')"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition"
+          >
+            About &amp; Creators
+          </button>
+        </nav>
 
-      <div class="flex items-center gap-1.5 bg-slate-950/70 p-1 rounded-xl border border-teal-500/25">
-        <button
-          id="lang-btn-ta"
-          type="button"
-          onclick="window.setLanguage('ta')"
-          class="px-3 py-1.5 rounded-lg text-xs font-bold text-teal-200 hover:bg-teal-900/50 transition"
-        >
-          தமிழ்
-        </button>
-        <button
-          id="lang-btn-en"
-          type="button"
-          onclick="window.setLanguage('en')"
-          class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white transition"
-        >
-          English
-        </button>
+        <div class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-teal-500/25">
+          <button
+            id="lang-btn-ta"
+            type="button"
+            onclick="window.setLanguage('ta')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold text-teal-200 hover:bg-teal-900/50 transition"
+          >
+            தமிழ்
+          </button>
+          <button
+            id="lang-btn-en"
+            type="button"
+            onclick="window.setLanguage('en')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white transition"
+          >
+            English
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Workspace -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-    <!-- SECTION 1: LEAF SCANNER & DETAILED RESULT -->
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6">
+    <!-- SECTION 1: LEAF SCAN -->
     <section id="section-scan" class="space-y-6">
-      <div class="glass-card rounded-2xl p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="space-y-1">
-          <span id="scan-badge" class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
+      <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center md:text-left">
+          <span
+            id="scan-badge"
+            class="inline-block px-3 py-1 rounded-full bg-emerald-950/90 border border-emerald-400/30 text-emerald-300 text-xs font-bold"
+          >
             AI Foliage &amp; Disease Check
           </span>
-          <h2 id="scan-heading" class="text-xl sm:text-2xl font-extrabold text-white">
+          <h2 id="scan-heading" class="text-2xl sm:text-3xl font-extrabold text-white">
             Scan or Upload a Leaf Image
           </h2>
-          <p id="scan-description" class="text-xs sm:text-sm text-teal-200/80 max-w-2xl">
+          <p id="scan-description" class="text-xs sm:text-sm text-teal-100/85 max-w-xl leading-relaxed">
             Capture a photo with your camera or upload an image to check clarity, detect leaf health, and view care, fertilizer, and watering guidance.
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
-          <label class="px-4 py-2.5 rounded-xl btn-primary-grad text-white text-xs font-bold cursor-pointer shadow transition inline-flex items-center gap-2">
+        <div class="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto">
+          <label class="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold cursor-pointer shadow-lg transition flex items-center gap-2">
             <span>📁</span>
             <span id="upload-btn-label">Upload Image</span>
-            <input id="leaf-file-input" type="file" accept="image/*" class="hidden" onchange="window.handleFileUpload(event)" />
+            <input type="file" accept="image/*" onchange="window.handleFileUpload(event)" class="hidden" />
           </label>
+
           <button
-            id="camera-toggle-btn"
             type="button"
             onclick="window.toggleCamera()"
-            class="px-4 py-2.5 rounded-xl bg-sky-900/70 hover:bg-sky-800/80 text-sky-100 border border-sky-400/30 text-xs font-bold transition inline-flex items-center gap-2"
+            class="px-5 py-3 rounded-xl bg-sky-900/80 hover:bg-sky-800 text-sky-100 border border-sky-400/30 text-xs font-bold shadow-lg transition flex items-center gap-2"
           >
             <span>📷</span>
             <span id="camera-btn-label">Open Camera</span>
@@ -141,40 +135,43 @@
         </div>
       </div>
 
-      <!-- Camera Capture Box -->
+      <!-- CAMERA CAPTURE PANEL -->
       <div id="camera-panel" class="hidden glass-card rounded-2xl p-5 space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 id="camera-panel-title" class="text-sm font-bold text-emerald-200">Live Camera Capture</h3>
-          <button type="button" onclick="window.toggleCamera()" class="px-3 py-1 rounded-lg bg-slate-800 text-xs font-bold text-slate-200">
-            Close
-          </button>
+        <div class="relative max-w-xl mx-auto rounded-xl overflow-hidden bg-slate-950 border border-teal-500/30">
+          <video id="camera-video" autoplay playsinline muted class="w-full aspect-video object-cover"></video>
         </div>
-        <div class="max-w-xl mx-auto rounded-xl overflow-hidden bg-black border border-teal-500/25 aspect-video">
-          <video id="camera-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
-        </div>
-        <div class="flex justify-center">
+        <div class="flex justify-center gap-3">
           <button
-            id="capture-photo-btn"
             type="button"
             onclick="window.captureCameraFrame()"
-            class="px-5 py-2.5 rounded-xl btn-primary-grad text-white text-xs font-bold shadow"
+            class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow"
           >
-            Capture &amp; Analyse Leaf
+            Capture &amp; Analyze Leaf
+          </button>
+          <button
+            type="button"
+            onclick="window.toggleCamera()"
+            class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-100 text-xs font-bold"
+          >
+            Cancel
           </button>
         </div>
       </div>
 
-      <!-- Status / Validation Banner -->
-      <div id="scan-status-banner" class="hidden rounded-2xl p-4 text-xs sm:text-sm font-semibold border border-amber-400/40 bg-amber-950/60 text-amber-200"></div>
+      <!-- CLARITY / STATUS WARNING BANNER -->
+      <div
+        id="scan-status-banner"
+        class="hidden rounded-2xl p-4 bg-rose-950/85 border border-rose-400/40 text-rose-100 text-sm font-bold text-center shadow-lg"
+      ></div>
 
-      <!-- Detailed Leaf Result Panel -->
+      <!-- SCAN RESULT PANEL -->
       <div id="scan-result-panel" class="hidden space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <button
             id="result-back-btn"
             type="button"
             onclick="window.resetScanResult()"
-            class="px-4 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-teal-200 border border-teal-500/25 text-xs font-bold transition"
+            class="px-4 py-2 rounded-xl bg-slate-900/90 hover:bg-teal-950 border border-teal-500/30 text-teal-100 text-xs font-bold transition"
           >
             ← Back to Scan
           </button>
@@ -184,7 +181,7 @@
               id="tamil-voice-btn"
               type="button"
               onclick="window.speakCurrentResult()"
-              class="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-600 to-sky-700 hover:from-teal-500 hover:to-sky-600 text-white text-xs font-bold shadow transition"
+              class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white text-xs font-bold shadow transition"
             >
               English Voice
             </button>
@@ -192,53 +189,46 @@
               id="stop-voice-btn"
               type="button"
               onclick="window.stopVoicePlayback()"
-              class="px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-rose-950/80 text-rose-200 border border-rose-500/30 text-xs font-bold transition"
+              class="px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-rose-950 border border-rose-400/30 text-rose-200 text-xs font-bold transition"
             >
               Stop Voice
             </button>
           </div>
         </div>
 
-        <div id="exact-match-banner" class="hidden rounded-xl px-4 py-2.5 text-xs font-bold bg-emerald-900/60 border border-emerald-400/40 text-emerald-200">
-          Previously Verified Result
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <!-- Left Column: Scanned Leaf Preview & Correction -->
-          <div class="lg:col-span-5 space-y-5">
+          <!-- LEFT: LEAF PREVIEW + CORRECTION CARD -->
+          <div class="lg:col-span-5 space-y-4">
             <div class="glass-card rounded-2xl p-4 space-y-3">
-              <div class="flex items-center justify-between">
-                <span id="scanned-preview-label" class="text-xs font-bold uppercase tracking-wider text-teal-300">
-                  Scanned Leaf Preview
-                </span>
-                <span id="result-confidence-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                  --
-                </span>
-              </div>
-              <div class="rounded-xl overflow-hidden bg-slate-950 border border-teal-500/20 aspect-[4/3]">
+              <span id="scanned-preview-label" class="text-[11px] font-bold uppercase tracking-wider text-teal-300 block">
+                Scanned Leaf Preview
+              </span>
+              <div class="rounded-xl overflow-hidden bg-slate-950 border border-teal-500/25 aspect-video">
                 <img id="scanned-leaf-preview" src="" alt="Scanned Leaf Preview" class="w-full h-full object-cover" />
+              </div>
+              <div
+                id="exact-match-banner"
+                class="hidden px-3 py-1.5 rounded-xl bg-emerald-950/90 border border-emerald-400/40 text-emerald-300 text-xs font-bold text-center"
+              >
+                Previously Verified Result
               </div>
             </div>
 
-            <!-- Train / Correct This Image Card (Shown when image is clear) -->
-            <div id="inline-train-correct-card" class="hidden glass-card rounded-2xl p-5 space-y-3.5">
-              <div class="flex items-center justify-between gap-2">
-                <h3 id="correct-card-title" class="text-sm font-extrabold text-emerald-200">
-                  Train / Correct This Image
-                </h3>
-                <span id="original-ai-prediction-label" class="text-[11px] font-semibold text-teal-300/80">
-                  Original AI Prediction: --
-                </span>
+            <!-- ALWAYS SHOWN FOR CLEAR IMAGES -->
+            <div id="inline-train-correct-card" class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="space-y-1">
+                <h3 class="text-sm font-extrabold text-white">Train / Correct This Image</h3>
+                <p id="original-ai-prediction-label" class="text-xs text-teal-200/80">
+                  Original AI Prediction: —
+                </p>
               </div>
-              <p id="correct-card-desc" class="text-xs text-teal-100/80">
-                Select the true leaf category below to save this image and correction to your local verification records.
-              </p>
+
               <div class="grid grid-cols-3 gap-2">
                 <button
                   id="correct-opt-healthy"
                   type="button"
                   onclick="window.selectCorrectionCategory('Healthy')"
-                  class="py-2 px-2 rounded-xl text-xs font-bold bg-slate-900/90 hover:bg-emerald-900/70 text-emerald-200 border border-emerald-500/30 transition"
+                  class="px-2.5 py-2 rounded-xl bg-slate-900/85 hover:bg-emerald-950 border border-teal-500/25 text-xs font-bold text-emerald-200 transition"
                 >
                   Healthy
                 </button>
@@ -246,7 +236,7 @@
                   id="correct-opt-dry"
                   type="button"
                   onclick="window.selectCorrectionCategory('Dry')"
-                  class="py-2 px-2 rounded-xl text-xs font-bold bg-slate-900/90 hover:bg-amber-900/70 text-amber-200 border border-amber-500/30 transition"
+                  class="px-2.5 py-2 rounded-xl bg-slate-900/85 hover:bg-amber-950 border border-teal-500/25 text-xs font-bold text-amber-200 transition"
                 >
                   Dry
                 </button>
@@ -254,87 +244,84 @@
                   id="correct-opt-insect"
                   type="button"
                   onclick="window.selectCorrectionCategory('Insect Damaged')"
-                  class="py-2 px-2 rounded-xl text-xs font-bold bg-slate-900/90 hover:bg-orange-900/70 text-orange-200 border border-orange-500/30 transition"
+                  class="px-2.5 py-2 rounded-xl bg-slate-900/85 hover:bg-rose-950 border border-teal-500/25 text-xs font-bold text-rose-200 transition"
                 >
                   Insect Damaged
                 </button>
               </div>
+
               <button
-                id="save-correction-btn"
                 type="button"
                 onclick="window.saveImageCorrection()"
-                class="w-full py-2.5 rounded-xl btn-primary-grad text-white text-xs font-bold shadow transition"
+                class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow transition"
               >
                 Save Correction
               </button>
-              <p id="correction-save-status" class="text-xs font-semibold text-emerald-300 hidden"></p>
+
+              <p id="correction-save-status" class="hidden text-xs font-bold text-emerald-300 text-center"></p>
             </div>
           </div>
 
-          <!-- Right Column: Detailed Analysis, Care, Fertilizer, Watering, Maintenance & Disease Info -->
-          <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 space-y-5">
-            <div class="border-b border-teal-500/20 pb-3 space-y-1">
-              <span id="ai-result-kicker" class="text-[11px] font-bold uppercase tracking-wider text-teal-300">
-                AI Detection Result
+          <!-- RIGHT: DETAILED RESULT & RECOMMENDATIONS -->
+          <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-teal-500/20 pb-3">
+              <div>
+                <span id="ai-result-kicker" class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 block">
+                  AI Detection Result
+                </span>
+                <h3 id="result-condition-title" class="text-2xl font-extrabold text-white">Healthy Leaf</h3>
+              </div>
+              <span
+                id="result-confidence-badge"
+                class="px-3.5 py-1.5 rounded-full bg-emerald-950 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold"
+              >
+                93%
               </span>
-              <h3 id="result-condition-title" class="text-2xl font-extrabold text-emerald-100">
-                --
-              </h3>
             </div>
 
-            <div class="space-y-1.5">
-              <h4 id="heading-detailed-analysis" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
-                Detailed Leaf Analysis
-              </h4>
-              <p id="result-detailed-analysis" class="text-xs sm:text-sm text-teal-50/90 leading-relaxed bg-slate-950/50 p-3.5 rounded-xl border border-teal-500/15">
-                --
-              </p>
-            </div>
-
-            <div class="space-y-1.5">
-              <h4 id="heading-care-message" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
-                Care Message
-              </h4>
-              <p id="result-condition-summary" class="text-xs sm:text-sm text-emerald-100 leading-relaxed bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-500/20">
-                --
-              </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-1.5 bg-slate-950/45 p-4 rounded-xl border border-teal-500/15">
-                <h4 id="heading-fertilizer" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
-                  Fertilizer Recommendation
+            <div class="space-y-4 text-xs sm:text-sm">
+              <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1">
+                <h4 id="heading-detailed-analysis" class="text-xs font-bold uppercase tracking-wider text-teal-300">
+                  Detailed Leaf Analysis
                 </h4>
-                <p id="result-fertilizer-text" class="text-xs text-teal-100/90 leading-relaxed">
-                  --
-                </p>
+                <p id="result-detailed-analysis" class="text-teal-50/90 leading-relaxed"></p>
               </div>
 
-              <div class="space-y-1.5 bg-slate-950/45 p-4 rounded-xl border border-sky-500/20">
-                <h4 id="heading-watering" class="text-xs font-extrabold uppercase tracking-wider text-sky-300">
-                  Watering Recommendation
+              <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1">
+                <h4 id="heading-care-message" class="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                  Care Message
                 </h4>
-                <p id="result-watering-text" class="text-xs text-sky-100/90 leading-relaxed">
-                  --
-                </p>
+                <p id="result-condition-summary" class="text-teal-50/90 leading-relaxed"></p>
               </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-1.5 bg-slate-950/45 p-4 rounded-xl border border-teal-500/15">
-                <h4 id="heading-maintenance" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1">
+                  <h4 id="heading-fertilizer" class="text-xs font-bold uppercase tracking-wider text-sky-300">
+                    Fertilizer Recommendation
+                  </h4>
+                  <p id="result-fertilizer-text" class="text-teal-50/90 leading-relaxed"></p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1">
+                  <h4 id="heading-watering" class="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                    Watering Recommendation
+                  </h4>
+                  <p id="result-watering-text" class="text-teal-50/90 leading-relaxed"></p>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1.5">
+                <h4 id="heading-maintenance" class="text-xs font-bold uppercase tracking-wider text-emerald-300">
                   Maintenance Tips
                 </h4>
-                <ul id="result-care-list" class="space-y-1.5 text-xs text-teal-100/90 list-disc list-inside"></ul>
+                <ul id="result-care-list" class="list-disc list-inside space-y-1 text-teal-50/90"></ul>
               </div>
 
-              <div class="space-y-1.5 bg-slate-950/45 p-4 rounded-xl border border-teal-500/15">
-                <h4 id="heading-disease" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
+              <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/15 space-y-1">
+                <h4 id="heading-disease" class="text-xs font-bold uppercase tracking-wider text-amber-300">
                   Disease Information
                 </h4>
-                <p id="result-disease-info" class="text-xs text-teal-100/90 leading-relaxed">
-                  --
-                </p>
+                <p id="result-disease-info" class="text-teal-50/90 leading-relaxed"></p>
               </div>
             </div>
           </div>
@@ -344,189 +331,335 @@
 
     <!-- SECTION 2: SOIL MOISTURE & BUZZER -->
     <section id="section-soil" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-teal-500/20 pb-4">
+      <div class="glass-card rounded-2xl p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-teal-500/20 pb-4">
           <div>
-            <h2 id="soil-section-title" class="text-xl font-extrabold text-emerald-100">
-              Soil Moisture &amp; Buzzer
-            </h2>
-            <p id="soil-section-desc" class="text-xs text-teal-200/80">
-              Connect your Circuit Playground Express (CPX) via Web Serial to monitor moisture and trigger buzzer alerts.
-            </p>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">CPX USB Serial Monitor</span>
+            <h2 class="text-2xl font-extrabold text-white">Soil Moisture &amp; Buzzer</h2>
           </div>
-          <div class="flex items-center gap-2">
+
+          <div class="flex flex-wrap items-center gap-2">
             <button
-              id="cpx-connect-btn"
               type="button"
               onclick="window.connectCpxSerial()"
-              class="px-4 py-2 rounded-xl btn-primary-grad text-white text-xs font-bold shadow"
+              class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white text-xs font-bold shadow transition"
             >
               Connect CPX Serial
             </button>
             <button
-              id="cpx-buzzer-test-btn"
               type="button"
               onclick="window.toggleSoilBuzzer()"
-              class="px-4 py-2 rounded-xl bg-amber-900/70 hover:bg-amber-800/80 text-amber-100 border border-amber-400/30 text-xs font-bold"
+              class="px-4 py-2.5 rounded-xl bg-amber-600/90 hover:bg-amber-500 text-white text-xs font-bold shadow transition"
             >
-              Test Buzzer
+              Test / Toggle Buzzer
             </button>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="bg-slate-950/55 rounded-xl p-4 border border-teal-500/20">
-            <span class="text-[11px] font-bold uppercase text-teal-300 block">Connection</span>
-            <p id="cpx-connection-status" class="text-base font-extrabold text-emerald-200 mt-1">Disconnected</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-slate-950/65 border border-teal-500/20">
+            <span class="text-xs text-teal-300 font-semibold block">Connection Status</span>
+            <p id="cpx-connection-status" class="text-base font-extrabold text-white mt-1">Disconnected</p>
           </div>
-          <div class="bg-slate-950/55 rounded-xl p-4 border border-teal-500/20">
-            <span class="text-[11px] font-bold uppercase text-teal-300 block">Soil Moisture</span>
-            <p id="cpx-moisture-reading" class="text-base font-extrabold text-sky-200 mt-1">-- %</p>
+          <div class="p-4 rounded-xl bg-slate-950/65 border border-teal-500/20">
+            <span class="text-xs text-teal-300 font-semibold block">Soil Moisture Level</span>
+            <p id="cpx-moisture-reading" class="text-2xl font-extrabold text-emerald-300 mt-1">-- %</p>
           </div>
-          <div class="bg-slate-950/55 rounded-xl p-4 border border-teal-500/20">
-            <span class="text-[11px] font-bold uppercase text-teal-300 block">Buzzer Alert</span>
-            <p id="cpx-buzzer-status" class="text-base font-extrabold text-amber-200 mt-1">Standby</p>
+          <div class="p-4 rounded-xl bg-slate-950/65 border border-teal-500/20">
+            <span class="text-xs text-teal-300 font-semibold block">Buzzer Alert State</span>
+            <p id="cpx-buzzer-status" class="text-base font-extrabold text-sky-300 mt-1">Standby</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- SECTION 3: REMINDER & LOGS -->
-    <section id="section-logs" class="hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-5 glass-card rounded-2xl p-6 space-y-4">
-          <h2 id="reminders-heading" class="text-lg font-extrabold text-emerald-100">Plant Care Reminders</h2>
-          <form id="reminder-form" onsubmit="window.addCareReminder(event)" class="space-y-3">
+    <section id="section-logs" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- REMINDER MANAGEMENT -->
+      <div class="lg:col-span-6 glass-card rounded-2xl p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-teal-500/20 pb-3">
+          <h2 id="reminders-heading" class="text-xl font-extrabold text-white">Plant Care Reminders</h2>
+          <span
+            id="reminder-mode-badge"
+            class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-[11px] font-bold"
+          >
+            Editing Reminder
+          </span>
+        </div>
+
+        <form onsubmit="window.savePlantReminder(event)" class="space-y-3">
+          <div>
+            <label id="reminder-title-label" class="block text-xs font-bold text-teal-200 mb-1">
+              Reminder Title *
+            </label>
             <input
               id="reminder-title-input"
               type="text"
-              required
-              placeholder="Reminder note (e.g., Water indoor leaf plants)"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/70 border border-teal-500/25 text-xs text-white focus:outline-none focus:border-emerald-400"
+              placeholder="e.g., Water indoor leaf plants"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs focus:outline-none focus:border-emerald-400"
             />
-            <button
-              id="reminder-add-btn"
-              type="submit"
-              class="w-full py-2.5 rounded-xl btn-primary-grad text-white text-xs font-bold shadow"
-            >
-              Add Reminder
-            </button>
-          </form>
-          <ul id="reminders-list" class="space-y-2 text-xs"></ul>
-        </div>
+          </div>
 
-        <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-4">
-          <div class="flex items-center justify-between">
-            <h2 id="logs-heading" class="text-lg font-extrabold text-emerald-100">Scan History Logs</h2>
+          <div>
+            <label id="reminder-desc-label" class="block text-xs font-bold text-teal-200 mb-1">
+              Description
+            </label>
+            <textarea
+              id="reminder-desc-input"
+              rows="2"
+              placeholder="Add care details, fertilizer notes, or plant location..."
+              class="w-full px-3.5 py-2 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs focus:outline-none focus:border-emerald-400"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label id="reminder-date-label" class="block text-xs font-bold text-teal-200 mb-1">
+                Date *
+              </label>
+              <input
+                id="reminder-date-input"
+                type="date"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <div>
+              <label id="reminder-time-label" class="block text-xs font-bold text-teal-200 mb-1">
+                Time (AM/PM) *
+              </label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <select
+                  id="reminder-hour-select"
+                  class="px-2 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs"
+                >
+                  <option value="01">01</option>
+                  <option value="02">02</option>
+                  <option value="03">03</option>
+                  <option value="04">04</option>
+                  <option value="05">05</option>
+                  <option value="06">06</option>
+                  <option value="07">07</option>
+                  <option value="08" selected>08</option>
+                  <option value="09">09</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                </select>
+                <select
+                  id="reminder-minute-select"
+                  class="px-2 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs"
+                >
+                  <option value="00" selected>00</option>
+                  <option value="05">05</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                  <option value="25">25</option>
+                  <option value="30">30</option>
+                  <option value="35">35</option>
+                  <option value="40">40</option>
+                  <option value="45">45</option>
+                  <option value="50">50</option>
+                  <option value="55">55</option>
+                </select>
+                <select
+                  id="reminder-ampm-select"
+                  class="px-2 py-2.5 rounded-xl bg-slate-950/80 border border-teal-500/30 text-white text-xs"
+                >
+                  <option value="AM" selected>AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <p id="reminder-form-feedback" class="hidden text-xs font-bold text-amber-300"></p>
+
+          <div class="flex items-center gap-2 pt-1">
             <button
-              id="clear-logs-btn"
-              type="button"
-              onclick="window.clearScanLogs()"
-              class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-rose-950 text-xs font-bold text-rose-200 border border-rose-500/25"
+              id="reminder-save-btn"
+              type="submit"
+              class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow transition"
             >
-              Clear Logs
+              Save Reminder
+            </button>
+            <button
+              id="reminder-cancel-edit-btn"
+              type="button"
+              onclick="window.cancelEditReminder()"
+              class="hidden px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-100 text-xs font-bold transition"
+            >
+              Cancel
             </button>
           </div>
-          <div id="scan-logs-container" class="space-y-2.5 text-xs"></div>
+        </form>
+
+        <!-- DELETE CONFIRMATION PROMPT -->
+        <div
+          id="reminder-delete-confirm-box"
+          class="hidden p-3.5 rounded-xl bg-rose-950/85 border border-rose-400/40 flex flex-wrap items-center justify-between gap-2"
+        >
+          <span id="reminder-delete-confirm-text" class="text-xs font-bold text-rose-100">
+            Are you sure you want to delete this reminder?
+          </span>
+          <div class="flex items-center gap-2">
+            <button
+              id="reminder-delete-cancel-btn"
+              type="button"
+              onclick="window.cancelDeleteReminder()"
+              class="px-3 py-1.5 rounded-lg bg-slate-800 text-teal-100 text-xs font-bold"
+            >
+              Cancel
+            </button>
+            <button
+              id="reminder-delete-confirm-btn"
+              type="button"
+              onclick="window.confirmDeleteReminder()"
+              class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold"
+            >
+              Delete
+            </button>
+          </div>
         </div>
+
+        <div class="space-y-2.5 pt-2">
+          <h3 id="reminder-list-header" class="text-xs font-bold uppercase tracking-wider text-teal-300">
+            Saved Reminders
+          </h3>
+          <div id="reminders-list-container" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- SCAN HISTORY LOGS -->
+      <div class="lg:col-span-6 glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-teal-500/20 pb-3">
+          <h2 id="logs-heading" class="text-xl font-extrabold text-white">Scan History Logs</h2>
+          <button
+            id="clear-logs-btn"
+            type="button"
+            onclick="window.clearScanLogs()"
+            class="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-rose-950 border border-rose-400/30 text-rose-200 text-xs font-bold transition"
+          >
+            Clear Logs
+          </button>
+        </div>
+
+        <div id="scan-logs-container" class="space-y-2.5"></div>
       </div>
     </section>
 
     <!-- SECTION 4: ABOUT & CREATORS -->
-    <section id="section-about" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-6 space-y-5">
-        <div class="border-b border-teal-500/20 pb-4 space-y-1">
-          <span id="about-kicker" class="text-[11px] font-bold uppercase tracking-wider text-teal-300">
+    <section id="section-about" class="hidden max-w-3xl mx-auto">
+      <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-5">
+        <div class="border-b border-teal-500/20 pb-4">
+          <span id="about-kicker" class="text-xs font-bold uppercase tracking-wider text-emerald-300">
             About &amp; Creators
           </span>
-          <h2 id="about-project-name" class="text-2xl font-extrabold text-emerald-100">
+          <h2 id="about-project-name" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">
             BioGuard AI
           </h2>
-          <p id="about-subtitle" class="text-xs sm:text-sm font-semibold text-teal-200">
+          <p id="about-subtitle" class="text-sm font-semibold text-teal-200">
             Leaf Health &amp; Soil Monitoring
           </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          <div class="lg:col-span-7 bg-slate-950/50 rounded-xl p-4 border border-teal-500/15 space-y-2">
-            <h3 id="about-project-heading" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
-              About the Project
-            </h3>
-            <p id="about-project-desc" class="text-xs sm:text-sm text-teal-50/90 leading-relaxed">
-              An AI-powered plant health monitoring application that helps identify leaf conditions and provides care guidance, fertilizer suggestions, and soil moisture monitoring.
-            </p>
-          </div>
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/20 space-y-1.5">
+          <h3 id="about-project-heading" class="text-xs font-bold uppercase tracking-wider text-emerald-300">
+            About the Project
+          </h3>
+          <p id="about-project-desc" class="text-xs sm:text-sm text-teal-50/90 leading-relaxed">
+            An AI-powered plant health monitoring application that helps identify leaf conditions and provides care guidance, fertilizer suggestions, and soil moisture monitoring.
+          </p>
+        </div>
 
-          <div class="lg:col-span-5 bg-slate-950/50 rounded-xl p-4 border border-teal-500/15 space-y-2.5">
-            <h3 id="about-creators-heading" class="text-xs font-extrabold uppercase tracking-wider text-teal-300">
-              Developed By
-            </h3>
-            <ol class="space-y-2 text-xs sm:text-sm font-bold text-emerald-100 list-decimal list-inside">
-              <li id="creator-item-1">K. Aparna</li>
-              <li id="creator-item-2">G. Kayathri</li>
-            </ol>
-          </div>
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-teal-500/20 space-y-2">
+          <h3 id="about-creators-heading" class="text-xs font-bold uppercase tracking-wider text-sky-300">
+            Developed By
+          </h3>
+          <ol class="list-decimal list-inside space-y-1 text-sm font-bold text-white">
+            <li id="creator-item-1">K. Aparna</li>
+            <li id="creator-item-2">G. Kayathri</li>
+          </ol>
         </div>
       </div>
     </section>
-
-    <!-- Floating Plant Care Chatbot -->
-    <div class="fixed bottom-5 right-5 z-40">
-      <div id="chatbot-drawer" class="hidden mb-3 w-80 sm:w-96 glass-card rounded-2xl overflow-hidden shadow-2xl">
-        <div class="px-4 py-3 bg-emerald-950/90 border-b border-teal-500/25 flex items-center justify-between">
-          <span id="chatbot-title" class="text-xs font-extrabold text-emerald-100">BioGuard AI Assistant</span>
-          <button type="button" onclick="window.toggleChatbot()" class="text-xs font-bold text-teal-200">✕</button>
-        </div>
-        <div id="chatbot-messages" class="p-3.5 space-y-2 max-h-60 overflow-y-auto text-xs">
-          <div class="bg-slate-950/70 border border-teal-500/15 rounded-xl p-2.5 text-teal-100">
-            Ask me about leaf care, watering schedules, or soil moisture.
-          </div>
-        </div>
-        <form onsubmit="window.sendChatMessage(event)" class="p-2.5 bg-slate-950/80 border-t border-teal-500/20 flex gap-2">
-          <input
-            id="chatbot-input"
-            type="text"
-            placeholder="Type a question..."
-            class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-teal-500/25 text-xs text-white focus:outline-none"
-          />
-          <button type="submit" class="px-3.5 py-2 rounded-xl btn-primary-grad text-white text-xs font-bold">
-            Send
-          </button>
-        </form>
-      </div>
-      <button
-        id="chatbot-toggle-btn"
-        type="button"
-        onclick="window.toggleChatbot()"
-        class="ml-auto flex items-center gap-2 px-4 py-3 rounded-full btn-primary-grad text-white text-xs font-extrabold shadow-xl"
-      >
-        <span>💬</span>
-        <span id="chatbot-btn-label">Care Chat</span>
-      </button>
-    </div>
   </main>
+
+  <!-- FLOATING PLANT CARE CHATBOT -->
+  <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <div id="chatbot-drawer" class="hidden mb-3 w-80 sm:w-96 glass-card rounded-2xl overflow-hidden shadow-2xl">
+      <div class="px-4 py-3 bg-gradient-to-r from-emerald-700 to-sky-800 flex items-center justify-between">
+        <span class="text-xs font-extrabold text-white">🌿 BioGuard AI Plant Assistant</span>
+        <button type="button" onclick="window.toggleChatbot()" class="text-xs font-bold text-teal-100 hover:text-white">
+          ✕
+        </button>
+      </div>
+      <div id="chatbot-messages" class="p-3.5 h-60 overflow-y-auto space-y-2 text-xs">
+        <div class="bg-slate-950/70 border border-teal-500/15 rounded-xl p-2.5 text-teal-100 mr-6">
+          Ask me about leaf care, watering schedules, or fertilizer recommendations!
+        </div>
+      </div>
+      <form onsubmit="window.sendChatMessage(event)" class="p-2.5 border-t border-teal-500/20 flex gap-2 bg-slate-950/80">
+        <input
+          id="chatbot-input"
+          type="text"
+          placeholder="Ask about plant care..."
+          class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-teal-500/25 text-white text-xs focus:outline-none"
+        />
+        <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">
+          Send
+        </button>
+      </form>
+    </div>
+
+    <button
+      type="button"
+      onclick="window.toggleChatbot()"
+      class="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white font-extrabold shadow-xl flex items-center justify-center text-lg"
+      aria-label="Toggle Plant Care Chatbot"
+    >
+      💬
+    </button>
+  </div>
 
   <script>
     (function () {
-      'use strict';
-
       const DB_NAME = 'bioguard_ai_db_v1';
-      const STORE_CORRECTIONS = 'corrections';
+      const STORE_CORRECTIONS = 'saved_corrections';
       const LOGS_STORAGE_KEY = 'bioguard_scan_logs_v1';
-      const REMINDERS_STORAGE_KEY = 'bioguard_reminders_v1';
+      const REMINDERS_STORAGE_KEY = 'bioguard_plant_reminders_v1';
 
       let currentLang = 'en';
+      let cameraStream = null;
       let currentImageDataUrl = '';
       let currentImageFingerprint = '';
       let currentResultPayload = null;
       let selectedCorrectionCategory = '';
-      let savedCorrectionsMap = new Map();
+      const savedCorrectionsMap = new Map();
+
       let scanLogs = [];
       let reminders = [];
+      let editingReminderId = null;
+      let pendingDeleteReminderId = null;
+
       let activeTamilAudio = null;
-      let cameraStream = null;
       let buzzerAudioCtx = null;
       let buzzerActive = false;
+
+      function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
 
       const UI_COPY = {
         en: {
@@ -548,6 +681,7 @@
           scanDesc: 'Capture a photo with your camera or upload an image to check clarity, detect leaf health, and view care, fertilizer, and watering guidance.',
           uploadBtn: 'Upload Image',
           cameraBtn: 'Open Camera',
+          cameraCloseBtn: 'Close Camera',
           backBtn: '← Back to Scan',
           stopVoiceBtn: 'Stop Voice',
           scannedPreviewLabel: 'Scanned Leaf Preview',
@@ -559,8 +693,35 @@
           maintenanceHeading: 'Maintenance Tips',
           diseaseHeading: 'Disease Information',
           unclearMsg: 'Image is not clear. Please upload or capture a clear image.',
-          notLeafMsg: 'This is not a leaf image. Please upload a leaf photo.',
-          noTamilVoiceMsg: 'Tamil voice is not available in this browser.'
+          noTamilVoiceMsg: 'Tamil voice is not available in this browser.',
+          remindersHeading: 'Plant Care Reminders',
+          reminderEditingBadge: 'Editing Reminder',
+          reminderTitleLabel: 'Reminder Title *',
+          reminderTitlePlaceholder: 'e.g., Water indoor leaf plants',
+          reminderDescLabel: 'Description',
+          reminderDescPlaceholder: 'Add care details, fertilizer notes, or plant location...',
+          reminderDateLabel: 'Date *',
+          reminderTimeLabel: 'Time (AM/PM) *',
+          reminderSaveBtn: 'Save Reminder',
+          reminderUpdateBtn: 'Update Reminder',
+          reminderCancelBtn: 'Cancel',
+          reminderListHeader: 'Saved Reminders',
+          reminderEmptyMsg: 'No reminders set yet.',
+          reminderValidationTitle: 'Please enter a reminder title.',
+          reminderValidationDateTime: 'Please select a valid date and time (hour and minute).',
+          reminderSavedNotice: 'Reminder saved.',
+          reminderUpdatedNotice: 'Reminder updated.',
+          reminderDeleteConfirm: 'Are you sure you want to delete this reminder?',
+          reminderDeleteBtn: 'Delete',
+          reminderEditBtn: 'Edit',
+          reminderCompleteBtn: 'Mark Completed',
+          reminderReopenBtn: 'Reopen',
+          reminderStatusUpcoming: 'Upcoming',
+          reminderStatusOverdue: 'Overdue',
+          reminderStatusCompleted: 'Completed',
+          logsHeading: 'Scan History Logs',
+          clearLogsBtn: 'Clear Logs',
+          logsEmptyMsg: 'No scan logs recorded yet.'
         },
         ta: {
           appSubtitle: 'இலை ஆரோக்கிய பரிசோதனை, மண் ஈரப்பதம் & பராமரிப்பு உதவியாளர்',
@@ -581,6 +742,7 @@
           scanDesc: 'இலையின் தெளிவைச் சரிபார்க்கவும், நிலையை அறியவும், பராமரிப்பு, உரம் மற்றும் நீர் ஊற்றும் ஆலோசனைகளைப் பெறவும்.',
           uploadBtn: 'படத்தை பதிவேற்று',
           cameraBtn: 'கேமரா திறக்கவும்',
+          cameraCloseBtn: 'கேமராவை மூடு',
           backBtn: '← பரிசோதனைக்குத் திரும்பு',
           stopVoiceBtn: 'குரலை நிறுத்து',
           scannedPreviewLabel: 'ஆய்வு செய்யப்பட்ட இலை முன்னோட்டம்',
@@ -592,678 +754,41 @@
           maintenanceHeading: 'பராமரிப்பு குறிப்புகள்',
           diseaseHeading: 'நோய் தகவல்',
           unclearMsg: 'படம் தெளிவாக இல்லை. தயவுசெய்து தெளிவான படத்தை பதிவேற்றவும் அல்லது எடுக்கவும்.',
-          notLeafMsg: 'இது இலை படம் அல்ல. தயவுசெய்து இலை புகைப்படத்தை பதிவேற்றவும்.',
-          noTamilVoiceMsg: 'இந்த உலாவியில் தமிழ் குரல் வசதி இல்லை.'
+          noTamilVoiceMsg: 'இந்த உலாவியில் தமிழ் குரல் வசதி இல்லை.',
+          remindersHeading: 'தாவர பராமரிப்பு நினைவூட்டல்கள்',
+          reminderEditingBadge: 'நினைவூட்டலைத் திருத்துதல்',
+          reminderTitleLabel: 'நினைவூட்டல் தலைப்பு *',
+          reminderTitlePlaceholder: 'எ.கா., செடிகளுக்கு நீர் ஊற்றவும்',
+          reminderDescLabel: 'விளக்கம்',
+          reminderDescPlaceholder: 'பராமரிப்பு விவரங்கள், உரக் குறிப்புகள் அல்லது செடியின் இடத்தைச் சேர்க்கவும்...',
+          reminderDateLabel: 'தேதி *',
+          reminderTimeLabel: 'நேரம் (AM/PM) *',
+          reminderSaveBtn: 'நினைவூட்டலைச் சேமி',
+          reminderUpdateBtn: 'நினைவூட்டலைப் புதுப்பி',
+          reminderCancelBtn: 'ரத்து செய்',
+          reminderListHeader: 'சேமிக்கப்பட்ட நினைவூட்டல்கள்',
+          reminderEmptyMsg: 'இதுவரை நினைவூட்டல்கள் எதுவும் அமைக்கப்படவில்லை.',
+          reminderValidationTitle: 'நினைவூட்டல் தலைப்பை உள்ளிடவும்.',
+          reminderValidationDateTime: 'சரியான தேதி மற்றும் நேரத்தை (மணி மற்றும் நிமிடம்) தேர்ந்தெடுக்கவும்.',
+          reminderSavedNotice: 'நினைவூட்டல் சேமிக்கப்பட்டது.',
+          reminderUpdatedNotice: 'நினைவூட்டல் புதுப்பிக்கப்பட்டது.',
+          reminderDeleteConfirm: 'இந்த நினைவூட்டலை நிச்சயமாக நீக்க விரும்புகிறீர்களா?',
+          reminderDeleteBtn: 'நீக்கு',
+          reminderEditBtn: 'திருத்து',
+          reminderCompleteBtn: 'முடிந்ததாகக் குறி',
+          reminderReopenBtn: 'மீண்டும் திற',
+          reminderStatusUpcoming: 'வரவிருக்கும்',
+          reminderStatusOverdue: 'தாமதமானது',
+          reminderStatusCompleted: 'முடிந்தது',
+          logsHeading: 'பரிசோதனை வரலாற்றுப் பதிவுகள்',
+          clearLogsBtn: 'பதிவுகளை அழி',
+          logsEmptyMsg: 'இதுவரை பரிசோதனைப் பதிவுகள் எதுவும் இல்லை.'
         }
       };
-
-      const CONDITION_GUIDANCE = {
-        Healthy: {
-          en: {
-            title: 'Healthy Leaf',
-            detailed: 'The leaf exhibits uniform green pigmentation, intact lamina margins, and healthy turgor without visible pest tunneling or severe tissue necrosis.',
-            careMessage: 'Your plant leaf looks healthy. Continue balanced light, well-draining soil, and routine observation.',
-            fertilizer: 'Apply a mild balanced NPK (10-10-10) or vermicompost/compost tea once every 3–4 weeks during active growth.',
-            watering: 'Water deeply when the top 2–3 cm of soil feels dry; avoid waterlogging at the root zone.',
-            maintenance: [
-              'Provide bright indirect sunlight suited to the plant species.',
-              'Wipe dust gently from leaf surfaces to keep stomata clear.',
-              'Inspect leaf undersides weekly for early pest activity.'
-            ],
-            disease: 'No active leaf disease symptoms detected. Maintain airflow and clean pruning tools to prevent fungal or bacterial infection.'
-          },
-          ta: {
-            title: 'ஆரோக்கியமான இலை',
-            detailed: 'இலையில் சீரான பச்சை நிறம், உறுதியான இலை அமைப்பு மற்றும் பூச்சி அல்லது நோய் அறிகுறிகள் இல்லாத நிலை காணப்படுகிறது.',
-            careMessage: 'உங்கள் தாவர இலை ஆரோக்கியமாக உள்ளது. சீரான வெளிச்சம், வடிகால் வசதி மற்றும் வழக்கமான கவனத்தைத் தொடரவும்.',
-            fertilizer: 'வளர்ச்சி காலத்தில் 3–4 வாரங்களுக்கு ஒருமுறை சமச்சீரான இயற்கை உரம் அல்லது மண்புழு உரம் அளிக்கவும்.',
-            watering: 'மேல் மண் 2–3 செ.மீ காய்ந்தவுடன் தேவையான அளவு நீர் ஊற்றவும்; வேரில் நீர் தேங்காமல் பார்க்கவும்.',
-            maintenance: [
-              'தாவரத்திற்கு ஏற்ற பிரகாசமான மறைமுக சூரிய ஒளியை வழங்கவும்.',
-              'இலையின் மேற்பரப்பில் உள்ள தூசியை மெதுவாகத் துடைக்கவும்.',
-              'வாரந்தோறும் இலையின் அடிப்பகுதியை பரிசோதிக்கவும்.'
-            ],
-            disease: 'தற்போது இலையில் நோய் அறிகுறிகள் எதுவும் இல்லை. காற்றோட்டத்தையும் சுத்தமான பராமரிப்பையும் பராமரிக்கவும்.'
-          }
-        },
-        Dry: {
-          en: {
-            title: 'Dry Leaf',
-            detailed: 'The leaf shows curling, brittle edges, or moisture stress indicative of dehydration, dry air, or delayed root hydration.',
-            careMessage: 'The leaf shows dryness/dehydration stress. Rehydrate the root zone gradually and shield from harsh afternoon heat.',
-            fertilizer: 'Hold concentrated chemical fertilizers while stressed; after rehydration, use light seaweed extract or compost.',
-            watering: 'Moisten dry soil slowly in stages so water penetrates evenly without runoff, ensuring pot drainage works properly.',
-            maintenance: [
-              'Move the plant out of scorching direct afternoon sun temporarily.',
-              'Check soil moisture and pot drainage holes.',
-              'Trim fully dried, brittle tips with clean shears.'
-            ],
-            disease: 'Dryness itself is moisture stress rather than a pathogen, though stressed leaves can become more vulnerable to secondary spots if left untreated.'
-          },
-          ta: {
-            title: 'காய்ந்த இலை',
-            detailed: 'இலையில் சுருக்கம், வறண்ட விளிம்புகள் அல்லது நீர் பற்றாக்குறை காரணமாக ஏற்படும் வறட்சி அறிகுறிகள் தென்படுகின்றன.',
-            careMessage: 'இலையில் வறட்சி அறிகுறி உள்ளது. வேர்ப்பகுதிக்கு படிப்படியாக நீர் அளித்து கடும் வெயிலிலிருந்து பாதுகாக்கவும்.',
-            fertilizer: 'வறட்சி நேரத்தில் செறிவூட்டப்பட்ட ரசாயன உரங்களைத் தவிர்க்கவும்; நீர் சீரான பின் கடற்பாசி அல்லது இயற்கை உரம் அளிக்கவும்.',
-            watering: 'நீர் வழிந்தோடாமல் மண்ணுக்குள் நன்கு ஊறும்படி படிப்படியாக நீர் ஊற்றவும்.',
-            maintenance: [
-              'கடுமையான நண்பகல் வெயிலிலிருந்து தற்காலிகமாக ஒதுக்கி வைக்கவும்.',
-              'மண் ஈரப்பதம் மற்றும் தொட்டியின் நீர் வடியும் துளைகளைச் சரிபார்க்கவும்.',
-              'முற்றிலும் காய்ந்த நுனிகளை சுத்தமான கத்தரிக்கோலால் கத்தரிக்கவும்.'
-            ],
-            disease: 'இது நோய்க்கிருமியால் அல்லாமல் நீர் பற்றாக்குறையால் ஏற்படும் வறட்சியாகும்; கவனிக்காவிட்டால் இலைகள் மேலும் பலவீனமடையலாம்.'
-          }
-        },
-        'Insect Damaged': {
-          en: {
-            title: 'Insect Damaged Leaf',
-            detailed: 'Irregular holes, chewed margins, or surface stippling indicate chewing or sap-sucking insect activity on the foliage.',
-            careMessage: 'Insect feeding damage is indicated. Isolate affected foliage, remove visible pests, and apply targeted botanical control.',
-            fertilizer: 'Support recovery with organic neem cake or balanced potassium-rich plant nutrition after initial pest control.',
-            watering: 'Water at the soil base in the morning and keep foliage dry overnight to reduce secondary fungal growth on wounded tissue.',
-            maintenance: [
-              'Check both top and underside of leaves for pests or egg masses.',
-              'Isolate heavily affected plants from nearby healthy plants.',
-              'Apply diluted neem oil spray in early morning or late evening.'
-            ],
-            disease: 'Chewing and sap-sucking insects can create entry points for secondary infections or transmit plant viruses; monitor new growth closely.'
-          },
-          ta: {
-            title: 'பூச்சிகளால் சேதமடைந்த இலை',
-            detailed: 'இலையில் ஓட்டைகள், கடிக்கப்பட்ட விளிம்புகள் அல்லது புள்ளிகள் மூலம் பூச்சிகளின் தாக்கம் இருப்பது தெரிகிறது.',
-            careMessage: 'பூச்சி சேதம் காணப்படுகிறது. பாதிக்கப்பட்ட இலையை கவனித்து, பூச்சிகளை நீக்கி பாதுகாப்பான கட்டுப்பாட்டு முறையைப் பயன்படுத்தவும்.',
-            fertilizer: 'பூச்சி கட்டுப்பாட்டிற்குப் பிறகு வேம்பு பிண்ணாக்கு அல்லது சீரான இயற்கை ஊட்டச்சத்து அளிக்கவும்.',
-            watering: 'காலையில் மண்ணின் அடிப்பகுதியில் மட்டும் நீர் ஊற்றவும்; இரவில் இலைகளில் ஈரம் தங்காமல் பார்த்துக் கொள்ளவும்.',
-            maintenance: [
-              'இலையின் மேல் மற்றும் அடிப்பகுதியில் பூச்சிகள் அல்லது முட்டைகள் உள்ளதா எனப் பார்க்கவும்.',
-              'பாதிக்கப்பட்ட தாவரத்தை மற்ற ஆரோக்கியமான தாவரங்களிலிருந்து சற்று விலக்கி வைக்கவும்.',
-              'காலை அல்லது மாலையில் வேப்பெண்ணெய் கரைசலை தெளிக்கவும்.'
-            ],
-            disease: 'பூச்சிகள் ஏற்படுத்தும் காயங்கள் வழியாக இரண்டாம் நிலை நோய்த்தொற்று ஏற்பட வாய்ப்புள்ளதால் புதிய தளிர்களைக் கவனிக்கவும்.'
-          }
-        }
-      };
-
-      function setText(id, text) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = text;
-      }
 
       function t(key) {
-        return (UI_COPY[currentLang] && UI_COPY[currentLang][key]) || UI_COPY.en[key] || '';
+        return (UI_COPY[currentLang] && UI_COPY[currentLang][key]) || UI_COPY.en[key] || key;
       }
-
-      function openCorrectionsDb() {
-        return new Promise((resolve) => {
-          if (!('indexedDB' in window)) {
-            resolve(null);
-            return;
-          }
-          try {
-            const req = indexedDB.open(DB_NAME, 1);
-            req.onupgradeneeded = () => {
-              const db = req.result;
-              if (!db.objectStoreNames.contains(STORE_CORRECTIONS)) {
-                db.createObjectStore(STORE_CORRECTIONS, { keyPath: 'fingerprint' });
-              }
-            };
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
-          } catch {
-            resolve(null);
-          }
-        });
-      }
-
-      async function loadSavedCorrectionsFromIndexedDB() {
-        const db = await openCorrectionsDb();
-        if (!db) return;
-        return new Promise((resolve) => {
-          try {
-            const tx = db.transaction(STORE_CORRECTIONS, 'readonly');
-            const store = tx.objectStore(STORE_CORRECTIONS);
-            const req = store.getAll();
-            req.onsuccess = () => {
-              const rows = Array.isArray(req.result) ? req.result : [];
-              savedCorrectionsMap = new Map();
-              rows.forEach((row) => {
-                if (row && row.fingerprint) {
-                  savedCorrectionsMap.set(row.fingerprint, row);
-                }
-              });
-              renderTrainerDatasetSummary();
-              resolve();
-            };
-            req.onerror = () => resolve();
-          } catch {
-            resolve();
-          }
-        });
-      }
-
-      async function persistCorrectionToIndexedDB(record) {
-        if (!record || !record.fingerprint) return;
-        savedCorrectionsMap.set(record.fingerprint, record);
-        const db = await openCorrectionsDb();
-        if (!db) return;
-        return new Promise((resolve) => {
-          try {
-            const tx = db.transaction(STORE_CORRECTIONS, 'readwrite');
-            const store = tx.objectStore(STORE_CORRECTIONS);
-            store.put(record);
-            tx.oncomplete = () => resolve();
-            tx.onerror = () => resolve();
-          } catch {
-            resolve();
-          }
-        });
-      }
-
-      function renderTrainerDatasetSummary() {
-        const total = savedCorrectionsMap.size;
-        const badge = document.getElementById('original-ai-prediction-label');
-        if (badge && currentResultPayload && currentResultPayload.originalPrediction) {
-          const suffix = total > 0 ? ` • Saved: ${total}` : '';
-          badge.textContent = `Original AI Prediction: ${currentResultPayload.originalPrediction}${suffix}`;
-        }
-      }
-
-      async function computeSha256Fingerprint(dataUrl) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(dataUrl);
-        if (window.crypto && window.crypto.subtle) {
-          const digest = await window.crypto.subtle.digest('SHA-256', data);
-          return Array.from(new Uint8Array(digest))
-            .map((b) => b.toString(16).padStart(2, '0'))
-            .join('');
-        }
-        let hash = 2166136261;
-        for (let i = 0; i < data.length; i += 1) {
-          hash ^= data[i];
-          hash = Math.imul(hash, 16777619);
-        }
-        return 'fnv1a_' + (hash >>> 0).toString(16);
-      }
-
-      function loadImageFromDataUrl(dataUrl) {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error('Image load failed'));
-          img.src = dataUrl;
-        });
-      }
-
-      function evaluateImageClarityAndLeaf(img) {
-        const sampleSize = 128;
-        const canvas = document.createElement('canvas');
-        canvas.width = sampleSize;
-        canvas.height = sampleSize;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return { isClear: false, isLeaf: false };
-
-        ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
-        const { data } = ctx.getImageData(0, 0, sampleSize, sampleSize);
-
-        let brightnessSum = 0;
-        let edgeEnergySum = 0;
-        let greenOrFoliagePixels = 0;
-        const pixelCount = sampleSize * sampleSize;
-        const lum = new Float32Array(pixelCount);
-
-        for (let i = 0, p = 0; i < data.length; i += 4, p += 1) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          const y = 0.299 * r + 0.587 * g + 0.114 * b;
-          lum[p] = y;
-          brightnessSum += y;
-
-          const maxChannel = Math.max(r, g, b);
-          const minChannel = Math.min(r, g, b);
-          const saturation = maxChannel === 0 ? 0 : (maxChannel - minChannel) / maxChannel;
-          const isGreenish = g > r * 1.06 && g > b * 1.02 && g > 42;
-          const isAutumnDryOrLeaf = saturation > 0.18 && y > 38 && y < 235 && (isGreenish || (r > 95 && g > 55 && b < 130));
-          if (isGreenish || isAutumnDryOrLeaf) {
-            greenOrFoliagePixels += 1;
-          }
-        }
-
-        for (let y = 1; y < sampleSize - 1; y += 1) {
-          for (let x = 1; x < sampleSize - 1; x += 1) {
-            const idx = y * sampleSize + x;
-            const gx = lum[idx + 1] - lum[idx - 1];
-            const gy = lum[idx + sampleSize] - lum[idx - sampleSize];
-            edgeEnergySum += Math.sqrt(gx * gx + gy * gy);
-          }
-        }
-
-        const avgBrightness = brightnessSum / pixelCount;
-        const edgeRatio = edgeEnergySum / ((sampleSize - 2) * (sampleSize - 2));
-        const foliageRatio = greenOrFoliagePixels / pixelCount;
-
-        const isClear = avgBrightness >= 32 && avgBrightness <= 242 && edgeRatio >= 6.5;
-        const isLeaf = foliageRatio >= 0.12 && edgeRatio >= 7.2;
-
-        return { isClear, isLeaf, foliageRatio, edgeRatio };
-      }
-
-      function classifyLeafHeuristic(metrics) {
-        if (metrics.foliageRatio < 0.22) {
-          return { category: 'Dry', confidence: 78 };
-        }
-        if (metrics.edgeRatio > 24) {
-          return { category: 'Insect Damaged', confidence: 81 };
-        }
-        return { category: 'Healthy', confidence: 86 };
-      }
-
-      function renderLeafResult(category, confidence, originalPrediction, isVerifiedMatch) {
-        const guidanceSet = CONDITION_GUIDANCE[category] || CONDITION_GUIDANCE.Healthy;
-        const localized = guidanceSet[currentLang] || guidanceSet.en;
-
-        currentResultPayload = {
-          category,
-          confidence,
-          originalPrediction,
-          isVerifiedMatch: Boolean(isVerifiedMatch),
-          localized
-        };
-
-        const resultPanel = document.getElementById('scan-result-panel');
-        const correctionCard = document.getElementById('inline-train-correct-card');
-        const matchBanner = document.getElementById('exact-match-banner');
-        const statusBanner = document.getElementById('scan-status-banner');
-
-        if (statusBanner) statusBanner.classList.add('hidden');
-        if (resultPanel) resultPanel.classList.remove('hidden');
-        if (correctionCard) correctionCard.classList.remove('hidden');
-
-        if (matchBanner) {
-          if (isVerifiedMatch) {
-            matchBanner.textContent = currentLang === 'ta' ? 'முன்னர் சரிபார்க்கப்பட்ட முடிவு' : 'Previously Verified Result';
-            matchBanner.classList.remove('hidden');
-          } else {
-            matchBanner.classList.add('hidden');
-          }
-        }
-
-        const previewEl = document.getElementById('scanned-leaf-preview');
-        if (previewEl && currentImageDataUrl) {
-          previewEl.src = currentImageDataUrl;
-        }
-
-        setText('result-condition-title', localized.title);
-        setText('result-confidence-badge', `${confidence}%`);
-        setText('result-detailed-analysis', localized.detailed);
-        setText('result-condition-summary', localized.careMessage);
-        setText('result-fertilizer-text', localized.fertilizer);
-        setText('result-watering-text', localized.watering);
-        setText('result-disease-info', localized.disease);
-
-        const careListEl = document.getElementById('result-care-list');
-        if (careListEl) {
-          careListEl.innerHTML = '';
-          localized.maintenance.forEach((tip) => {
-            const li = document.createElement('li');
-            li.textContent = tip;
-            careListEl.appendChild(li);
-          });
-        }
-
-        selectedCorrectionCategory = category;
-        renderTrainerDatasetSummary();
-        appendScanLog(localized.title, confidence);
-      }
-
-      function showValidationMessage(message, showCorrectionCard) {
-        const resultPanel = document.getElementById('scan-result-panel');
-        const statusBanner = document.getElementById('scan-status-banner');
-        const correctionCard = document.getElementById('inline-train-correct-card');
-        const previewEl = document.getElementById('scanned-leaf-preview');
-
-        if (statusBanner) {
-          statusBanner.textContent = message;
-          statusBanner.classList.remove('hidden');
-        }
-
-        if (showCorrectionCard && resultPanel && correctionCard) {
-          resultPanel.classList.remove('hidden');
-          correctionCard.classList.remove('hidden');
-          if (previewEl && currentImageDataUrl) {
-            previewEl.src = currentImageDataUrl;
-          }
-          setText('result-condition-title', message);
-          setText('result-confidence-badge', '--');
-          renderTrainerDatasetSummary();
-        } else {
-          if (correctionCard) correctionCard.classList.add('hidden');
-          if (resultPanel) resultPanel.classList.add('hidden');
-        }
-      }
-
-      async function analyzeLeafDataUrl(dataUrl) {
-        if (!dataUrl) return;
-        stopVoicePlayback();
-        await loadSavedCorrectionsFromIndexedDB();
-
-        currentImageDataUrl = dataUrl;
-        currentImageFingerprint = await computeSha256Fingerprint(dataUrl);
-
-        let img;
-        try {
-          img = await loadImageFromDataUrl(dataUrl);
-        } catch {
-          showValidationMessage(t('unclearMsg'), false);
-          return;
-        }
-
-        const metrics = evaluateImageClarityAndLeaf(img);
-        if (!metrics.isClear) {
-          currentResultPayload = null;
-          showValidationMessage(t('unclearMsg'), false);
-          return;
-        }
-
-        const savedRecord = savedCorrectionsMap.get(currentImageFingerprint);
-        if (savedRecord && savedRecord.correctedCategory) {
-          renderLeafResult(
-            savedRecord.correctedCategory,
-            savedRecord.confidence || 95,
-            savedRecord.originalPrediction || 'Not a Leaf Image',
-            true
-          );
-          return;
-        }
-
-        if (!metrics.isLeaf) {
-          currentResultPayload = {
-            category: 'Healthy',
-            confidence: 0,
-            originalPrediction: 'Not a Leaf Image',
-            isVerifiedMatch: false,
-            localized: CONDITION_GUIDANCE.Healthy[currentLang] || CONDITION_GUIDANCE.Healthy.en
-          };
-          showValidationMessage(t('notLeafMsg'), true);
-          return;
-        }
-
-        const prediction = classifyLeafHeuristic(metrics);
-        renderLeafResult(prediction.category, prediction.confidence, prediction.category, false);
-      }
-
-      function buildTamilNarrationText() {
-        const data = currentResultPayload && currentResultPayload.localized ? currentResultPayload.localized : null;
-        if (!data) {
-          const title = document.getElementById('result-condition-title')?.textContent || '';
-          const summary = document.getElementById('result-condition-summary')?.textContent || '';
-          const fert = document.getElementById('result-fertilizer-text')?.textContent || '';
-          const water = document.getElementById('result-watering-text')?.textContent || '';
-          return [title, summary, fert, water].filter(Boolean).join('. ');
-        }
-        const taSet = CONDITION_GUIDANCE[currentResultPayload.category]?.ta || data;
-        return [
-          taSet.title,
-          taSet.detailed,
-          taSet.careMessage,
-          taSet.fertilizer,
-          taSet.watering,
-          ...(taSet.maintenance || [])
-        ]
-          .filter(Boolean)
-          .join('. ');
-      }
-
-      function stopActiveTamilPlayback() {
-        if ('speechSynthesis' in window) {
-          try {
-            window.speechSynthesis.cancel();
-          } catch {}
-        }
-        if (activeTamilAudio) {
-          try {
-            activeTamilAudio.pause();
-            activeTamilAudio.currentTime = 0;
-          } catch {}
-          activeTamilAudio = null;
-        }
-      }
-
-      function playTamilSpeechWithSynthesis(text, voicesList) {
-        if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
-          return false;
-        }
-        const voices = Array.isArray(voicesList) && voicesList.length > 0 ? voicesList : window.speechSynthesis.getVoices();
-        const tamilVoice =
-          voices.find((v) => /^ta[-_]?IN$/i.test(v.lang)) ||
-          voices.find((v) => /^ta/i.test(v.lang));
-
-        if (!tamilVoice) {
-          return false;
-        }
-
-        try {
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.voice = tamilVoice;
-          utterance.lang = tamilVoice.lang || 'ta-IN';
-          window.speechSynthesis.speak(utterance);
-          return true;
-        } catch {
-          return false;
-        }
-      }
-
-      function playTamilAudioFallback(text) {
-        return new Promise((resolve) => {
-          try {
-            const raw = String(text || '').trim();
-            if (!raw) {
-              resolve(false);
-              return;
-            }
-
-            // Split long Tamil narration into safe segments so TTS endpoints accept every chunk
-            const chunks = [];
-            const sentences = raw.split(/(?<=[.!?।])\s+/);
-            let current = '';
-            for (const part of sentences) {
-              if ((current + ' ' + part).trim().length <= 165) {
-                current = (current + ' ' + part).trim();
-              } else {
-                if (current) chunks.push(current);
-                if (part.length > 165) {
-                  for (let i = 0; i < part.length; i += 160) {
-                    chunks.push(part.slice(i, i + 160));
-                  }
-                  current = '';
-                } else {
-                  current = part;
-                }
-              }
-            }
-            if (current) chunks.push(current);
-
-            const endpoints = [
-              (q) => `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=ta&client=gtx&q=${encodeURIComponent(q)}`,
-              (q) => `https://translate.google.com/translate_tts?ie=UTF-8&tl=ta-IN&client=tw-ob&q=${encodeURIComponent(q)}`
-            ];
-
-            let playedAny = false;
-            let index = 0;
-
-            const playChunk = () => {
-              if (index >= chunks.length) {
-                activeTamilAudio = null;
-                resolve(playedAny);
-                return;
-              }
-              const chunk = chunks[index++];
-              let epIdx = 0;
-
-              const tryEndpoint = () => {
-                if (epIdx >= endpoints.length) {
-                  playChunk();
-                  return;
-                }
-                const audio = new Audio();
-                audio.preload = 'auto';
-                audio.src = endpoints[epIdx++](chunk);
-                activeTamilAudio = audio;
-
-                let finished = false;
-                const done = (ok) => {
-                  if (finished) return;
-                  finished = true;
-                  if (ok) {
-                    playedAny = true;
-                    playChunk();
-                  } else {
-                    tryEndpoint();
-                  }
-                };
-
-                audio.onended = () => done(true);
-                audio.onerror = () => done(false);
-
-                const playPromise = audio.play();
-                if (playPromise && typeof playPromise.then === 'function') {
-                  playPromise.catch(() => done(false));
-                }
-              };
-
-              tryEndpoint();
-            };
-
-            playChunk();
-          } catch {
-            resolve(false);
-          }
-        });
-      }
-
-      function waitForTamilBrowserVoices(timeoutMs = 1800) {
-        return new Promise((resolve) => {
-          if (!('speechSynthesis' in window)) {
-            resolve([]);
-            return;
-          }
-
-          const findTamil = (list) =>
-            (Array.isArray(list) ? list : []).filter(
-              (v) => v && typeof v.lang === 'string' && (/^ta[-_]?IN$/i.test(v.lang) || /^ta([-_]|$)/i.test(v.lang))
-            );
-
-          const immediate = findTamil(window.speechSynthesis.getVoices());
-          if (immediate.length > 0) {
-            resolve(immediate);
-            return;
-          }
-
-          let settled = false;
-          let pollTimer = null;
-          let maxTimer = null;
-
-          const finish = (voices) => {
-            if (settled) return;
-            settled = true;
-            if (pollTimer) clearInterval(pollTimer);
-            if (maxTimer) clearTimeout(maxTimer);
-            try {
-              window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
-            } catch {}
-            resolve(voices);
-          };
-
-          const onVoicesChanged = () => {
-            const matches = findTamil(window.speechSynthesis.getVoices());
-            if (matches.length > 0) {
-              finish(matches);
-            }
-          };
-
-          try {
-            window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
-          } catch {}
-
-          // Poll periodically because some deployed Chromium builds populate getVoices() asynchronously without firing voiceschanged cleanly
-          pollTimer = setInterval(() => {
-            const matches = findTamil(window.speechSynthesis.getVoices());
-            if (matches.length > 0) {
-              finish(matches);
-            }
-          }, 150);
-
-          maxTimer = setTimeout(() => {
-            finish(findTamil(window.speechSynthesis.getVoices()));
-          }, timeoutMs);
-        });
-      }
-
-      function stopVoicePlayback() {
-        stopActiveTamilPlayback();
-      }
-
-      window.stopVoicePlayback = stopVoicePlayback;
-
-      window.speakCurrentResult = async function () {
-        if (currentLang === 'ta') {
-          const narration = buildTamilNarrationText();
-          if (!narration) return;
-
-          const wasSpeaking =
-            ('speechSynthesis' in window && window.speechSynthesis.speaking) ||
-            (activeTamilAudio && !activeTamilAudio.paused);
-
-          stopActiveTamilPlayback();
-          if (wasSpeaking) return;
-
-          const banner = document.getElementById('scan-status-banner');
-          const initialVoices = 'speechSynthesis' in window ? window.speechSynthesis.getVoices() : [];
-          if (playTamilSpeechWithSynthesis(narration, initialVoices)) {
-            if (banner) banner.classList.add('hidden');
-            return;
-          }
-
-          const waitedTamilVoices = await waitForTamilBrowserVoices(1800);
-          if (waitedTamilVoices.length > 0 && playTamilSpeechWithSynthesis(narration, waitedTamilVoices)) {
-            if (banner) banner.classList.add('hidden');
-            return;
-          }
-
-          const playedFallback = await playTamilAudioFallback(narration);
-          if (!playedFallback && banner) {
-            banner.textContent = t('noTamilVoiceMsg');
-            banner.classList.remove('hidden');
-          } else if (banner) {
-            banner.classList.add('hidden');
-          }
-          return;
-        }
-
-        const wasSpeakingEn = 'speechSynthesis' in window && window.speechSynthesis.speaking;
-        stopActiveTamilPlayback();
-        if (wasSpeakingEn) return;
-
-        if ('speechSynthesis' in window && currentResultPayload && currentResultPayload.localized) {
-          const loc = CONDITION_GUIDANCE[currentResultPayload.category]?.en || currentResultPayload.localized;
-          const englishText = [loc.title, loc.detailed, loc.careMessage, loc.fertilizer, loc.watering]
-            .filter(Boolean)
-            .join('. ');
-          const voices = window.speechSynthesis.getVoices();
-          const enVoice =
-            voices.find((v) => /^en[-_]?IN$/i.test(v.lang)) ||
-            voices.find((v) => /^en[-_]?US$/i.test(v.lang)) ||
-            voices.find((v) => /^en/i.test(v.lang));
-          const utterance = new SpeechSynthesisUtterance(englishText);
-          if (enVoice) {
-            utterance.voice = enVoice;
-            utterance.lang = enVoice.lang;
-          } else {
-            utterance.lang = 'en-US';
-          }
-          window.speechSynthesis.speak(utterance);
-        }
-      };
 
       function applyLanguageUi() {
         const copy = UI_COPY[currentLang] || UI_COPY.en;
@@ -1284,7 +809,7 @@
         setText('scan-heading', copy.scanHeading);
         setText('scan-description', copy.scanDesc);
         setText('upload-btn-label', copy.uploadBtn);
-        setText('camera-btn-label', copy.cameraBtn);
+        setText('camera-btn-label', cameraStream ? copy.cameraCloseBtn : copy.cameraBtn);
         setText('result-back-btn', copy.backBtn);
         setText('stop-voice-btn', copy.stopVoiceBtn);
         setText('scanned-preview-label', copy.scannedPreviewLabel);
@@ -1296,6 +821,25 @@
         setText('heading-maintenance', copy.maintenanceHeading);
         setText('heading-disease', copy.diseaseHeading);
         setText('tamil-voice-btn', currentLang === 'ta' ? 'Tamil Voice / தமிழ் குரல்' : 'English Voice');
+
+        setText('reminders-heading', copy.remindersHeading);
+        setText('reminder-mode-badge', copy.reminderEditingBadge);
+        setText('reminder-title-label', copy.reminderTitleLabel);
+        const titleInputEl = document.getElementById('reminder-title-input');
+        if (titleInputEl) titleInputEl.placeholder = copy.reminderTitlePlaceholder;
+        setText('reminder-desc-label', copy.reminderDescLabel);
+        const descInputEl = document.getElementById('reminder-desc-input');
+        if (descInputEl) descInputEl.placeholder = copy.reminderDescPlaceholder;
+        setText('reminder-date-label', copy.reminderDateLabel);
+        setText('reminder-time-label', copy.reminderTimeLabel);
+        setText('reminder-save-btn', editingReminderId ? copy.reminderUpdateBtn : copy.reminderSaveBtn);
+        setText('reminder-cancel-edit-btn', copy.reminderCancelBtn);
+        setText('reminder-list-header', copy.reminderListHeader);
+        setText('reminder-delete-confirm-text', copy.reminderDeleteConfirm);
+        setText('reminder-delete-cancel-btn', copy.reminderCancelBtn);
+        setText('reminder-delete-confirm-btn', copy.reminderDeleteBtn);
+        setText('logs-heading', copy.logsHeading);
+        setText('clear-logs-btn', copy.clearLogsBtn);
 
         const taBtn = document.getElementById('lang-btn-ta');
         const enBtn = document.getElementById('lang-btn-en');
@@ -1317,29 +861,30 @@
             currentResultPayload.isVerifiedMatch
           );
         }
+
+        renderLogsAndReminders();
       }
 
-      window.setLanguage = function (langCode) {
-        stopVoicePlayback();
-        currentLang = langCode === 'ta' ? 'ta' : 'en';
+      window.setLanguage = function (lang) {
+        currentLang = lang === 'ta' ? 'ta' : 'en';
+        window.stopVoicePlayback();
         applyLanguageUi();
-      };
-
-      window.toggleLanguage = function () {
-        window.setLanguage(currentLang === 'en' ? 'ta' : 'en');
       };
 
       window.switchSection = function (sectionName) {
         const sections = ['scan', 'soil', 'logs', 'about'];
         sections.forEach((name) => {
-          const el = document.getElementById(`section-${name}`);
-          if (el) {
-            if (name === sectionName) el.classList.remove('hidden');
-            else el.classList.add('hidden');
+          const secEl = document.getElementById(`section-${name}`);
+          const navEl = document.getElementById(`nav-${name}-btn`);
+          if (secEl) {
+            if (name === sectionName) {
+              secEl.classList.remove('hidden');
+            } else {
+              secEl.classList.add('hidden');
+            }
           }
-          const btn = document.getElementById(`nav-${name}-btn`);
-          if (btn) {
-            btn.className =
+          if (navEl) {
+            navEl.className =
               name === sectionName
                 ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-sky-700 text-white shadow transition'
                 : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900/80 hover:bg-teal-950 text-teal-200 border border-teal-500/25 transition';
@@ -1347,69 +892,473 @@
         });
       };
 
+      function stopCameraStream() {
+        if (cameraStream) {
+          try {
+            cameraStream.getTracks().forEach((track) => track.stop());
+          } catch {}
+          cameraStream = null;
+        }
+        const videoEl = document.getElementById('camera-video');
+        if (videoEl) {
+          videoEl.srcObject = null;
+        }
+        document.getElementById('camera-panel')?.classList.add('hidden');
+        setText('camera-btn-label', t('cameraBtn'));
+      }
+
+      window.toggleCamera = async function () {
+        const banner = document.getElementById('scan-status-banner');
+        if (banner) banner.classList.add('hidden');
+
+        if (cameraStream) {
+          stopCameraStream();
+          return;
+        }
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          if (banner) {
+            banner.textContent =
+              currentLang === 'ta'
+                ? 'இந்த உலாவியில் கேமரா வசதி கிடைக்கவில்லை. படத்தை பதிவேற்றவும்.'
+                : 'Camera is not available in this browser. Please upload an image instead.';
+            banner.classList.remove('hidden');
+          }
+          return;
+        }
+
+        try {
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' }
+          });
+          const videoEl = document.getElementById('camera-video');
+          if (videoEl) {
+            videoEl.srcObject = cameraStream;
+          }
+          document.getElementById('camera-panel')?.classList.remove('hidden');
+          setText('camera-btn-label', t('cameraCloseBtn'));
+        } catch {
+          cameraStream = null;
+          if (banner) {
+            banner.textContent =
+              currentLang === 'ta'
+                ? 'கேமரா அனுமதி மறுக்கப்பட்டது அல்லது கிடைக்கவில்லை.'
+                : 'Camera access was denied or unavailable. Please upload an image instead.';
+            banner.classList.remove('hidden');
+          }
+        }
+      };
+
+      window.captureCameraFrame = function () {
+        const videoEl = document.getElementById('camera-video');
+        if (!videoEl || !cameraStream) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = videoEl.videoWidth || 640;
+        canvas.height = videoEl.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        stopCameraStream();
+        processScannedDataUrl(dataUrl);
+      };
+
       window.handleFileUpload = function (event) {
-        const file = event.target?.files?.[0];
+        const file = event?.target?.files?.[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = (e) => {
-          if (typeof e.target?.result === 'string') {
-            analyzeLeafDataUrl(e.target.result);
+        reader.onload = function (ev) {
+          const dataUrl = ev?.target?.result;
+          if (typeof dataUrl === 'string') {
+            processScannedDataUrl(dataUrl);
           }
         };
         reader.readAsDataURL(file);
         event.target.value = '';
       };
 
-      window.toggleCamera = async function () {
-        const panel = document.getElementById('camera-panel');
-        const video = document.getElementById('camera-video');
-        if (!panel || !video) return;
-
-        if (!panel.classList.contains('hidden')) {
-          if (cameraStream) {
-            cameraStream.getTracks().forEach((t) => t.stop());
-            cameraStream = null;
-          }
-          panel.classList.add('hidden');
-          return;
-        }
-
-        try {
-          cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-          video.srcObject = cameraStream;
-          panel.classList.remove('hidden');
-        } catch {
-          showValidationMessage(t('unclearMsg'), false);
-        }
-      };
-
-      window.captureCameraFrame = function () {
-        const video = document.getElementById('camera-video');
-        if (!video) return;
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-        if (cameraStream) {
-          cameraStream.getTracks().forEach((t) => t.stop());
-          cameraStream = null;
-        }
-        document.getElementById('camera-panel')?.classList.add('hidden');
-        analyzeLeafDataUrl(dataUrl);
-      };
-
       window.resetScanResult = function () {
-        stopVoicePlayback();
+        window.stopVoicePlayback();
         document.getElementById('scan-result-panel')?.classList.add('hidden');
         document.getElementById('scan-status-banner')?.classList.add('hidden');
         currentResultPayload = null;
       };
 
-      window.selectCorrectionCategory = function (category) {
-        selectedCorrectionCategory = category;
+      function openCorrectionDb() {
+        return new Promise((resolve) => {
+          if (!('indexedDB' in window)) {
+            resolve(null);
+            return;
+          }
+          try {
+            const req = indexedDB.open(DB_NAME, 1);
+            req.onupgradeneeded = function () {
+              const db = req.result;
+              if (!db.objectStoreNames.contains(STORE_CORRECTIONS)) {
+                db.createObjectStore(STORE_CORRECTIONS, { keyPath: 'fingerprint' });
+              }
+            };
+            req.onsuccess = function () {
+              resolve(req.result);
+            };
+            req.onerror = function () {
+              resolve(null);
+            };
+          } catch {
+            resolve(null);
+          }
+        });
+      }
+
+      async function loadSavedCorrectionsFromIndexedDB() {
+        const db = await openCorrectionDb();
+        if (!db) return;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(STORE_CORRECTIONS, 'readonly');
+            const store = tx.objectStore(STORE_CORRECTIONS);
+            const req = store.getAll();
+            req.onsuccess = function () {
+              const rows = Array.isArray(req.result) ? req.result : [];
+              savedCorrectionsMap.clear();
+              rows.forEach((row) => {
+                if (row && row.fingerprint && row.correctedCategory) {
+                  savedCorrectionsMap.set(row.fingerprint, row);
+                }
+              });
+              resolve();
+            };
+            req.onerror = function () {
+              resolve();
+            };
+          } catch {
+            resolve();
+          }
+        });
+      }
+
+      async function persistCorrectionToIndexedDB(record) {
+        savedCorrectionsMap.set(record.fingerprint, record);
+        const db = await openCorrectionDb();
+        if (!db) return;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(STORE_CORRECTIONS, 'readwrite');
+            tx.objectStore(STORE_CORRECTIONS).put(record);
+            tx.oncomplete = function () {
+              resolve();
+            };
+            tx.onerror = function () {
+              resolve();
+            };
+          } catch {
+            resolve();
+          }
+        });
+      }
+
+      async function computeSha256Fingerprint(dataUrl) {
+        try {
+          if (window.crypto && window.crypto.subtle) {
+            const bytes = new TextEncoder().encode(dataUrl);
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', bytes);
+            return Array.from(new Uint8Array(hashBuffer))
+              .map((b) => b.toString(16).padStart(2, '0'))
+              .join('');
+          }
+        } catch {}
+        let fallback = 0;
+        for (let i = 0; i < dataUrl.length; i++) {
+          fallback = (fallback * 31 + dataUrl.charCodeAt(i)) >>> 0;
+        }
+        return `fallback-${fallback}-${dataUrl.length}`;
+      }
+
+      function evaluateImageClarity(ctx, width, height) {
+        const imgData = ctx.getImageData(0, 0, width, height).data;
+        const totalPixels = width * height;
+        const gray = new Float32Array(totalPixels);
+
+        let sumLuma = 0;
+        let sumSqLuma = 0;
+        for (let i = 0, p = 0; i < imgData.length; i += 4, p++) {
+          const luma = 0.299 * imgData[i] + 0.587 * imgData[i + 1] + 0.114 * imgData[i + 2];
+          gray[p] = luma;
+          sumLuma += luma;
+          sumSqLuma += luma * luma;
+        }
+
+        const meanLuma = sumLuma / totalPixels;
+        const varianceLuma = Math.max(0, sumSqLuma / totalPixels - meanLuma * meanLuma);
+        const stdDevLuma = Math.sqrt(varianceLuma);
+
+        let laplacianSum = 0;
+        let laplacianSqSum = 0;
+        let count = 0;
+        for (let y = 1; y < height - 1; y++) {
+          for (let x = 1; x < width - 1; x++) {
+            const idx = y * width + x;
+            const lap =
+              -4 * gray[idx] +
+              gray[idx - 1] +
+              gray[idx + 1] +
+              gray[idx - width] +
+              gray[idx + width];
+            laplacianSum += lap;
+            laplacianSqSum += lap * lap;
+            count++;
+          }
+        }
+
+        const meanLap = count > 0 ? laplacianSum / count : 0;
+        const sharpnessVariance = count > 0 ? laplacianSqSum / count - meanLap * meanLap : 0;
+
+        const isTooDark = meanLuma < 28;
+        const isTooBright = meanLuma > 245;
+        const isLowContrast = stdDevLuma < 14;
+        const isBlurry = sharpnessVariance < 38;
+
+        return {
+          isClear: !isTooDark && !isTooBright && !isLowContrast && !isBlurry
+        };
+      }
+
+      function classifyLeafFromPixels(ctx, width, height) {
+        const imgData = ctx.getImageData(0, 0, width, height).data;
+        const totalPixels = width * height;
+        let greenPixels = 0;
+        let yellowDryPixels = 0;
+        let darkSpotPixels = 0;
+
+        for (let i = 0; i < imgData.length; i += 4) {
+          const r = imgData[i];
+          const g = imgData[i + 1];
+          const b = imgData[i + 2];
+
+          if (g > r + 10 && g > b + 10 && g > 45) {
+            greenPixels++;
+          } else if (r > 110 && g > 85 && b < 95 && Math.abs(r - g) < 55) {
+            yellowDryPixels++;
+          } else if (r < 75 && g < 65 && b < 55 && r > 18) {
+            darkSpotPixels++;
+          }
+        }
+
+        const plantRatio = (greenPixels + yellowDryPixels + darkSpotPixels) / totalPixels;
+        if (plantRatio < 0.14) {
+          return { category: 'This is not a leaf image', confidence: 84 };
+        }
+        if (yellowDryPixels > greenPixels * 0.42) {
+          return { category: 'Dry', confidence: 89 };
+        }
+        if (darkSpotPixels > greenPixels * 0.28) {
+          return { category: 'Insect Damaged', confidence: 86 };
+        }
+        return { category: 'Healthy', confidence: 93 };
+      }
+
+      function getCategoryGuidance(category) {
+        const isTa = currentLang === 'ta';
+        if (category === 'Healthy') {
+          return {
+            title: isTa ? 'ஆரோக்கியமான இலை (Healthy Leaf)' : 'Healthy Leaf',
+            analysis: isTa
+              ? 'இலையில் சீரான பச்சையம் மற்றும் ஆரோக்கியமான திசு அமைப்பு காணப்படுகிறது. வறட்சி அல்லது பூச்சி சேதத்திற்கான அறிகுறிகள் இல்லை.'
+              : 'The leaf exhibits vibrant chlorophyll pigmentation and intact cellular structure with no signs of dehydration or insect feeding.',
+            care: isTa
+              ? 'தாவரம் நல்ல ஆரோக்கியத்துடன் உள்ளது. வழக்கமான சூரிய ஒளி மற்றும் சமச்சீரான நீர் பராமரிப்பைத் தொடரவும்.'
+              : 'Your plant foliage is healthy. Continue routine indirect sunlight exposure and balanced watering.',
+            fertilizer: isTa
+              ? 'மாதம் ஒருமுறை சமச்சீர் இயற்கை மண்புழு உரம் அல்லது NPK 10-10-10 திரவ உரத்தை சிறிதளவு இடவும்.'
+              : 'Apply balanced organic vermicompost or diluted NPK 10-10-10 once a month during active growth.',
+            watering: isTa
+              ? 'மேல் மண் 1–2 அங்குலம் காய்ந்த பிறகு மட்டும் வேர்ப் பகுதியில் நீர் ஊற்றவும்.'
+              : 'Water at the root zone only when the top 1–2 inches of soil feel dry to the touch.',
+            tips: isTa
+              ? ['இலைகளில் உள்ள தூசியை ஈரத் துணியால் மெதுவாகத் துடைக்கவும்.', 'நல்ல காற்றோட்டம் மற்றும் வடிகால் வசதியை உறுதி செய்யவும்.']
+              : ['Gently wipe dust from leaf surfaces every two weeks.', 'Ensure pots have clear drainage holes to prevent root waterlogging.'],
+            disease: isTa
+              ? 'தொற்று நோய் அறிகுறிகள் எதுவும் கண்டறியப்படவில்லை.'
+              : 'No infectious leaf disease symptoms detected.'
+          };
+        }
+        if (category === 'Dry') {
+          return {
+            title: isTa ? 'காய்ந்த இலை (Dry Leaf)' : 'Dry Leaf',
+            analysis: isTa
+              ? 'இலையின் ஓரங்களில் வறட்சி, மஞ்சள் நிற மாற்றம் மற்றும் ஈரப்பதக் குறைபாடு காணப்படுகிறது.'
+              : 'Leaf margins show moisture stress, yellowing, and tissue dehydration caused by insufficient water or low humidity.',
+            care: isTa
+              ? 'உடனடியாக வேர் நனையும்படி ஆழமாக நீர் ஊற்றி, கடுமையான வெயிலில் இருந்து தாவரத்தை பாதுகாக்கவும்.'
+              : 'Perform deep root watering immediately and move the plant away from harsh midday heat.',
+            fertilizer: isTa
+              ? 'மண் நன்கு ஈரமாகும் வரை அதிக உரம் இட வேண்டாம்; பிறகு நீர்த்த கடற்பாசி சாறு (Seaweed Extract) பயன்படுத்தலாம்.'
+              : 'Hold strong chemical fertilizers until rehydrated; apply diluted seaweed extract after watering.',
+            watering: isTa
+              ? 'அடியில் நீர் வடியும் வரை மெதுவாக நீர் ஊற்றவும்; மண் ஈரப்பதத்தை 60%–80% வரை பராமரிக்கவும்.'
+              : 'Water slowly until excess drains from the bottom, maintaining 60%–80% soil moisture.',
+            tips: isTa
+              ? ['முற்றிலும் காய்ந்த பழுப்பு நுனிகளை சுத்தமான கத்தரிக்கோலால் வெட்டி அகற்றவும்.', 'மண்ணின் ஈரப்பதத்தை தக்கவைக்க தழைக்கூளம் (Mulch) இடவும்.']
+              : ['Trim completely brown brittle leaf tips with clean scissors.', 'Add organic mulch on top of soil to reduce moisture evaporation.'],
+            disease: isTa
+              ? 'தொற்று நோய் இல்லை; இது நீர்ப்பற்றாக்குறை மற்றும் வெப்ப அழுத்தத்தால் ஏற்பட்டது.'
+              : 'No pathogen infection; symptoms indicate hydration and heat stress.'
+          };
+        }
+        if (category === 'Insect Damaged') {
+          return {
+            title: isTa ? 'பூச்சி சேதமடைந்த இலை (Insect Damaged Leaf)' : 'Insect Damaged Leaf',
+            analysis: isTa
+              ? 'இலையில் கடிக்கப்பட்ட துளைகள், ஓரச் சேதம் மற்றும் பூச்சி தாக்குதலுக்கான அடையாளங்கள் உள்ளன.'
+              : 'Notches, chewed margins, and surface feeding marks indicate pest activity such as caterpillars, beetles, or aphids.',
+            care: isTa
+              ? 'பாதிக்கப்பட்ட செடியை தனிமைப்படுத்தி, இலைகளின் அடிப்பகுதியில் பூச்சிகள் உள்ளதா எனப் பரிசோதிக்கவும்.'
+              : 'Isolate the plant from nearby healthy foliage and inspect leaf undersides for pests or egg clusters.',
+            fertilizer: isTa
+              ? 'மண்ணில் வேப்பம் புண்ணாக்கு (Neem Cake) கலந்து, திசு வலிமைக்கு பொட்டாசியம் சத்துள்ள இயற்கை உரம் இடவும்.'
+              : 'Mix organic Neem Cake into topsoil and apply potassium-rich organic compost to strengthen leaf tissue.',
+            watering: isTa
+              ? 'இலைகள் மீது நீர் தேங்காமல் காலை நேரத்தில் வேர்ப் பகுதியில் மட்டும் நீர் ஊற்றவும்.'
+              : 'Water at the soil base in the morning and avoid wetting leaves late in the evening.',
+            tips: isTa
+              ? ['நீர்த்த வேப்பெண்ணெய் (Neem Oil) கரைசலை இலைகளின் இருபுறமும் தெளிக்கவும்.', 'அதிகம் சேதமடைந்த இலைகளை அகற்றி அப்புறப்படுத்தவும்.']
+              : ['Spray diluted cold-pressed Neem Oil across upper and lower leaf surfaces.', 'Prune heavily damaged leaves and dispose of them away from healthy plants.'],
+            disease: isTa
+              ? 'பூச்சி கடித்த காயங்கள் வழியாக பூஞ்சை தொற்று ஏற்படாமல் கண்காணிக்கவும்.'
+              : 'Monitor chewed edges to prevent secondary fungal entry.'
+          };
+        }
+        return {
+          title: isTa ? 'இது இலை படம் அல்ல (Not a Leaf Image)' : 'This is not a leaf image',
+          analysis: isTa
+            ? 'பதிவேற்றப்பட்ட படத்தில் தெளிவான தாவர இலை அமைப்பு கண்டறியப்படவில்லை. இது இலை என்றால் கீழே உள்ள திருத்த விருப்பத்தைப் பயன்படுத்தி சரியான வகையைச் சேமிக்கலாம்.'
+            : 'The uploaded frame does not clearly match plant foliage. If this is a leaf image, you can select the true category below to save a verified correction.',
+          care: isTa
+            ? 'துல்லியமான பரிசோதனைக்கு தெளிவான வெளிச்சத்தில் ஒரு இலையை மட்டும் படம் பிடிக்கவும்.'
+            : 'For best results, capture a well-lit close-up photo of a single plant leaf.',
+          fertilizer: isTa ? 'இலை உறுதிப்படுத்தப்பட்ட பிறகு உரப் பரிந்துரை வழங்கப்படும்.' : 'Fertilizer guidance will appear once a valid leaf category is confirmed.',
+          watering: isTa ? 'மண் ஈரப்பதத்தை சரிபார்த்து தேவைக்கேற்ப நீர் ஊற்றவும்.' : 'Check topsoil moisture before watering.',
+          tips: isTa
+            ? ['கீழே உள்ள Train / Correct This Image பகுதியில் சரியான வகையைத் தேர்ந்தெடுக்கலாம்.']
+            : ['You can correct and save this image category using the Train / Correct This Image card.'],
+          disease: isTa ? 'இலை உறுதிப்படுத்தப்படாததால் நோய் ஆய்வு நிலுவையில் உள்ளது.' : 'Disease assessment pending valid leaf confirmation.'
+        };
+      }
+
+      function renderLeafResult(category, confidence, originalPrediction, isVerifiedMatch) {
+        const panel = document.getElementById('scan-result-panel');
+        const banner = document.getElementById('scan-status-banner');
+        const exactBanner = document.getElementById('exact-match-banner');
+        const correctCard = document.getElementById('inline-train-correct-card');
+
+        banner?.classList.add('hidden');
+        panel?.classList.remove('hidden');
+        correctCard?.classList.remove('hidden');
+
+        if (isVerifiedMatch) {
+          exactBanner?.classList.remove('hidden');
+          setText('exact-match-banner', currentLang === 'ta' ? 'முன்பு சரிபார்க்கப்பட்ட முடிவு (Previously Verified Result)' : 'Previously Verified Result');
+        } else {
+          exactBanner?.classList.add('hidden');
+        }
+
+        const previewImg = document.getElementById('scanned-leaf-preview');
+        if (previewImg && currentImageDataUrl) {
+          previewImg.src = currentImageDataUrl;
+        }
+
+        const guidance = getCategoryGuidance(category);
+        setText('result-condition-title', guidance.title);
+        setText('result-confidence-badge', `${confidence}%`);
+        setText('result-detailed-analysis', guidance.analysis);
+        setText('result-condition-summary', guidance.care);
+        setText('result-fertilizer-text', guidance.fertilizer);
+        setText('result-watering-text', guidance.watering);
+        setText('result-disease-info', guidance.disease);
+        setText(
+          'original-ai-prediction-label',
+          currentLang === 'ta'
+            ? `அசல் AI கணிப்பு: ${originalPrediction}`
+            : `Original AI Prediction: ${originalPrediction}`
+        );
+
+        const careListEl = document.getElementById('result-care-list');
+        if (careListEl) {
+          careListEl.innerHTML = guidance.tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join('');
+        }
+      }
+
+      async function processScannedDataUrl(dataUrl) {
+        window.stopVoicePlayback();
+        const banner = document.getElementById('scan-status-banner');
+        const panel = document.getElementById('scan-result-panel');
+        const correctCard = document.getElementById('inline-train-correct-card');
+        const saveStatusEl = document.getElementById('correction-save-status');
+
+        if (saveStatusEl) {
+          saveStatusEl.classList.add('hidden');
+          saveStatusEl.textContent = '';
+        }
+
+        const img = new Image();
+        img.onload = async function () {
+          const canvas = document.createElement('canvas');
+          const size = 224;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+          ctx.drawImage(img, 0, 0, size, size);
+
+          const clarity = evaluateImageClarity(ctx, size, size);
+          if (!clarity.isClear) {
+            panel?.classList.add('hidden');
+            correctCard?.classList.add('hidden');
+            currentResultPayload = null;
+            if (banner) {
+              banner.textContent = t('unclearMsg');
+              banner.classList.remove('hidden');
+            }
+            return;
+          }
+
+          currentImageDataUrl = dataUrl;
+          currentImageFingerprint = await computeSha256Fingerprint(dataUrl);
+          selectedCorrectionCategory = '';
+          highlightCorrectionButtons('');
+
+          await loadSavedCorrectionsFromIndexedDB();
+          const savedMatch = savedCorrectionsMap.get(currentImageFingerprint);
+          const freshPrediction = classifyLeafFromPixels(ctx, size, size);
+
+          const finalCategory = savedMatch ? savedMatch.correctedCategory : freshPrediction.category;
+          const finalConfidence = savedMatch ? 100 : freshPrediction.confidence;
+          const origPred = savedMatch ? savedMatch.originalPrediction : freshPrediction.category;
+
+          currentResultPayload = {
+            category: finalCategory,
+            confidence: finalConfidence,
+            originalPrediction: origPred,
+            isVerifiedMatch: Boolean(savedMatch)
+          };
+
+          renderLeafResult(finalCategory, finalConfidence, origPred, Boolean(savedMatch));
+
+          scanLogs.unshift({
+            condition: finalCategory,
+            confidence: finalConfidence,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          scanLogs = scanLogs.slice(0, 30);
+          try {
+            localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(scanLogs));
+          } catch {}
+          renderLogsAndReminders();
+        };
+        img.src = dataUrl;
+      }
+
+      function highlightCorrectionButtons(selected) {
         const map = {
           Healthy: 'correct-opt-healthy',
           Dry: 'correct-opt-dry',
@@ -1418,140 +1367,221 @@
         Object.entries(map).forEach(([cat, btnId]) => {
           const btn = document.getElementById(btnId);
           if (!btn) return;
-          if (cat === category) {
-            btn.classList.add('ring-2', 'ring-emerald-300');
+          if (cat === selected) {
+            btn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-900/80');
           } else {
-            btn.classList.remove('ring-2', 'ring-emerald-300');
+            btn.classList.remove('ring-2', 'ring-emerald-400', 'bg-emerald-900/80');
           }
         });
+      }
+
+      window.selectCorrectionCategory = function (category) {
+        selectedCorrectionCategory = category;
+        highlightCorrectionButtons(category);
       };
 
       window.saveImageCorrection = async function () {
-        if (!currentImageFingerprint || !selectedCorrectionCategory) return;
+        if (!currentImageFingerprint || !selectedCorrectionCategory || !currentResultPayload) return;
         const record = {
           fingerprint: currentImageFingerprint,
           correctedCategory: selectedCorrectionCategory,
-          originalPrediction: currentResultPayload?.originalPrediction || 'Not a Leaf Image',
-          confidence: 95,
+          originalPrediction: currentResultPayload.originalPrediction,
           savedAt: new Date().toISOString()
         };
         await persistCorrectionToIndexedDB(record);
+
+        currentResultPayload = {
+          category: selectedCorrectionCategory,
+          confidence: 100,
+          originalPrediction: record.originalPrediction,
+          isVerifiedMatch: true
+        };
+        renderLeafResult(selectedCorrectionCategory, 100, record.originalPrediction, true);
+
         const statusEl = document.getElementById('correction-save-status');
         if (statusEl) {
-          statusEl.textContent = `Saved correction: ${selectedCorrectionCategory}`;
+          statusEl.textContent =
+            currentLang === 'ta'
+              ? `திருத்தம் சேமிக்கப்பட்டது: ${selectedCorrectionCategory}`
+              : `Correction saved: ${selectedCorrectionCategory}`;
           statusEl.classList.remove('hidden');
         }
-        renderLeafResult(selectedCorrectionCategory, 95, record.originalPrediction, true);
       };
 
-      function appendScanLog(conditionLabel, confidence) {
-        scanLogs.unshift({
-          id: Date.now(),
-          condition: conditionLabel,
-          confidence,
-          time: new Date().toLocaleTimeString()
+      window.stopVoicePlayback = function () {
+        try {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
+        } catch {}
+        if (activeTamilAudio) {
+          try {
+            activeTamilAudio.pause();
+            activeTamilAudio.src = '';
+          } catch {}
+          activeTamilAudio = null;
+        }
+      };
+
+      function buildNarrationSegments() {
+        if (!currentResultPayload) return [];
+        const g = getCategoryGuidance(currentResultPayload.category);
+        return [g.title, g.analysis, g.care, g.fertilizer, g.watering, ...(g.tips || [])].filter(Boolean);
+      }
+
+      function waitForBrowserVoices() {
+        return new Promise((resolve) => {
+          if (!('speechSynthesis' in window)) {
+            resolve([]);
+            return;
+          }
+          const initial = window.speechSynthesis.getVoices();
+          if (initial && initial.length > 0) {
+            resolve(initial);
+            return;
+          }
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            resolve(window.speechSynthesis.getVoices() || []);
+          };
+          window.speechSynthesis.onvoiceschanged = finish;
+          setTimeout(finish, 900);
         });
-        scanLogs = scanLogs.slice(0, 25);
-        try {
-          localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(scanLogs));
-        } catch {}
-        renderLogsAndReminders();
       }
 
-      window.clearScanLogs = function () {
-        scanLogs = [];
-        try {
-          localStorage.removeItem(LOGS_STORAGE_KEY);
-        } catch {}
-        renderLogsAndReminders();
-      };
-
-      window.addCareReminder = function (event) {
-        event.preventDefault();
-        const input = document.getElementById('reminder-title-input');
-        const text = input?.value?.trim();
-        if (!text) return;
-        reminders.unshift({ id: Date.now(), text });
-        try {
-          localStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
-        } catch {}
-        if (input) input.value = '';
-        renderLogsAndReminders();
-      };
-
-      function renderLogsAndReminders() {
-        const logsContainer = document.getElementById('scan-logs-container');
-        if (logsContainer) {
-          if (scanLogs.length === 0) {
-            logsContainer.innerHTML = '<p class="text-teal-200/70">No scan logs recorded yet.</p>';
-          } else {
-            logsContainer.innerHTML = scanLogs
-              .map(
-                (item) =>
-                  `<div class="p-3 rounded-xl bg-slate-950/60 border border-teal-500/15 flex items-center justify-between"><span class="font-bold text-emerald-200">${item.condition} (${item.confidence}%)</span><span class="text-teal-300/75">${item.time}</span></div>`
-              )
-              .join('');
+      function playChunkedTamilAudioFallback(segments) {
+        const chunks = [];
+        segments.forEach((seg) => {
+          const clean = String(seg || '').trim();
+          for (let i = 0; i < clean.length; i += 160) {
+            chunks.push(clean.slice(i, i + 160));
           }
-        }
-
-        const remList = document.getElementById('reminders-list');
-        if (remList) {
-          if (reminders.length === 0) {
-            remList.innerHTML = '<li class="text-teal-200/70">No reminders set yet.</li>';
-          } else {
-            remList.innerHTML = reminders
-              .map(
-                (r) =>
-                  `<li class="p-3 rounded-xl bg-slate-950/60 border border-teal-500/15 text-emerald-100">${r.text}</li>`
-              )
-              .join('');
+        });
+        let idx = 0;
+        const playNext = () => {
+          if (idx >= chunks.length) {
+            activeTamilAudio = null;
+            return;
           }
-        }
+          const q = encodeURIComponent(chunks[idx++]);
+          const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ta&q=${q}`);
+          activeTamilAudio = audio;
+          audio.onended = playNext;
+          audio.onerror = function () {
+            activeTamilAudio = null;
+            const banner = document.getElementById('scan-status-banner');
+            if (banner) {
+              banner.textContent = t('noTamilVoiceMsg');
+              banner.classList.remove('hidden');
+            }
+          };
+          audio.play().catch(function () {
+            activeTamilAudio = null;
+          });
+        };
+        playNext();
       }
+
+      window.speakCurrentResult = async function () {
+        if (!currentResultPayload) return;
+        window.stopVoicePlayback();
+        const segments = buildNarrationSegments();
+        if (segments.length === 0) return;
+        const fullText = segments.join('. ');
+
+        const voices = await waitForBrowserVoices();
+        if (currentLang === 'ta') {
+          const tamilVoice =
+            voices.find((v) => (v.lang || '').toLowerCase() === 'ta-in') ||
+            voices.find((v) => (v.lang || '').toLowerCase().startsWith('ta'));
+          if (tamilVoice && 'speechSynthesis' in window) {
+            const utter = new SpeechSynthesisUtterance(fullText);
+            utter.voice = tamilVoice;
+            utter.lang = tamilVoice.lang || 'ta-IN';
+            window.speechSynthesis.speak(utter);
+          } else {
+            playChunkedTamilAudioFallback(segments);
+          }
+          return;
+        }
+
+        if ('speechSynthesis' in window) {
+          const enVoice =
+            voices.find((v) => (v.lang || '').toLowerCase() === 'en-in') ||
+            voices.find((v) => (v.lang || '').toLowerCase() === 'en-us') ||
+            voices.find((v) => (v.lang || '').toLowerCase().startsWith('en'));
+          const utter = new SpeechSynthesisUtterance(fullText);
+          if (enVoice) {
+            utter.voice = enVoice;
+            utter.lang = enVoice.lang;
+          } else {
+            utter.lang = 'en-US';
+          }
+          window.speechSynthesis.speak(utter);
+        }
+      };
 
       window.connectCpxSerial = async function () {
         const statusEl = document.getElementById('cpx-connection-status');
         const moistureEl = document.getElementById('cpx-moisture-reading');
         if (!('serial' in navigator)) {
-          if (statusEl) statusEl.textContent = 'Web Serial Unavailable';
+          if (statusEl) {
+            statusEl.textContent =
+              currentLang === 'ta'
+                ? 'இந்த உலாவியில் Web Serial ஆதரவு இல்லை'
+                : 'Web Serial not supported in this browser';
+          }
           return;
         }
         try {
           const port = await navigator.serial.requestPort();
           await port.open({ baudRate: 115200 });
-          if (statusEl) statusEl.textContent = 'Connected (115200 baud)';
-          if (moistureEl) moistureEl.textContent = 'Live Stream Active';
+          if (statusEl) statusEl.textContent = currentLang === 'ta' ? 'இணைக்கப்பட்டது (CPX)' : 'Connected (CPX)';
+          const decoder = new TextDecoderStream();
+          port.readable.pipeTo(decoder.writable);
+          const reader = decoder.readable.getReader();
+          let buf = '';
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buf += value;
+            const lines = buf.split(/\r?\n/);
+            buf = lines.pop() || '';
+            lines.forEach((line) => {
+              const m = line.match(/(\d+)/);
+              if (m && moistureEl) {
+                const raw = parseInt(m[1], 10);
+                const pct = raw > 100 ? Math.min(100, Math.round((raw / 65535) * 100)) : Math.min(100, raw);
+                moistureEl.textContent = `${pct} %`;
+              }
+            });
+          }
         } catch {
-          if (statusEl) statusEl.textContent = 'Connection Cancelled';
+          if (statusEl) statusEl.textContent = currentLang === 'ta' ? 'இணைப்பு ரத்து செய்யப்பட்டது' : 'Connection cancelled';
         }
       };
 
       window.toggleSoilBuzzer = function () {
-        const buzzerStatusEl = document.getElementById('cpx-buzzer-status');
-        try {
-          if (!buzzerAudioCtx) {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-            buzzerAudioCtx = new AudioContextClass();
-          }
-          if (!buzzerActive) {
+        const buzzerEl = document.getElementById('cpx-buzzer-status');
+        buzzerActive = !buzzerActive;
+        if (buzzerActive) {
+          try {
+            if (!buzzerAudioCtx) {
+              buzzerAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (buzzerAudioCtx.state === 'suspended') buzzerAudioCtx.resume();
             const osc = buzzerAudioCtx.createOscillator();
-            const gain = buzzerAudioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.value = 660;
-            gain.gain.value = 0.08;
-            osc.connect(gain);
-            gain.connect(buzzerAudioCtx.destination);
+            osc.frequency.value = 880;
+            osc.connect(buzzerAudioCtx.destination);
             osc.start();
-            osc.stop(buzzerAudioCtx.currentTime + 0.35);
-            buzzerActive = true;
-            if (buzzerStatusEl) buzzerStatusEl.textContent = 'Alert Pulse Played';
-            setTimeout(() => {
-              buzzerActive = false;
-              if (buzzerStatusEl) buzzerStatusEl.textContent = 'Standby';
-            }, 400);
-          }
-        } catch {
-          if (buzzerStatusEl) buzzerStatusEl.textContent = 'Standby';
+            osc.stop(buzzerAudioCtx.currentTime + 0.3);
+          } catch {}
+          if (buzzerEl) buzzerEl.textContent = currentLang === 'ta' ? 'பஸர் இயங்குகிறது' : 'Buzzer Active';
+        } else if (buzzerEl) {
+          buzzerEl.textContent = currentLang === 'ta' ? 'தயார் நிலை' : 'Standby';
         }
       };
 
@@ -1562,48 +1592,355 @@
       window.sendChatMessage = function (event) {
         event.preventDefault();
         const input = document.getElementById('chatbot-input');
-        const messages = document.getElementById('chatbot-messages');
+        const box = document.getElementById('chatbot-messages');
         const text = input?.value?.trim();
-        if (!text || !messages) return;
-
-        const userBubble = document.createElement('div');
-        userBubble.className = 'bg-emerald-900/60 border border-emerald-400/25 rounded-xl p-2.5 text-white ml-6';
-        userBubble.textContent = text;
-        messages.appendChild(userBubble);
-
-        const replyBubble = document.createElement('div');
-        replyBubble.className = 'bg-slate-950/75 border border-teal-500/15 rounded-xl p-2.5 text-teal-100 mr-6';
-        replyBubble.textContent =
+        if (!text || !box) return;
+        input.value = '';
+        box.innerHTML += `<div class="bg-emerald-900/60 border border-emerald-500/25 rounded-xl p-2.5 text-emerald-100 ml-6">${escapeHtml(text)}</div>`;
+        const reply =
           currentLang === 'ta'
-            ? 'இலையின் ஈரப்பதம் மற்றும் வெளிச்சத்தை சீராக பராமரிக்கவும்; மண் காய்ந்ததும் தேவையான அளவு நீர் ஊற்றவும்.'
-            : 'Keep soil moisture balanced, avoid overwatering roots, and check leaf surfaces regularly for pests or dryness.';
-        messages.appendChild(replyBubble);
-
-        if (input) input.value = '';
-        messages.scrollTop = messages.scrollHeight;
+            ? 'மண்ணின் ஈரப்பதத்தை 60%–80% வரை பராமரிக்கவும்; இலைகளில் மஞ்சள் அல்லது பூச்சி சேதம் இருந்தால் உடனடியாக பரிசோதிக்கவும்.'
+            : 'Keep soil moisture between 60% and 80%, provide bright indirect light, and inspect leaf undersides regularly.';
+        box.innerHTML += `<div class="bg-slate-950/70 border border-teal-500/15 rounded-xl p-2.5 text-teal-100 mr-6">${escapeHtml(reply)}</div>`;
+        box.scrollTop = box.scrollHeight;
       };
 
-      window.addEventListener('DOMContentLoaded', async () => {
+      // REMINDER MANAGEMENT LOGIC
+      function getLocalTodayDateStr() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function setDefaultReminderDateIfEmpty() {
+        const dateInput = document.getElementById('reminder-date-input');
+        if (dateInput && !dateInput.value) {
+          dateInput.value = getLocalTodayDateStr();
+        }
+      }
+
+      function buildLocalTimestampMs(dateStr, hour12Str, minuteStr, ampmStr) {
+        const parts = String(dateStr || '').split('-');
+        if (parts.length !== 3) return NaN;
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        let hour = parseInt(hour12Str, 10);
+        const minute = parseInt(minuteStr, 10);
+        if (isNaN(year) || isNaN(month) || isNaN(day) || isNaN(hour) || isNaN(minute)) return NaN;
+        if (ampmStr === 'PM' && hour !== 12) hour += 12;
+        if (ampmStr === 'AM' && hour === 12) hour = 0;
+        return new Date(year, month, day, hour, minute, 0, 0).getTime();
+      }
+
+      function formatReminderDisplayDateTime(rem) {
+        const ts = buildLocalTimestampMs(rem.date, rem.hour, rem.minute, rem.ampm);
+        const dateFormatted = isNaN(ts)
+          ? rem.date
+          : new Date(ts).toLocaleDateString(currentLang === 'ta' ? 'ta-IN' : 'en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            });
+        return `${dateFormatted} • ${rem.hour}:${rem.minute} ${rem.ampm}`;
+      }
+
+      function getReminderStatus(rem) {
+        if (rem.completed) return 'completed';
+        const ts = buildLocalTimestampMs(rem.date, rem.hour, rem.minute, rem.ampm);
+        if (!isNaN(ts) && ts < Date.now()) return 'overdue';
+        return 'upcoming';
+      }
+
+      function persistRemindersToStorage() {
+        try {
+          localStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
+        } catch {}
+      }
+
+      function normalizeStoredReminder(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        return {
+          id: String(raw.id || `rem-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`),
+          title: String(raw.title || '').trim(),
+          description: String(raw.description || '').trim(),
+          date: String(raw.date || getLocalTodayDateStr()),
+          hour: String(raw.hour || '08').padStart(2, '0'),
+          minute: String(raw.minute || '00').padStart(2, '0'),
+          ampm: raw.ampm === 'PM' ? 'PM' : 'AM',
+          completed: Boolean(raw.completed)
+        };
+      }
+
+      function showReminderFormFeedback(msg, isError) {
+        const el = document.getElementById('reminder-form-feedback');
+        if (!el) return;
+        el.textContent = msg;
+        el.className = isError
+          ? 'text-xs font-bold text-rose-300'
+          : 'text-xs font-bold text-emerald-300';
+        el.classList.remove('hidden');
+      }
+
+      function resetReminderForm() {
+        editingReminderId = null;
+        const titleInput = document.getElementById('reminder-title-input');
+        const descInput = document.getElementById('reminder-desc-input');
+        const dateInput = document.getElementById('reminder-date-input');
+        const hourSelect = document.getElementById('reminder-hour-select');
+        const minuteSelect = document.getElementById('reminder-minute-select');
+        const ampmSelect = document.getElementById('reminder-ampm-select');
+
+        if (titleInput) titleInput.value = '';
+        if (descInput) descInput.value = '';
+        if (dateInput) dateInput.value = getLocalTodayDateStr();
+        if (hourSelect) hourSelect.value = '08';
+        if (minuteSelect) minuteSelect.value = '00';
+        if (ampmSelect) ampmSelect.value = 'AM';
+
+        document.getElementById('reminder-mode-badge')?.classList.add('hidden');
+        document.getElementById('reminder-cancel-edit-btn')?.classList.add('hidden');
+        setText('reminder-save-btn', t('reminderSaveBtn'));
+      }
+
+      window.savePlantReminder = function (event) {
+        event.preventDefault();
+        const title = document.getElementById('reminder-title-input')?.value?.trim() || '';
+        const description = document.getElementById('reminder-desc-input')?.value?.trim() || '';
+        const date = document.getElementById('reminder-date-input')?.value || '';
+        const hour = document.getElementById('reminder-hour-select')?.value || '';
+        const minute = document.getElementById('reminder-minute-select')?.value || '';
+        const ampm = document.getElementById('reminder-ampm-select')?.value || 'AM';
+
+        if (!title) {
+          showReminderFormFeedback(t('reminderValidationTitle'), true);
+          return;
+        }
+        const ts = buildLocalTimestampMs(date, hour, minute, ampm);
+        if (!date || !hour || !minute || isNaN(ts)) {
+          showReminderFormFeedback(t('reminderValidationDateTime'), true);
+          return;
+        }
+
+        if (editingReminderId) {
+          reminders = reminders.map((item) =>
+            item.id === editingReminderId
+              ? { ...item, title, description, date, hour, minute, ampm }
+              : item
+          );
+          persistRemindersToStorage();
+          resetReminderForm();
+          showReminderFormFeedback(t('reminderUpdatedNotice'), false);
+        } else {
+          reminders.unshift({
+            id: `rem-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            title,
+            description,
+            date,
+            hour,
+            minute,
+            ampm,
+            completed: false
+          });
+          persistRemindersToStorage();
+          resetReminderForm();
+          showReminderFormFeedback(t('reminderSavedNotice'), false);
+        }
+
+        renderLogsAndReminders();
+      };
+
+      window.startEditReminder = function (id) {
+        const target = reminders.find((r) => r.id === id);
+        if (!target) return;
+        editingReminderId = target.id;
+        pendingDeleteReminderId = null;
+        document.getElementById('reminder-delete-confirm-box')?.classList.add('hidden');
+        document.getElementById('reminder-form-feedback')?.classList.add('hidden');
+
+        const titleInput = document.getElementById('reminder-title-input');
+        const descInput = document.getElementById('reminder-desc-input');
+        const dateInput = document.getElementById('reminder-date-input');
+        const hourSelect = document.getElementById('reminder-hour-select');
+        const minuteSelect = document.getElementById('reminder-minute-select');
+        const ampmSelect = document.getElementById('reminder-ampm-select');
+
+        if (titleInput) titleInput.value = target.title;
+        if (descInput) descInput.value = target.description || '';
+        if (dateInput) dateInput.value = target.date;
+        if (hourSelect) hourSelect.value = target.hour;
+        if (minuteSelect) minuteSelect.value = target.minute;
+        if (ampmSelect) ampmSelect.value = target.ampm;
+
+        document.getElementById('reminder-mode-badge')?.classList.remove('hidden');
+        document.getElementById('reminder-cancel-edit-btn')?.classList.remove('hidden');
+        setText('reminder-save-btn', t('reminderUpdateBtn'));
+      };
+
+      window.cancelEditReminder = function () {
+        document.getElementById('reminder-form-feedback')?.classList.add('hidden');
+        resetReminderForm();
+      };
+
+      window.toggleReminderCompleted = function (id) {
+        reminders = reminders.map((item) =>
+          item.id === id ? { ...item, completed: !item.completed } : item
+        );
+        persistRemindersToStorage();
+        renderLogsAndReminders();
+      };
+
+      window.requestDeleteReminder = function (id) {
+        pendingDeleteReminderId = id;
+        const box = document.getElementById('reminder-delete-confirm-box');
+        setText('reminder-delete-confirm-text', t('reminderDeleteConfirm'));
+        box?.classList.remove('hidden');
+      };
+
+      window.cancelDeleteReminder = function () {
+        pendingDeleteReminderId = null;
+        document.getElementById('reminder-delete-confirm-box')?.classList.add('hidden');
+      };
+
+      window.confirmDeleteReminder = function () {
+        if (!pendingDeleteReminderId) return;
+        const deleteId = pendingDeleteReminderId;
+        reminders = reminders.filter((item) => item.id !== deleteId);
+        if (editingReminderId === deleteId) {
+          resetReminderForm();
+        }
+        pendingDeleteReminderId = null;
+        document.getElementById('reminder-delete-confirm-box')?.classList.add('hidden');
+        persistRemindersToStorage();
+        renderLogsAndReminders();
+      };
+
+      window.clearScanLogs = function () {
+        scanLogs = [];
+        try {
+          localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(scanLogs));
+        } catch {}
+        renderLogsAndReminders();
+      };
+
+      function renderLogsAndReminders() {
+        const remContainer = document.getElementById('reminders-list-container');
+        if (remContainer) {
+          if (reminders.length === 0) {
+            remContainer.innerHTML = `<p class="text-xs text-teal-200/70 italic">${escapeHtml(t('reminderEmptyMsg'))}</p>`;
+          } else {
+            const sortedReminders = [...reminders].sort((a, b) => {
+              if (a.completed !== b.completed) return a.completed ? 1 : -1;
+              return buildLocalTimestampMs(a.date, a.hour, a.minute, a.ampm) - buildLocalTimestampMs(b.date, b.hour, b.minute, b.ampm);
+            });
+
+            remContainer.innerHTML = sortedReminders
+              .map((rem) => {
+                const status = getReminderStatus(rem);
+                const statusLabel =
+                  status === 'completed'
+                    ? t('reminderStatusCompleted')
+                    : status === 'overdue'
+                    ? t('reminderStatusOverdue')
+                    : t('reminderStatusUpcoming');
+                const statusBadgeClass =
+                  status === 'completed'
+                    ? 'bg-emerald-950/90 border-emerald-400/35 text-emerald-300'
+                    : status === 'overdue'
+                    ? 'bg-rose-950/90 border-rose-400/40 text-rose-300'
+                    : 'bg-sky-950/90 border-sky-400/35 text-sky-300';
+
+                return `
+                  <div class="p-3.5 rounded-xl bg-slate-950/65 border border-teal-500/20 space-y-2 ${rem.completed ? 'opacity-75' : ''}">
+                    <div class="flex flex-wrap items-start justify-between gap-2">
+                      <div class="space-y-0.5">
+                        <p class="text-xs font-extrabold ${rem.completed ? 'line-through text-teal-300/70' : 'text-white'}">
+                          ${escapeHtml(rem.title)}
+                        </p>
+                        <p class="text-[11px] font-semibold text-teal-200/85">
+                          ${escapeHtml(formatReminderDisplayDateTime(rem))}
+                        </p>
+                      </div>
+                      <span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${statusBadgeClass}">
+                        ${escapeHtml(statusLabel)}
+                      </span>
+                    </div>
+                    ${
+                      rem.description
+                        ? `<p class="text-[11px] text-teal-100/80 leading-relaxed">${escapeHtml(rem.description)}</p>`
+                        : ''
+                    }
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onclick="window.toggleReminderCompleted('${escapeHtml(rem.id)}')"
+                        class="px-2.5 py-1 rounded-lg bg-emerald-900/75 hover:bg-emerald-800 border border-emerald-400/30 text-[11px] font-bold text-emerald-100 transition"
+                      >
+                        ${escapeHtml(rem.completed ? t('reminderReopenBtn') : t('reminderCompleteBtn'))}
+                      </button>
+                      <button
+                        type="button"
+                        onclick="window.startEditReminder('${escapeHtml(rem.id)}')"
+                        class="px-2.5 py-1 rounded-lg bg-sky-900/75 hover:bg-sky-800 border border-sky-400/30 text-[11px] font-bold text-sky-100 transition"
+                      >
+                        ${escapeHtml(t('reminderEditBtn'))}
+                      </button>
+                      <button
+                        type="button"
+                        onclick="window.requestDeleteReminder('${escapeHtml(rem.id)}')"
+                        class="px-2.5 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-400/30 text-[11px] font-bold text-rose-200 transition"
+                      >
+                        ${escapeHtml(t('reminderDeleteBtn'))}
+                      </button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join('');
+          }
+        }
+
+        const logsContainer = document.getElementById('scan-logs-container');
+        if (logsContainer) {
+          if (scanLogs.length === 0) {
+            logsContainer.innerHTML = `<p class="text-xs text-teal-200/70 italic">${escapeHtml(t('logsEmptyMsg'))}</p>`;
+          } else {
+            logsContainer.innerHTML = scanLogs
+              .map(
+                (item) => `
+                  <div class="p-3 rounded-xl bg-slate-950/60 border border-teal-500/20 flex items-center justify-between text-xs">
+                    <span class="font-bold text-white">${escapeHtml(item.condition)} (${escapeHtml(item.confidence)}%)</span>
+                    <span class="text-teal-200/70">${escapeHtml(item.time)}</span>
+                  </div>
+                `
+              )
+              .join('');
+          }
+        }
+      }
+
+      (async function initApp() {
         try {
           scanLogs = JSON.parse(localStorage.getItem(LOGS_STORAGE_KEY) || '[]') || [];
         } catch {
           scanLogs = [];
         }
         try {
-          reminders = JSON.parse(localStorage.getItem(REMINDERS_STORAGE_KEY) || '[]') || [];
+          const rawReminders = JSON.parse(localStorage.getItem(REMINDERS_STORAGE_KEY) || '[]') || [];
+          reminders = Array.isArray(rawReminders)
+            ? rawReminders.map(normalizeStoredReminder).filter(Boolean)
+            : [];
+          persistRemindersToStorage();
         } catch {
           reminders = [];
         }
         await loadSavedCorrectionsFromIndexedDB();
+        setDefaultReminderDateIfEmpty();
         renderLogsAndReminders();
         applyLanguageUi();
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.getVoices();
-          window.speechSynthesis.addEventListener('voiceschanged', () => {
-            window.speechSynthesis.getVoices();
-          });
-        }
-      });
+      })();
     })();
   </script>
 </body>
